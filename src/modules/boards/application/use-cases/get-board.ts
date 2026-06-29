@@ -26,6 +26,7 @@ export class GetBoard {
             order: true,
             assigneeId: true,
             createdAt: true,
+            tags: { select: { tagId: true } },
           },
         });
 
@@ -40,6 +41,7 @@ export class GetBoard {
             priority: t.priority,
             order: t.order,
             assigneeId: t.assigneeId,
+            tagIds: t.tags.map((tt) => tt.tagId),
             createdAt: t.createdAt.toISOString(),
           })),
         };

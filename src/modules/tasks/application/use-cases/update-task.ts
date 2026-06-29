@@ -1,3 +1,4 @@
+import type { PrismaClient } from "@prisma/client";
 import type { TaskRepository } from "@tasks/domain/repositories/task-repository.js";
 import type { UpdateTaskDto } from "@tasks/application/dto/update-task-dto.js";
 import type { TaskResponseDto } from "@tasks/application/dto/task-response-dto.js";
@@ -7,7 +8,10 @@ import { TaskPriority } from "@tasks/domain/value-objects/task-priority.js";
 import { AppError } from "@shared/infrastructure/http/error-handler.js";
 
 export class UpdateTask {
-  constructor(private readonly taskRepository: TaskRepository) {}
+  constructor(
+    private readonly taskRepository: TaskRepository,
+    private readonly prisma: PrismaClient,
+  ) {}
 
   async execute(id: string, dto: UpdateTaskDto): Promise<TaskResponseDto> {
     const existing = await this.taskRepository.findById(id);
@@ -33,6 +37,10 @@ export class UpdateTask {
     });
 
     const saved = await this.taskRepository.update(updated);
+    const tags = await this.prisma.taskTag.findMany({
+      where: { taskId: saved.id },
+      select: { tagId: true },
+    });
 
     return {
       id: saved.id,
@@ -43,6 +51,7 @@ export class UpdateTask {
       order: saved.order,
       assigneeId: saved.assigneeId,
       creatorId: saved.creatorId,
+      tagIds: tags.map((t) => t.tagId),
       createdAt: saved.createdAt.toISOString(),
       updatedAt: saved.updatedAt.toISOString(),
     };

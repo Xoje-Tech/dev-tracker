@@ -49,6 +49,10 @@ export class CreateTask {
     });
 
     const saved = await this.taskRepository.create(task);
+    const tags = await this.prisma.taskTag.findMany({
+      where: { taskId: saved.id },
+      select: { tagId: true },
+    });
 
     return {
       id: saved.id,
@@ -59,6 +63,7 @@ export class CreateTask {
       order: saved.order,
       assigneeId: saved.assigneeId,
       creatorId: saved.creatorId,
+      tagIds: tags.map((t) => t.tagId),
       createdAt: saved.createdAt.toISOString(),
       updatedAt: saved.updatedAt.toISOString(),
     };

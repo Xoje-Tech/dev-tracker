@@ -127,7 +127,7 @@ export function createApp(): Express {
   const prismaTaskRepo = new PrismaTaskRepository(prisma);
   const taskController = new TaskController(
     new CreateTask(prismaTaskRepo, prisma),
-    new UpdateTask(prismaTaskRepo),
+    new UpdateTask(prismaTaskRepo, prisma),
     new MoveTask(prismaTaskRepo, prisma),
     new DeleteTask(prismaTaskRepo),
   );

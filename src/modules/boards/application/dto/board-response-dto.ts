@@ -5,6 +5,7 @@ export interface BoardTaskDto {
   priority: string;
   order: number;
   assigneeId: string | null;
+  tagIds: string[];
   createdAt: string;
 }
 

@@ -7,6 +7,7 @@ export interface TaskResponseDto {
   order: number;
   assigneeId: string | null;
   creatorId: string;
+  tagIds: string[];
   createdAt: string;
   updatedAt: string;
 }
