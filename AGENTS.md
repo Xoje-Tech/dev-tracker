@@ -6,7 +6,7 @@ Dev Tracker is a Kanban-style project management application with a REST API bac
 
 **Stack:**
 - **Backend:** Node.js + TypeScript + Express 5 + Prisma 6 + SQLite
-- **Frontend:** Vue 3 + Vite + Tailwind CSS 4 + Pinia + vue-router 4
+- **Frontend:** Vue 3 + Vite + Tailwind CSS 4 + Pinia + vue-router 4 + vue-draggable-plus
 - **Auth:** Dual — session cookies (browser) + API key (programmatic)
 - **Testing:** Vitest + Supertest
 
@@ -23,20 +23,20 @@ frontend (Vue):
 src/client/modules/{auth,projects,board,tasks,tags,shared}/
     domain/         application/      infrastructure/      interface/
                                                                └── components/
-                                                                    ├── atoms/       (BaseButton, BaseInput, etc.)
-                                                                    ├── molecules/   (AuthField, LoginForm, etc.)
-                                                                    ├── organisms/   (AuthCard, KanbanColumn, etc.)
-                                                                    ├── templates/   (AuthLayout, AppLayout, etc.)
-                                                                    └── pages/       (LoginView, BoardView, etc.)
+                                                                    ├── atoms/       (BaseButton, BaseInput, BaseBadge, etc.)
+                                                                    ├── molecules/   (FormField, ProjectCard, TaskCard, etc.)
+                                                                    ├── organisms/   (ProjectsGrid, KanbanBoard, etc.)
+                                                                    ├── templates/   (AppLayout, AuthenticatedLayout, etc.)
+                                                                    └── pages/       (LoginView, ProjectsView, etc.)
 ```
 
 **Path aliases** (defined in `tsconfig.json` for backend, `tsconfig.node.json` for frontend, mirrored in `vitest.config.ts` and `vite.config.ts`):
 - Backend: `@/*`, `@auth/*`, `@projects/*`, `@boards/*`, `@tasks/*`, `@tags/*`, `@shared/*`, `@config/*`
-- Frontend: `@client/auth/*`, `@client/shared/*` (note: no broad `@client/*` — it shadowed specifics via Vite's longest-match alias resolution)
+- Frontend: `@client/auth/*`, `@client/projects/*`, `@client/board/*`, `@client/tasks/*`, `@client/tags/*`, `@client/shared/*` (note: no broad `@client/*` — it shadowed specifics via Vite's longest-match alias resolution)
 
 **Composition roots:**
 - Backend: `src/server/app.ts` — PrismaClient + repos + use cases + controllers + routes
-- Frontend: `src/client/router/index.ts` (routes) + `src/client/main.ts` (Pinia + router mount)
+- Frontend: `src/client/router/index.ts` (routes + auth guard) + `src/client/main.ts` (Pinia mount)
 
 ## Project Structure
 
@@ -45,60 +45,37 @@ dev-tracker/
 ├── prisma/
 │   └── schema.prisma          # 7 models: User, Project, ProjectMember, Board, Column, Task, Tag, TaskTag
 ├── src/
-│   ├── server/
-│   │   ├── index.ts           # Entry point — bootstrap
-│   │   ├── app.ts             # createApp() factory
-│   │   ├── prisma.ts          # PrismaClient singleton with WAL mode
-│   │   ├── config/
-│   │   │   └── env.ts         # Zod env validation
-│   │   ├── middleware/
-│   │   │   ├── errorHandler.ts # Centralized error handler (ZodError, AppError)
-│   │   │   └── auth.ts        # Dual auth: session + API key
-│   │   ├── routes/
-│   │   │   ├── auth.ts        # /api/auth/*
-│   │   │   ├── projects.ts    # /api/projects/*
-│   │   │   ├── board.ts       # /api/projects/:id/board, /api/columns/*
-│   │   │   ├── tasks.ts       # /api/columns/:id/tasks, /api/tasks/*
-│   │   │   └── tags.ts        # /api/tags/*
-│   │   ├── services/
-│   │   │   ├── auth.ts
-│   │   │   ├── projects.ts
-│   │   │   ├── board.ts
-│   │   │   ├── tasks.ts
-│   │   │   └── tags.ts
-│   │   └── types/
-│   │       └── express.d.ts   # Extends Request with user field
+│   ├── server/                # Backend bootstrap
 │   ├── modules/               # BACKEND — hexagonal + screaming
 │   │   ├── auth/              # domain/, application/, infrastructure/, interface/
-│   │   ├── projects/          # ...
-│   │   ├── boards/            # ...
-│   │   ├── tasks/             # ...
-│   │   ├── tags/              # ...
+│   │   ├── projects/
+│   │   ├── boards/
+│   │   ├── tasks/
+│   │   ├── tags/
 │   │   └── shared/            # cross-cutting (Result, errors, http middleware)
 │   ├── client/                # FRONTEND — hexagonal + atomic inside interface/
 │   │   ├── modules/
-│   │   │   ├── auth/          # implemented (see Auth section below)
-│   │   │   └── shared/        # useApi composable, BaseInput, BaseButton
-│   │   ├── router/
-│   │   │   └── index.ts       # Vue Router (currently: /, /login)
-│   │   ├── index.html         # Vite entry HTML
-│   │   ├── main.ts            # Vue app bootstrap (Pinia + router)
-│   │   ├── App.vue            # <RouterView />
+│   │   │   ├── auth/          # types, store, LoginForm, LoginView, AppLayout wrapper, guard
+│   │   │   ├── projects/      # types, store, ProjectCard, NewProjectForm, ProjectsView
+│   │   │   ├── board/         # types, store, TaskCard, KanbanColumn, KanbanBoard, BoardView
+│   │   │   ├── tags/          # types, store, NewTagForm, TagsList, TagsView
+│   │   │   └── shared/        # useApi, BaseXxx atoms, FormField/EmptyState/PageHeader molecules, AppLayout template
+│   │   ├── router/index.ts    # Vue Router + auth guard
+│   │   ├── index.html
+│   │   ├── main.ts
+│   │   ├── App.vue
 │   │   └── style.css          # @import "tailwindcss" + @source
-│   └── shared/                # cross-cutting backend types/schemas (separate from modules/shared/)
-├── tests/
-│   ├── setup.ts               # Loads .env.test, sets NODE_ENV=test
-│   ├── global-setup.ts        # Resets test DB, pushes schema — runs ONCE
-│   └── helpers.ts             # clearDatabase() for per-test cleanup
-├── .env                       # Development secrets (gitignored)
-├── .env.test                  # Test secrets (gitignored, see .env.test.example)
-├── .env.test.example          # Placeholder values for fresh checkouts
-├── .npmrc                     # pnpm build script approvals
-├── tsconfig.json              # Backend TS config (excludes src/client)
-├── tsconfig.node.json         # Frontend TS config (client aliases)
-├── vite.config.ts             # Vite + resolve.alias + proxy to Express
-├── vitest.config.ts           # Vitest config + backend aliases
-└── postcss.config.js          # @tailwindcss/postcss + autoprefixer (Tailwind 4)
+│   └── shared/                # cross-cutting backend types/schemas
+├── tests/                     # Backend tests (76 passing in 7 files)
+│   ├── setup.ts
+│   ├── global-setup.ts
+│   └── helpers.ts
+├── .env / .env.test / .env.test.example
+├── tsconfig.json              # Backend
+├── tsconfig.node.json         # Frontend aliases
+├── vite.config.ts             # Vite root + aliases
+├── vitest.config.ts
+└── postcss.config.js          # @tailwindcss/postcss + autoprefixer
 ```
 
 ## Implemented Modules
@@ -107,50 +84,71 @@ dev-tracker/
 
 | Module | Endpoints |
 |--------|-----------|
-| `auth` | `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`, `POST /api/auth/rotate-api-key` |
+| `auth` | register, login, logout, me, rotate-api-key |
 | `projects` | full CRUD + archive |
-| `board` | board fetch, column CRUD |
-| `tasks` | task CRUD, move between columns (algorithm in `references/task-move-reorder-algorithm.md`) |
-| `tags` | tag CRUD, assign/unassign |
-| `shared` | Result type, AppError, error middleware, validation middleware, auth middleware |
+| `board` | get, create-default |
+| `tasks` | create, update, delete, **move** (column + index) |
+| `tags` | list, create, assign-to-task, unassign-from-task |
+| `shared` | Result, AppError, error middleware, validation middleware, auth middleware |
 
-### Frontend — auth pilot complete, others pending
+### Frontend — all 5 feature modules + shared implemented
 
 | Module | State |
 |--------|-------|
-| `shared` | useApi composable, BaseButton, BaseInput atoms |
-| `auth` | Pinia store (login/register/logout/fetchMe), full LoginView (atoms → page) |
-| `projects` | NOT STARTED |
-| `board` | NOT STARTED |
-| `tasks` | NOT STARTED |
-| `tags` | NOT STARTED |
+| `shared` | useApi, 9 BaseXxx atoms (Button/Input/Badge/Avatar/IconButton/Spinner/TagPill/Textarea/Select/Modal), FormField/EmptyState/PageHeader molecules, AppLayout template |
+| `auth` | Pinia store (login/register/logout/fetchMe), LoginForm, TopBarUser, AuthenticatedLayout wrapper, auth-guard |
+| `projects` | Pinia store, ProjectCard, NewProjectForm, ProjectsGrid, NewProjectModal, ProjectsView |
+| `board` | Pinia store (incl. task CRUD + move), PriorityBadge, TaskCard, ColumnHeader, TaskForm, KanbanColumn, **KanbanBoard with drag/drop**, BoardView |
+| `tags` | Pinia store, NewTagForm, TagsList, TagsView (CRUD only — see Known Gaps) |
+| `tasks` | NOT a separate frontend module — tasks live inside the board (see below) |
+
+## Design Decisions
+
+1. **Tasks live inside the board store**, not as a separate Pinia store. Tasks always render inside a column; keeping them nested avoids cross-store sync after a move. Task CRUD actions (create, update, delete, move) are exposed as methods on `useBoardStore()`.
+
+2. **Atomic design bottom-up only** — atoms never import molecules/organisms; pages only compose organisms/templates. Cross-layer imports (e.g. a molecule importing an organism) are forbidden.
+
+3. **`shared/` never depends on feature modules** — `AppLayout` lives in shared but takes a `topbar` slot so the user UI (which depends on `useAuthStore`) lives in `auth/TopBarUser`. Composition happens in feature layouts (`auth/AuthenticatedLayout`).
+
+4. **No broad `@client/*` alias** — only specific `@client/{auth,projects,board,tasks,tags,shared}/*`. A broad prefix shadows specifics via Vite's longest-match resolution.
+
+5. **Auth guard uses `meta.requiresAuth` / `meta.guestOnly`** — applied as a single `router.beforeEach` that calls `/api/auth/me` on first hit. Login form respects `?redirect=...` for post-login return.
+
+6. **Path convention**: ESM imports use `.js` extensions even for `.ts` files (TypeScript ESM requirement).
+
+7. **Tailwind 4, CSS-first config** — `@import "tailwindcss";` + `@source "./**/*.{vue,ts,html}";`. No `tailwind.config.js`. PostCSS plugin is `@tailwindcss/postcss` (separate from `tailwindcss` package).
+
+## Known Gaps
+
+- **Tag assignment from the kanban is not wired.** The backend `BoardTaskDto` (returned by `GET /api/projects/:id/board`) does not include the assigned tag IDs for each task — only title, description, priority, order, assigneeId, createdAt. Without that, `TaskCard` and `TaskForm` have nothing to read or display. The tags store exposes `assignToTask` / `unassignFromTask` for when the DTO is extended. **Fix:** add `tagIds: string[]` to `BoardTaskDto` in `src/modules/boards/application/dto/board-response-dto.ts` and the corresponding SQL in the use case.
+- **No frontend tests** — Vitest covers the backend (76/76 passing) but no `@vue/test-utils` is set up. Worth adding for the stores and organisms before the UI grows further.
 
 ## Key Conventions
 
-1. **ESM imports with `.js` extensions** — Always use `.js` in import paths even for `.ts` files
-2. **Prisma 6.x** — NOT 7.x (7 broke `env()` in datasource)
-3. **Express 5** — Latest version, different error handling than v4
-4. **Zod 4.x** — Uses `z.coerce`, `z.enum`, etc.
-5. **SQLite with WAL mode** — Better concurrency for development
-6. **Dual auth** — Session cookie for browser, `X-API-Key` header for API clients
-7. **Tailwind 4** — CSS-first config (`@import "tailwindcss"`, `@source`); no `tailwind.config.js`
-8. **No broad `@client/*` alias** — Only specific `@client/{auth,shared}/*`; broad prefix shadowed specifics
-9. **Atomic design bottom-up** — atoms never import molecules/organisms; pages only compose organisms
-10. **Pinia store in `infrastructure/store/`** — Mirrors backend hexagonal layer convention
+1. **ESM imports with `.js` extensions** even for `.ts` files
+2. **Prisma 6.x** (NOT 7.x — 7 broke `env()` in datasource)
+3. **Express 5** — different error handling than v4
+4. **Zod 4.x** — `z.coerce`, `z.enum`, etc.
+5. **SQLite with WAL mode**
+6. **Dual auth** — session cookie for browser, `X-API-Key` header for programmatic
+7. **Tailwind 4 CSS-first** — no JS config
+8. **No broad `@client/*` alias**
+9. **Atomic design bottom-up**
+10. **Pinia store in `infrastructure/store/`** — mirrors backend hexagonal convention
 
 ## Commands
 
 ```bash
-pnpm install          # Install dependencies
-pnpm db:generate      # Generate Prisma client
-pnpm db:push          # Push schema to SQLite DB
-pnpm dev              # Backend dev server (tsx watch)
-pnpm dev:client       # Frontend dev server (Vite)
-pnpm build            # Build backend (tsc) + frontend (vite build)
-pnpm start            # Run production build
-pnpm test             # Run tests (76 passing in 7 files)
-pnpm typecheck        # Type check backend (tsc --noEmit)
-pnpm exec vue-tsc --noEmit   # Type check frontend
+pnpm install
+pnpm db:generate
+pnpm db:push
+pnpm dev              # Backend (tsx watch)
+pnpm dev:client       # Frontend (Vite)
+pnpm build            # tsc (backend) + vite build (frontend)
+pnpm start            # Production
+pnpm test             # 76 tests, 7 files
+pnpm typecheck        # Backend tsc --noEmit
+pnpm exec vue-tsc --noEmit   # Frontend tsc
 ```
 
 ## Database Schema
@@ -165,15 +163,17 @@ pnpm exec vue-tsc --noEmit   # Type check frontend
 - **Tag** → has many TaskTag
 - **TaskTag** → join table (composite PK [taskId, tagId])
 
-## Recent Session State (2026-06-29)
+## Build Profile (as of 2026-06-29)
 
-**Auth pilot migration complete** (5 commits):
-1. `chore(client): scaffold modules/ skeleton for hexagonal + atomic`
-2. `feat(client/shared): add useApi composable and Base atoms`
-3. `feat(client/auth): Pinia auth store + client path aliases`
-4. `feat(client/auth): LoginView with atomic component layers`
-5. `feat(client): wire router + close pending frontend setup`
+After the "A toda la UI" sprint, `pnpm build` produces:
+- `dist/client/index.html` — 0.39 kB
+- `dist/client/assets/index-*.css` — ~21 kB / gzip ~5 kB
+- `dist/client/assets/index-*.js` — ~114 kB / gzip ~44 kB (Pinia + router + useApi + Base atoms)
+- Lazy chunks per page:
+  - `ProjectsView` — 4.5 kB / gzip 1.9 kB
+  - `BoardView` — 53 kB / gzip 19 kB (vue-draggable-plus is heavy)
+  - `TagsView` — 5 kB / gzip 2.2 kB
+  - `PageHeader` shared chunk — 3 kB / gzip 1.4 kB
+  - `FormField` shared chunk — 5 kB / gzip 2.1 kB
 
-Login flow now works end-to-end at `/login`. Register flow uses the same store action but no RegisterView organism yet.
-
-**Next natural step:** replicate the auth pattern in `projects/` (list + create + grid) before tackling `board/` (more complex: drag/drop, columns, tasks).
+Total first-load JS (gzip) for `/projects`: ~46 kB. For `/projects/:id/board`: ~65 kB (the +19 kB is the drag/drop lib).
