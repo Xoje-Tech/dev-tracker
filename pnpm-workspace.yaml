@@ -4,3 +4,7 @@ allowBuilds:
   esbuild: true
   prisma: true
   sqlite3: true
+
+packages:
+  - "."
+  - "cli"

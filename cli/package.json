@@ -1,0 +1,25 @@
+{
+  "name": "dev-tracker-cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Command-line interface for dev-tracker — wraps the REST API so agents and humans can drive the app from the terminal.",
+  "bin": {
+    "dt": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "commander": "^14.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.9"
+  }
+}
