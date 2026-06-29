@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import { RegisterUser } from "../../application/use-cases/register-user.js";
-import { AuthenticateUser } from "../../application/use-cases/authenticate-user.js";
-import { RotateApiKey } from "../../application/use-cases/rotate-api-key.js";
+import { RegisterUser } from "@auth/application/use-cases/register-user.js";
+import { AuthenticateUser } from "@auth/application/use-cases/authenticate-user.js";
+import { RotateApiKey } from "@auth/application/use-cases/rotate-api-key.js";
 
 export class AuthController {
   constructor(

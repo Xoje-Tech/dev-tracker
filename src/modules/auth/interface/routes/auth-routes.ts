@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { AuthController } from "../controllers/auth-controller.js";
-import { createAuthMiddleware } from "../../../shared/infrastructure/http/auth-middleware.js";
-import { validateBody } from "../../../shared/infrastructure/http/validate-middleware.js";
-import { registerDtoSchema } from "../../application/dto/register-dto.js";
-import type { AuthStrategy } from "../../../shared/infrastructure/http/auth-middleware.js";
+import { AuthController } from "@auth/interface/controllers/auth-controller.js";
+import { createAuthMiddleware } from "@shared/infrastructure/http/auth-middleware.js";
+import { validateBody } from "@shared/infrastructure/http/validate-middleware.js";
+import { registerDtoSchema } from "@auth/application/dto/register-dto.js";
+import type { AuthStrategy } from "@shared/infrastructure/http/auth-middleware.js";
 
 export function createAuthRoutes(
   controller: AuthController,

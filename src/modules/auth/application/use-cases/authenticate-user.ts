@@ -1,5 +1,5 @@
-import type { UserRepository } from "../../domain/repositories/user-repository.js";
-import { Password } from "../../domain/value-objects/password.js";
+import type { UserRepository } from "@auth/domain/repositories/user-repository.js";
+import { Password } from "@auth/domain/value-objects/password.js";
 
 export class AuthenticateUser {
   constructor(private readonly userRepository: UserRepository) {}

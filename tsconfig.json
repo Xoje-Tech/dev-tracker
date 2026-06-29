@@ -20,7 +20,14 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@auth/*": ["src/modules/auth/*"],
+      "@projects/*": ["src/modules/projects/*"],
+      "@boards/*": ["src/modules/boards/*"],
+      "@tasks/*": ["src/modules/tasks/*"],
+      "@tags/*": ["src/modules/tags/*"],
+      "@shared/*": ["src/modules/shared/*"],
+      "@config/*": ["src/config/*"]
     }
   },
   "include": ["src/**/*"],

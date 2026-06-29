@@ -1,4 +1,4 @@
-import type { TaskRepository } from "../../domain/repositories/task-repository.js";
+import type { TaskRepository } from "@tasks/domain/repositories/task-repository.js";
 
 export class DeleteTask {
   constructor(_taskRepository: TaskRepository) {}

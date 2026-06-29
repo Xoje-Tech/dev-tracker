@@ -1,4 +1,4 @@
-import type { ProjectRepository } from "../../domain/repositories/project-repository.js";
+import type { ProjectRepository } from "@projects/domain/repositories/project-repository.js";
 
 export class ListProjects {
   constructor(_projectRepository: ProjectRepository) {}

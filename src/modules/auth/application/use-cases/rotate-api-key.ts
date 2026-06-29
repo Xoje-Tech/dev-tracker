@@ -1,5 +1,5 @@
-import type { UserRepository } from "../../domain/repositories/user-repository.js";
-import { ApiKey } from "../../domain/value-objects/api-key.js";
+import type { UserRepository } from "@auth/domain/repositories/user-repository.js";
+import { ApiKey } from "@auth/domain/value-objects/api-key.js";
 
 export class RotateApiKey {
   constructor(private readonly userRepository: UserRepository) {}

@@ -1,5 +1,5 @@
-import type { Board } from "../entities/board.js";
-import type { Column } from "../entities/column.js";
+import type { Board } from "@boards/domain/entities/board.js";
+import type { Column } from "@boards/domain/entities/column.js";
 
 export interface BoardRepository {
   findByProjectId(projectId: string): Promise<(Board & { columns: Column[] }) | null>;

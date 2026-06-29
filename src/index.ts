@@ -1,6 +1,6 @@
-import { createApp } from "./app.js";
-import { prisma } from "./prisma.js";
-import { env } from "./config/env.js";
+import { createApp } from "@/app.js";
+import { prisma } from "@/prisma.js";
+import { env } from "@config/env.js";
 
 async function bootstrap(): Promise<void> {
   await prisma.$connect();

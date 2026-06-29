@@ -1,4 +1,4 @@
-import { BaseEntity } from "../../../shared/domain/base-entity.js";
+import { BaseEntity } from "@shared/domain/base-entity.js";
 
 export class Column extends BaseEntity {
   readonly boardId: string;

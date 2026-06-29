@@ -1,5 +1,5 @@
-import type { ProjectRepository } from "../../domain/repositories/project-repository.js";
-import type { CreateProjectDto } from "../dto/create-project-dto.js";
+import type { ProjectRepository } from "@projects/domain/repositories/project-repository.js";
+import type { CreateProjectDto } from "@projects/application/dto/create-project-dto.js";
 
 export class CreateProject {
   constructor(_projectRepository: ProjectRepository) {}

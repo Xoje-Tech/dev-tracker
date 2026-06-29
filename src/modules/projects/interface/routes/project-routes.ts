@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ProjectController } from "../controllers/project-controller.js";
-import { createAuthMiddleware } from "../../../shared/infrastructure/http/auth-middleware.js";
-import type { AuthStrategy } from "../../../shared/infrastructure/http/auth-middleware.js";
+import { ProjectController } from "@projects/interface/controllers/project-controller.js";
+import { createAuthMiddleware } from "@shared/infrastructure/http/auth-middleware.js";
+import type { AuthStrategy } from "@shared/infrastructure/http/auth-middleware.js";
 
 export function createProjectRoutes(
   controller: ProjectController,

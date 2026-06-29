@@ -1,5 +1,5 @@
-import type { TagRepository } from "../../domain/repositories/tag-repository.js";
-import type { Tag } from "../../domain/entities/tag.js";
+import type { TagRepository } from "@tags/domain/repositories/tag-repository.js";
+import type { Tag } from "@tags/domain/entities/tag.js";
 import type { PrismaClient } from "@prisma/client";
 
 export class PrismaTagRepository implements TagRepository {

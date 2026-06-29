@@ -1,4 +1,4 @@
-import { BaseEntity } from "../../../shared/domain/base-entity.js";
+import { BaseEntity } from "@shared/domain/base-entity.js";
 
 export class ProjectMember extends BaseEntity {
   readonly projectId: string;

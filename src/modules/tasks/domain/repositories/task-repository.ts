@@ -1,4 +1,4 @@
-import type { Task } from "../entities/task.js";
+import type { Task } from "@tasks/domain/entities/task.js";
 
 export interface TaskRepository {
   findById(id: string): Promise<Task | null>;

@@ -1,5 +1,5 @@
-import type { TaskRepository } from "../../domain/repositories/task-repository.js";
-import type { Task } from "../../domain/entities/task.js";
+import type { TaskRepository } from "@tasks/domain/repositories/task-repository.js";
+import type { Task } from "@tasks/domain/entities/task.js";
 import type { PrismaClient } from "@prisma/client";
 
 export class PrismaTaskRepository implements TaskRepository {

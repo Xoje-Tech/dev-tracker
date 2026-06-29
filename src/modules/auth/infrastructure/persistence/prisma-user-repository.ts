@@ -1,7 +1,7 @@
 import type { User as PrismaUserModel } from "@prisma/client";
-import type { UserRepository } from "../../domain/repositories/user-repository.js";
-import { User } from "../../domain/entities/user.js";
-import { Email } from "../../domain/value-objects/email.js";
+import type { UserRepository } from "@auth/domain/repositories/user-repository.js";
+import { User } from "@auth/domain/entities/user.js";
+import { Email } from "@auth/domain/value-objects/email.js";
 import type { PrismaClient } from "@prisma/client";
 
 function toDomain(prismaUser: PrismaUserModel): User {

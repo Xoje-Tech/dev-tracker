@@ -1,6 +1,6 @@
-import type { ProjectRepository } from "../../domain/repositories/project-repository.js";
-import type { Project } from "../../domain/entities/project.js";
-import type { ProjectMember } from "../../domain/entities/project-member.js";
+import type { ProjectRepository } from "@projects/domain/repositories/project-repository.js";
+import type { Project } from "@projects/domain/entities/project.js";
+import type { ProjectMember } from "@projects/domain/entities/project-member.js";
 import type { PrismaClient } from "@prisma/client";
 
 export class PrismaProjectRepository implements ProjectRepository {

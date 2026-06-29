@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { TaskController } from "../controllers/task-controller.js";
-import { createAuthMiddleware } from "../../../shared/infrastructure/http/auth-middleware.js";
-import type { AuthStrategy } from "../../../shared/infrastructure/http/auth-middleware.js";
+import { TaskController } from "@tasks/interface/controllers/task-controller.js";
+import { createAuthMiddleware } from "@shared/infrastructure/http/auth-middleware.js";
+import type { AuthStrategy } from "@shared/infrastructure/http/auth-middleware.js";
 
 export function createTaskRoutes(
   controller: TaskController,

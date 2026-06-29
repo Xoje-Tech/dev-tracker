@@ -1,5 +1,5 @@
-import type { TagRepository } from "../../domain/repositories/tag-repository.js";
-import type { TagDto } from "../dto/tag-dto.js";
+import type { TagRepository } from "@tags/domain/repositories/tag-repository.js";
+import type { TagDto } from "@tags/application/dto/tag-dto.js";
 
 export class CreateTag {
   constructor(_tagRepository: TagRepository) {}

@@ -1,5 +1,5 @@
-import type { Project } from "../entities/project.js";
-import type { ProjectMember } from "../entities/project-member.js";
+import type { Project } from "@projects/domain/entities/project.js";
+import type { ProjectMember } from "@projects/domain/entities/project-member.js";
 
 export interface ProjectRepository {
   findById(id: string): Promise<(Project & { members: ProjectMember[] }) | null>;

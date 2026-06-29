@@ -1,5 +1,5 @@
-import type { TaskRepository } from "../../domain/repositories/task-repository.js";
-import type { UpdateTaskDto } from "../dto/update-task-dto.js";
+import type { TaskRepository } from "@tasks/domain/repositories/task-repository.js";
+import type { UpdateTaskDto } from "@tasks/application/dto/update-task-dto.js";
 
 export class UpdateTask {
   constructor(_taskRepository: TaskRepository) {}

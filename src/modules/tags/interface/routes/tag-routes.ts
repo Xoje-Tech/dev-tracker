@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { TagController } from "../controllers/tag-controller.js";
-import { createAuthMiddleware } from "../../../shared/infrastructure/http/auth-middleware.js";
-import type { AuthStrategy } from "../../../shared/infrastructure/http/auth-middleware.js";
+import { TagController } from "@tags/interface/controllers/tag-controller.js";
+import { createAuthMiddleware } from "@shared/infrastructure/http/auth-middleware.js";
+import type { AuthStrategy } from "@shared/infrastructure/http/auth-middleware.js";
 
 export function createTagRoutes(
   controller: TagController,

@@ -1,7 +1,7 @@
-import { BaseEntity } from "../../../shared/domain/base-entity.js";
-import { Email } from "../value-objects/email.js";
-import { Password } from "../value-objects/password.js";
-import { ApiKey } from "../value-objects/api-key.js";
+import { BaseEntity } from "@shared/domain/base-entity.js";
+import { Email } from "@auth/domain/value-objects/email.js";
+import { Password } from "@auth/domain/value-objects/password.js";
+import { ApiKey } from "@auth/domain/value-objects/api-key.js";
 
 export class User extends BaseEntity {
   readonly email: Email;

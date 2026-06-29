@@ -1,4 +1,4 @@
-import type { TagRepository } from "../../domain/repositories/tag-repository.js";
+import type { TagRepository } from "@tags/domain/repositories/tag-repository.js";
 
 export class ListTags {
   constructor(_tagRepository: TagRepository) {}

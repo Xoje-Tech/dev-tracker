@@ -1,6 +1,6 @@
-import type { BoardRepository } from "../../domain/repositories/board-repository.js";
-import type { Board } from "../../domain/entities/board.js";
-import type { Column } from "../../domain/entities/column.js";
+import type { BoardRepository } from "@boards/domain/repositories/board-repository.js";
+import type { Board } from "@boards/domain/entities/board.js";
+import type { Column } from "@boards/domain/entities/column.js";
 import type { PrismaClient } from "@prisma/client";
 
 export class PrismaBoardRepository implements BoardRepository {
