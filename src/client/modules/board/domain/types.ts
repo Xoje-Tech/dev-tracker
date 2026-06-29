@@ -19,6 +19,7 @@ export interface BoardTask {
   priority: Priority;
   order: number;
   assigneeId: string | null;
+  tagIds: string[];
   createdAt: string;
 }
 

@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
+import BaseTagPill from "@client/shared/interface/components/atoms/BaseTagPill.vue";
 import PriorityBadge from "@client/board/interface/components/atoms/PriorityBadge.vue";
+import { useTagsStore } from "@client/tags/infrastructure/store/tags";
 import type { BoardTask } from "@client/board/domain/types";
 
-defineProps<{
+const props = defineProps<{
   task: BoardTask;
 }>();
 
@@ -10,6 +14,15 @@ defineEmits<{
   edit: [task: BoardTask];
   delete: [task: BoardTask];
 }>();
+
+const tagsStore = useTagsStore();
+const { tags: availableTags } = storeToRefs(tagsStore);
+
+const assignedTags = computed(() =>
+  props.task.tagIds
+    .map((id) => availableTags.value.find((t) => t.id === id))
+    .filter((t): t is NonNullable<typeof t> => t !== undefined),
+);
 </script>
 
 <template>
@@ -37,6 +50,15 @@ defineEmits<{
     >
       {{ task.description }}
     </p>
+    <div v-if="assignedTags.length > 0" class="mt-2 flex flex-wrap gap-1">
+      <BaseTagPill
+        v-for="tag in assignedTags"
+        :key="tag.id"
+        :name="tag.name"
+        :color="tag.color"
+        @remove.stop
+      />
+    </div>
     <div class="mt-2 flex items-center gap-2">
       <PriorityBadge :priority="task.priority" />
     </div>
