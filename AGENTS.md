@@ -35,7 +35,7 @@ src/client/modules/{auth,projects,board,tasks,tags,shared}/
 - Frontend: `@client/auth/*`, `@client/projects/*`, `@client/board/*`, `@client/tasks/*`, `@client/tags/*`, `@client/shared/*` (note: no broad `@client/*` — it shadowed specifics via Vite's longest-match alias resolution)
 
 **Composition roots:**
-- Backend: `src/server/app.ts` — PrismaClient + repos + use cases + controllers + routes
+- Backend: `src/app.ts` (testable factory) + `src/server/index.ts` (calls `createApp().listen()`)
 - Frontend: `src/client/router/index.ts` (routes + auth guard) + `src/client/main.ts` (Pinia mount)
 
 ## Project Structure
@@ -45,8 +45,14 @@ dev-tracker/
 ├── prisma/
 │   └── schema.prisma          # 7 models: User, Project, ProjectMember, Board, Column, Task, Tag, TaskTag
 ├── src/
-│   ├── server/                # Backend bootstrap
-│   ├── modules/               # BACKEND — hexagonal + screaming
+│   ├── server/index.ts       # Entry — calls createApp().listen(), handles SIGINT/SIGTERM
+│   ├── app.ts                # Composition root: PrismaClient + repos + use cases + controllers + routes
+│   ├── config/env.ts         # Zod-validated env (loads .env with override: true)
+│   ├── prisma.ts             # PrismaClient singleton with WAL mode
+│   ├── app.ts                 # Backend composition root (PrismaClient + repos + use cases + controllers + routes)
+│   ├── config/
+│   │   └── env.ts             # Zod env validation (loads .env with override)
+│   ├── prisma.ts              # PrismaClient singleton with WAL mode
 │   │   ├── auth/              # domain/, application/, infrastructure/, interface/
 │   │   ├── projects/
 │   │   ├── boards/
