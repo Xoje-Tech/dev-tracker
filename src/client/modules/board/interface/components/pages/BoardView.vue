@@ -11,12 +11,14 @@ import KanbanBoard from "@client/board/interface/components/organisms/KanbanBoar
 import TaskForm from "@client/board/interface/components/molecules/TaskForm.vue";
 import { useBoardStore } from "@client/board/infrastructure/store/board";
 import { useProjectsStore } from "@client/projects/infrastructure/store/projects";
+import { useTagsStore } from "@client/tags/infrastructure/store/tags";
 import type { BoardTask, Priority } from "@client/board/domain/types";
 
 const route = useRoute();
 const router = useRouter();
 const boardStore = useBoardStore();
 const projectsStore = useProjectsStore();
+const tagsStore = useTagsStore();
 
 const projectId = computed(() => String(route.params.id));
 const project = computed(() =>
@@ -36,6 +38,9 @@ onMounted(async () => {
   if (projectsStore.projects.length === 0) {
     await projectsStore.fetchAll();
   }
+  if (tagsStore.tags.length === 0) {
+    await tagsStore.fetchAll();
+  }
   await boardStore.fetchBoard(projectId.value);
 });
 
@@ -54,28 +59,64 @@ function closeDialog(): void {
   dialogError.value = null;
 }
 
+function findTaskColumn(taskId: string) {
+  return boardStore.board?.columns.find((c) => c.tasks.some((t) => t.id === taskId));
+}
+
+function applyTagIdsToLocalTask(taskId: string, tagIds: string[]): void {
+  const col = findTaskColumn(taskId);
+  if (!col) return;
+  const idx = col.tasks.findIndex((t) => t.id === taskId);
+  if (idx < 0) return;
+  col.tasks = [
+    ...col.tasks.slice(0, idx),
+    { ...col.tasks[idx], tagIds },
+    ...col.tasks.slice(idx + 1),
+  ];
+}
+
 async function onDialogSubmit(payload: {
   title: string;
   description: string | null;
   priority: Priority;
+  tagIds: string[];
 }): Promise<void> {
   if (dialog.value.kind !== "create" && dialog.value.kind !== "edit") return;
   dialogBusy.value = true;
   dialogError.value = null;
   try {
     if (dialog.value.kind === "create") {
-      await boardStore.createTask({
+      const created = await boardStore.createTask({
         columnId: dialog.value.columnId,
         title: payload.title,
         description: payload.description ?? undefined,
         priority: payload.priority,
       });
+      if (payload.tagIds.length > 0) {
+        await Promise.all(
+          payload.tagIds.map((tagId) => tagsStore.assignToTask(created.id, tagId)),
+        );
+        applyTagIdsToLocalTask(created.id, payload.tagIds);
+      }
     } else {
-      await boardStore.updateTask(dialog.value.task.id, {
+      const taskId = dialog.value.task.id;
+      const oldTagIds = dialog.value.task.tagIds;
+      const newTagIds = payload.tagIds;
+      const toAssign = newTagIds.filter((id) => !oldTagIds.includes(id));
+      const toUnassign = oldTagIds.filter((id) => !newTagIds.includes(id));
+
+      await boardStore.updateTask(taskId, {
         title: payload.title,
         description: payload.description,
         priority: payload.priority,
       });
+      if (toAssign.length > 0 || toUnassign.length > 0) {
+        await Promise.all([
+          ...toAssign.map((tagId) => tagsStore.assignToTask(taskId, tagId)),
+          ...toUnassign.map((tagId) => tagsStore.unassignFromTask(taskId, tagId)),
+        ]);
+        applyTagIdsToLocalTask(taskId, newTagIds);
+      }
     }
     closeDialog();
   } catch (e) {
@@ -164,6 +205,8 @@ function backToProjects(): void {
         :initial-title="dialog.task.title"
         :initial-description="dialog.task.description"
         :initial-priority="dialog.task.priority"
+        :initial-tag-ids="dialog.task.tagIds"
+        :available-tags="tagsStore.tags"
         submit-label="Save changes"
         :busy="dialogBusy"
         @submit="onDialogSubmit"
@@ -171,6 +214,7 @@ function backToProjects(): void {
       />
       <TaskForm
         v-else-if="dialog.kind === 'create'"
+        :available-tags="tagsStore.tags"
         submit-label="Create task"
         :busy="dialogBusy"
         @submit="onDialogSubmit"

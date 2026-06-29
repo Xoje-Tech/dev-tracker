@@ -5,19 +5,28 @@ import BaseInput from "@client/shared/interface/components/atoms/BaseInput.vue";
 import BaseSelect from "@client/shared/interface/components/atoms/BaseSelect.vue";
 import BaseTextarea from "@client/shared/interface/components/atoms/BaseTextarea.vue";
 import FormField from "@client/shared/interface/components/molecules/FormField.vue";
+import TaskTagsField from "@client/board/interface/components/molecules/TaskTagsField.vue";
 import { PRIORITY_OPTIONS, type Priority } from "@client/board/domain/types";
+import type { Tag } from "@client/tags/domain/types";
 
 const props = defineProps<{
   initialTitle?: string;
   initialDescription?: string | null;
   initialPriority?: Priority;
+  initialTagIds?: string[];
+  availableTags?: Tag[];
   submitLabel: string;
   busy?: boolean;
 }>();
 
 const emit = defineEmits<{
   submit: [
-    payload: { title: string; description: string | null; priority: Priority },
+    payload: {
+      title: string;
+      description: string | null;
+      priority: Priority;
+      tagIds: string[];
+    },
   ];
   cancel: [];
 }>();
@@ -25,14 +34,21 @@ const emit = defineEmits<{
 const title = ref(props.initialTitle ?? "");
 const description = ref(props.initialDescription ?? "");
 const priority = ref<Priority>(props.initialPriority ?? "medium");
+const tagIds = ref<string[]>(props.initialTagIds ?? []);
 const titleError = ref<string | null>(null);
 
 watch(
-  () => [props.initialTitle, props.initialDescription, props.initialPriority],
-  ([t, d, p]) => {
+  () => [
+    props.initialTitle,
+    props.initialDescription,
+    props.initialPriority,
+    props.initialTagIds,
+  ],
+  ([t, d, p, tags]) => {
     title.value = (t as string | undefined) ?? "";
     description.value = (d as string | null | undefined) ?? "";
     priority.value = (p as Priority | undefined) ?? "medium";
+    tagIds.value = (tags as string[] | undefined) ?? [];
     titleError.value = null;
   },
 );
@@ -52,6 +68,7 @@ function onSubmit(event: Event): void {
     title: trimmed,
     description: description.value.trim() === "" ? null : description.value.trim(),
     priority: priority.value,
+    tagIds: tagIds.value,
   });
 }
 </script>
@@ -82,6 +99,13 @@ function onSubmit(event: Event): void {
         v-model="priority"
         :options="PRIORITY_OPTIONS"
         :disabled="busy"
+      />
+    </FormField>
+    <FormField label="Tags" html-for="task-tags-hint">
+      <span id="task-tags-hint" class="sr-only">Click to toggle tags</span>
+      <TaskTagsField
+        :available-tags="availableTags ?? []"
+        v-model="tagIds"
       />
     </FormField>
     <div class="flex justify-end gap-2">
