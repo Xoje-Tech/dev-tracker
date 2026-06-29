@@ -98,7 +98,7 @@ dev-tracker/
 | `shared` | useApi, 9 BaseXxx atoms (Button/Input/Badge/Avatar/IconButton/Spinner/TagPill/Textarea/Select/Modal), FormField/EmptyState/PageHeader molecules, AppLayout template |
 | `auth` | Pinia store (login/register/logout/fetchMe), LoginForm, TopBarUser, AuthenticatedLayout wrapper, auth-guard |
 | `projects` | Pinia store, ProjectCard, NewProjectForm, ProjectsGrid, NewProjectModal, ProjectsView |
-| `board` | Pinia store (incl. task CRUD + move), PriorityBadge, TaskCard, ColumnHeader, TaskForm, KanbanColumn, **KanbanBoard with drag/drop**, BoardView |
+| `board` | Pinia store (incl. task CRUD + move), PriorityBadge, TaskCard (with tag pills), ColumnHeader, TaskForm (with tag selector), **TaskTagsField**, KanbanColumn, **KanbanBoard with drag/drop**, BoardView |
 | `tags` | Pinia store, NewTagForm, TagsList, TagsView (CRUD only — see Known Gaps) |
 | `tasks` | NOT a separate frontend module — tasks live inside the board (see below) |
 
@@ -120,7 +120,6 @@ dev-tracker/
 
 ## Known Gaps
 
-- **Tag assignment from the kanban is not wired.** The backend `BoardTaskDto` (returned by `GET /api/projects/:id/board`) does not include the assigned tag IDs for each task — only title, description, priority, order, assigneeId, createdAt. Without that, `TaskCard` and `TaskForm` have nothing to read or display. The tags store exposes `assignToTask` / `unassignFromTask` for when the DTO is extended. **Fix:** add `tagIds: string[]` to `BoardTaskDto` in `src/modules/boards/application/dto/board-response-dto.ts` and the corresponding SQL in the use case.
 - **No frontend tests** — Vitest covers the backend (76/76 passing) but no `@vue/test-utils` is set up. Worth adding for the stores and organisms before the UI grows further.
 
 ## Key Conventions
