@@ -49,11 +49,7 @@ dev-tracker/
 │   ├── app.ts                # Composition root: PrismaClient + repos + use cases + controllers + routes
 │   ├── config/env.ts         # Zod-validated env (loads .env with override: true)
 │   ├── prisma.ts             # PrismaClient singleton with WAL mode
-│   ├── app.ts                 # Backend composition root (PrismaClient + repos + use cases + controllers + routes)
-│   ├── config/
-│   │   └── env.ts             # Zod env validation (loads .env with override)
-│   ├── prisma.ts              # PrismaClient singleton with WAL mode
-│   │   ├── auth/              # domain/, application/, infrastructure/, interface/
+│   ├── modules/              # BACKEND — hexagonal + screaming
 │   │   ├── projects/
 │   │   ├── boards/
 │   │   ├── tasks/
