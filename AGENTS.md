@@ -120,7 +120,8 @@ dev-tracker/
 
 ## Known Gaps
 
-- **No frontend tests** — Vitest covers the backend (76/76 passing) but no `@vue/test-utils` is set up. Worth adding for the stores and organisms before the UI grows further.
+- **No `@vue/test-utils` positive click-emit assertions.** The test stack (vue-test-utils 2.4 + jsdom + vitest 4) does not capture `@click="$emit('click', $event)"` in component tests — `wrapper.trigger("click")`, direct `dispatchEvent`, `attachTo: document.body`, and `nextTick` after the trigger all leave `wrapper.emitted("click")` empty. The reverse path (does NOT emit when disabled) works fine. The positive path is exercised by the store tests through real component integration. Worth revisiting when the test stack moves forward or a workaround is found.
+- **No E2E tests** — neither backend nor frontend has a Cypress/Playwright suite. The integration gaps that store + unit tests can't catch (e.g. drag/drop end-to-end, real session cookies) are still open.
 
 ## Key Conventions
 
@@ -145,10 +146,20 @@ pnpm dev              # Backend (tsx watch)
 pnpm dev:client       # Frontend (Vite)
 pnpm build            # tsc (backend) + vite build (frontend)
 pnpm start            # Production
-pnpm test             # 76 tests, 7 files
+pnpm test             # 76 backend tests, 7 files
+pnpm test:watch       # Backend tests in watch mode
+pnpm test:client      # 58 frontend tests (jsdom, @vue/test-utils)
+pnpm test:client:watch
+pnpm test:coverage    # Backend with v8 coverage
 pnpm typecheck        # Backend tsc --noEmit
 pnpm exec vue-tsc --noEmit   # Frontend tsc
 ```
+
+### Test architecture
+
+- `vitest.config.ts` — backend suite. Node env, includes `src/**/*.test.ts`, uses `tests/setup.ts` + `tests/global-setup.ts` (resets SQLite before all).
+- `vitest.client.config.ts` — frontend suite. jsdom env, vue plugin, client aliases, includes `src/client/**/*.test.ts`. Does NOT touch the DB.
+- `tests/client-helpers.ts` — `mockFetch()` helper that vi.spyOn's `globalThis.fetch` and replays a queue of `{status, body}` responses. Each test enqueues the responses it needs.
 
 ## Database Schema
 
