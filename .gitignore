@@ -5,6 +5,7 @@ dist
 *.db-wal
 *.db-shm
 .env
+.env.test
 .DS_Store
 coverage
 .vite
