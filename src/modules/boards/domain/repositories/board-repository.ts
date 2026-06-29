@@ -3,5 +3,6 @@ import type { Column } from "@boards/domain/entities/column.js";
 
 export interface BoardRepository {
   findByProjectId(projectId: string): Promise<(Board & { columns: Column[] }) | null>;
+  findById(id: string): Promise<(Board & { columns: Column[] }) | null>;
   createWithDefaultColumns(projectId: string): Promise<Board>;
 }

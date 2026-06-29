@@ -5,4 +5,5 @@ export interface ProjectResponseDto {
   archived: boolean;
   createdAt: string;
   updatedAt: string;
+  role: string;
 }

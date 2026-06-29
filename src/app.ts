@@ -12,8 +12,17 @@ import { AuthenticateUser } from "@auth/application/use-cases/authenticate-user.
 import { RotateApiKey } from "@auth/application/use-cases/rotate-api-key.js";
 import { AuthController } from "@auth/interface/controllers/auth-controller.js";
 import { createAuthRoutes } from "@auth/interface/routes/auth-routes.js";
+import { PrismaProjectRepository } from "@projects/infrastructure/persistence/prisma-project-repository.js";
+import { CreateProject } from "@projects/application/use-cases/create-project.js";
+import { ListProjects } from "@projects/application/use-cases/list-projects.js";
+import { GetProject } from "@projects/application/use-cases/get-project.js";
+import { UpdateProject } from "@projects/application/use-cases/update-project.js";
+import { ArchiveProject } from "@projects/application/use-cases/archive-project.js";
 import { ProjectController } from "@projects/interface/controllers/project-controller.js";
 import { createProjectRoutes } from "@projects/interface/routes/project-routes.js";
+import { PrismaBoardRepository } from "@boards/infrastructure/persistence/prisma-board-repository.js";
+import { CreateDefaultBoard } from "@boards/application/use-cases/create-default-board.js";
+import { GetBoard } from "@boards/application/use-cases/get-board.js";
 import { BoardController } from "@boards/interface/controllers/board-controller.js";
 import { createBoardRoutes } from "@boards/interface/routes/board-routes.js";
 import { TaskController } from "@tasks/interface/controllers/task-controller.js";
@@ -85,9 +94,26 @@ export function createApp(): Express {
   );
   app.use("/api/auth", createAuthRoutes(authController, authStrategy));
 
+  // Projects module (fully wired)
+  const prismaProjectRepo = new PrismaProjectRepository(prisma);
+  const prismaBoardRepo = new PrismaBoardRepository(prisma);
+  const projectController = new ProjectController(
+    new CreateProject(prismaProjectRepo, prismaBoardRepo),
+    new ListProjects(prismaProjectRepo),
+    new GetProject(prismaProjectRepo),
+    new UpdateProject(prismaProjectRepo),
+    new ArchiveProject(prismaProjectRepo),
+  );
+  app.use("/api/projects", createProjectRoutes(projectController, authStrategy));
+
+  // Boards module (fully wired)
+  const boardController = new BoardController(
+    new CreateDefaultBoard(prismaBoardRepo),
+    new GetBoard(prismaBoardRepo, prisma),
+  );
+  app.use("/api", createBoardRoutes(boardController, authStrategy));
+
   // Other modules (stubs — scaffold only)
-  app.use("/api/projects", createProjectRoutes(new ProjectController(), authStrategy));
-  app.use("/api", createBoardRoutes(new BoardController(), authStrategy));
   app.use("/api", createTaskRoutes(new TaskController(), authStrategy));
   app.use("/api", createTagRoutes(new TagController(), authStrategy));
 
