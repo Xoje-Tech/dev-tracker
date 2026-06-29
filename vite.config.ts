@@ -4,9 +4,9 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [vue()],
+  root: resolve(process.cwd(), "src/client"),
   resolve: {
     alias: {
-      "@client": resolve(process.cwd(), "src/client"),
       "@client/auth": resolve(process.cwd(), "src/client/modules/auth"),
       "@client/shared": resolve(process.cwd(), "src/client/modules/shared"),
     },
@@ -21,6 +21,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist/client",
+    outDir: resolve(process.cwd(), "dist/client"),
+    emptyOutDir: true,
   },
 });

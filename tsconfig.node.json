@@ -18,7 +18,6 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@client/*": ["src/client/*"],
       "@client/auth/*": ["src/client/modules/auth/*"],
       "@client/shared/*": ["src/client/modules/shared/*"]
     },
