@@ -43,10 +43,8 @@ describe("TaskPriority", () => {
       expect(p.value).toBe("high");
     });
 
-    it("accepts string number '0'", () => {
-      const p = new TaskPriority("0");
-      // "0" is not in VALID_PRIORITIES, should throw
-      expect(true).toBe(true); // This expectation is intentionally wrong, see invalid test below
+    it("throws on numeric string '0' not in list", () => {
+      expect(() => new TaskPriority("0")).toThrow('Invalid priority');
     });
   });
 
