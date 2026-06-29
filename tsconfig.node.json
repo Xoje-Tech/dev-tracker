@@ -16,6 +16,12 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["src/client/*"],
+      "@client/auth/*": ["src/client/modules/auth/*"],
+      "@client/shared/*": ["src/client/modules/shared/*"]
+    },
     "types": ["vite/client"]
   },
   "include": ["src/client/**/*", "src/client/**/*.vue"],
