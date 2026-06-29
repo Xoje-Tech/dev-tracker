@@ -9,6 +9,8 @@
     "dev:client": "vite",
     "build": "tsc && vite build",
     "start": "node dist/server/index.js",
+    "cli": "pnpm --filter dev-tracker-cli start --",
+    "cli:dev": "pnpm --filter dev-tracker-cli dev --",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:client": "vitest run --config vitest.client.config.ts",
