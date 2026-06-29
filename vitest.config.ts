@@ -1,14 +1,27 @@
 import { defineConfig } from "vitest/config";
+import { resolve } from "node:path";
 
 export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    include: ["tests/**/*.test.ts"],
+    include: ["src/**/*.test.ts"],
     setupFiles: ["./tests/setup.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
+    },
+  },
+  resolve: {
+    alias: {
+      "@": resolve(process.cwd(), "src"),
+      "@auth": resolve(process.cwd(), "src/modules/auth"),
+      "@projects": resolve(process.cwd(), "src/modules/projects"),
+      "@boards": resolve(process.cwd(), "src/modules/boards"),
+      "@tasks": resolve(process.cwd(), "src/modules/tasks"),
+      "@tags": resolve(process.cwd(), "src/modules/tags"),
+      "@shared": resolve(process.cwd(), "src/modules/shared"),
+      "@config": resolve(process.cwd(), "src/config"),
     },
   },
 });
