@@ -19,7 +19,10 @@
     "baseUrl": ".",
     "paths": {
       "@client/auth/*": ["src/client/modules/auth/*"],
-      "@client/shared/*": ["src/client/modules/shared/*"]
+      "@client/board/*": ["src/client/modules/board/*"],
+      "@client/projects/*": ["src/client/modules/projects/*"],
+      "@client/shared/*": ["src/client/modules/shared/*"],
+      "@client/tags/*": ["src/client/modules/tags/*"]
     },
     "types": ["vite/client"]
   },

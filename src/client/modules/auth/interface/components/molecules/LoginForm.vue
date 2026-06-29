@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import BaseButton from "@client/shared/interface/components/atoms/BaseButton.vue";
 import AuthField from "@client/auth/interface/components/molecules/AuthField.vue";
 import FieldError from "@client/auth/interface/components/atoms/FieldError.vue";
 import { useAuthStore } from "@client/auth/infrastructure/store/auth";
 
 const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
 const email = ref("");
 const password = ref("");
@@ -16,6 +19,8 @@ async function onSubmit(event: Event): Promise<void> {
   formError.value = null;
   try {
     await authStore.login({ email: email.value, password: password.value });
+    const redirect = typeof route.query.redirect === "string" ? route.query.redirect : "/projects";
+    await router.push(redirect);
   } catch (e) {
     formError.value = e instanceof Error ? e.message : "Could not sign in";
   }

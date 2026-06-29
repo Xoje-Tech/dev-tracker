@@ -8,7 +8,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@client/auth": resolve(process.cwd(), "src/client/modules/auth"),
+      "@client/board": resolve(process.cwd(), "src/client/modules/board"),
+      "@client/projects": resolve(process.cwd(), "src/client/modules/projects"),
       "@client/shared": resolve(process.cwd(), "src/client/modules/shared"),
+      "@client/tags": resolve(process.cwd(), "src/client/modules/tags"),
     },
   },
   server: {
