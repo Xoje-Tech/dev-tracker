@@ -1,27 +1,69 @@
+import type { PrismaClient, Tag as PrismaTag } from "@prisma/client";
 import type { TagRepository } from "@tags/domain/repositories/tag-repository.js";
-import type { Tag } from "@tags/domain/entities/tag.js";
-import type { PrismaClient } from "@prisma/client";
+import { Tag } from "@tags/domain/entities/tag.js";
+
+function toDomain(t: PrismaTag): Tag {
+  return new Tag({
+    id: t.id,
+    name: t.name,
+    color: t.color,
+  });
+}
 
 export class PrismaTagRepository implements TagRepository {
-  constructor(_prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) {}
 
-  async findById(_id: string): Promise<Tag | null> {
-    throw new Error("Not implemented");
+  async findById(id: string): Promise<Tag | null> {
+    const found = await this.prisma.tag.findUnique({ where: { id } });
+    return found ? toDomain(found) : null;
+  }
+
+  async findByName(name: string): Promise<Tag | null> {
+    const found = await this.prisma.tag.findUnique({ where: { name } });
+    return found ? toDomain(found) : null;
   }
 
   async findAll(): Promise<Tag[]> {
-    throw new Error("Not implemented");
+    const tags = await this.prisma.tag.findMany({
+      orderBy: { name: "asc" },
+    });
+    return tags.map(toDomain);
   }
 
-  async create(): Promise<Tag> {
-    throw new Error("Not implemented");
+  async create(tag: Tag): Promise<Tag> {
+    const created = await this.prisma.tag.create({
+      data: {
+        id: tag.id,
+        name: tag.name,
+        color: tag.color,
+      },
+    });
+    return toDomain(created);
   }
 
-  async addTagToTask(_taskId: string, _tagId: string): Promise<void> {
-    throw new Error("Not implemented");
+  async addTagToTask(taskId: string, tagId: string): Promise<void> {
+    await this.prisma.taskTag.upsert({
+      where: {
+        taskId_tagId: { taskId, tagId },
+      },
+      update: {},
+      create: { taskId, tagId },
+    });
   }
 
-  async removeTagFromTask(_taskId: string, _tagId: string): Promise<void> {
-    throw new Error("Not implemented");
+  async removeTagFromTask(taskId: string, tagId: string): Promise<void> {
+    await this.prisma.taskTag.delete({
+      where: {
+        taskId_tagId: { taskId, tagId },
+      },
+    });
+  }
+
+  async getTagsForTask(taskId: string): Promise<Tag[]> {
+    const taskTags = await this.prisma.taskTag.findMany({
+      where: { taskId },
+      include: { tag: true },
+    });
+    return taskTags.map((tt) => toDomain(tt.tag));
   }
 }

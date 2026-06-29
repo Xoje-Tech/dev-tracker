@@ -25,8 +25,18 @@ import { CreateDefaultBoard } from "@boards/application/use-cases/create-default
 import { GetBoard } from "@boards/application/use-cases/get-board.js";
 import { BoardController } from "@boards/interface/controllers/board-controller.js";
 import { createBoardRoutes } from "@boards/interface/routes/board-routes.js";
+import { PrismaTaskRepository } from "@tasks/infrastructure/persistence/prisma-task-repository.js";
+import { CreateTask } from "@tasks/application/use-cases/create-task.js";
+import { UpdateTask } from "@tasks/application/use-cases/update-task.js";
+import { MoveTask } from "@tasks/application/use-cases/move-task.js";
+import { DeleteTask } from "@tasks/application/use-cases/delete-task.js";
 import { TaskController } from "@tasks/interface/controllers/task-controller.js";
 import { createTaskRoutes } from "@tasks/interface/routes/task-routes.js";
+import { PrismaTagRepository } from "@tags/infrastructure/persistence/prisma-tag-repository.js";
+import { CreateTag } from "@tags/application/use-cases/create-tag.js";
+import { ListTags } from "@tags/application/use-cases/list-tags.js";
+import { AddTagToTask } from "@tags/application/use-cases/add-tag-to-task.js";
+import { RemoveTagFromTask } from "@tags/application/use-cases/remove-tag-from-task.js";
 import { TagController } from "@tags/interface/controllers/tag-controller.js";
 import { createTagRoutes } from "@tags/interface/routes/tag-routes.js";
 import { prisma } from "@/prisma.js";
@@ -113,9 +123,25 @@ export function createApp(): Express {
   );
   app.use("/api", createBoardRoutes(boardController, authStrategy));
 
-  // Other modules (stubs — scaffold only)
-  app.use("/api", createTaskRoutes(new TaskController(), authStrategy));
-  app.use("/api", createTagRoutes(new TagController(), authStrategy));
+  // Tasks module (fully wired)
+  const prismaTaskRepo = new PrismaTaskRepository(prisma);
+  const taskController = new TaskController(
+    new CreateTask(prismaTaskRepo, prisma),
+    new UpdateTask(prismaTaskRepo),
+    new MoveTask(prismaTaskRepo, prisma),
+    new DeleteTask(prismaTaskRepo),
+  );
+  app.use("/api", createTaskRoutes(taskController, authStrategy));
+
+  // Tags module (fully wired)
+  const prismaTagRepo = new PrismaTagRepository(prisma);
+  const tagController = new TagController(
+    new CreateTag(prismaTagRepo),
+    new ListTags(prismaTagRepo),
+    new AddTagToTask(prismaTagRepo),
+    new RemoveTagFromTask(prismaTagRepo),
+  );
+  app.use("/api", createTagRoutes(tagController, authStrategy));
 
   app.use(notFoundHandler);
   app.use(errorHandler);

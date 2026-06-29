@@ -6,4 +6,10 @@ export interface TaskRepository {
   create(task: Task): Promise<Task>;
   update(task: Task): Promise<Task>;
   delete(id: string): Promise<void>;
+  moveTask(taskId: string, targetColumnId: string, newIndex: number): Promise<void>;
+  getColumnsForReorder(taskId: string, targetColumnId: string): Promise<{
+    sourceColumnId: string;
+    sourceTasks: Task[];
+    targetTasks: Task[];
+  }>;
 }

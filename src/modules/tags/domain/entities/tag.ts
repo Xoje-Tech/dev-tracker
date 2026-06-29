@@ -8,10 +8,10 @@ export class Tag extends BaseEntity {
     id: string;
     name: string;
     color: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
   }) {
-    super(params.id, params.createdAt, params.updatedAt);
+    super(params.id, params.createdAt ?? new Date(), params.updatedAt ?? new Date());
     this.name = params.name;
     this.color = params.color;
   }
