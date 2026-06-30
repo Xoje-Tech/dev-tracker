@@ -80,8 +80,8 @@ This keeps the core feature stable before we ship the packaging.
 | Order | Item | Status | Why this slot |
 |-------|------|--------|---------------|
 | 1 | **F4** Auth polish | ✅ **DONE 2026-06-30** | 9 fixes across frontend/CLI/backend; 154 tests passing |
-| 2 | **F2** E2E smoke (Playwright) | 🔜 next | Build on the F4 banner + discriminated error states |
-| 3 | F3 Production build verified | queued | Quick win, validates packaging path |
+| 2 | **F2** E2E smoke (Playwright) | ✅ **DONE 2026-06-30** | Chromium-only smoke (register → create project → create task → drag to Done), 788ms; 3 pre-existing build bugs fixed in the process |
+| 3 | F3 Production build verified | 🔜 next | The build script fixes from F2 already mostly validate this — just verify `pnpm build && pnpm start` end-to-end and document |
 | 4 | D1+D2+D3 Docker + README | queued | The install/upgrade story |
 | 5 | D4 Upgrade script | queued | Trivial once D1+D2 exist |
 | 6 | D5 CHANGELOG + semver | queued | Trivial, write at release time |

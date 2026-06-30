@@ -6,6 +6,10 @@ dist
 *.db-shm
 .env
 .env.test
+.env.e2e
+prisma/e2e.db*
+test-results/
+playwright-report/
 .DS_Store
 coverage
 .vite
