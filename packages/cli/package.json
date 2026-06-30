@@ -1,5 +1,5 @@
 {
-  "name": "dev-tracker-cli",
+  "name": "@dev-tracker/cli",
   "version": "0.1.0",
   "private": true,
   "type": "module",

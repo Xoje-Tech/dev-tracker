@@ -10,9 +10,6 @@ allowBuilds:
   sqlite3: true
 
 packages:
+  # F3.1 moved cli/ → packages/cli/. The glob `packages/*` now covers
+  # it alongside backend, frontend, and client. No legacy `cli` entry.
   - "packages/*"
-  # F1.1 collapsed the legacy `["", "cli"]` form to glob-only.
-  # `cli/` is still a workspace package until F3.1 moves it to
-  # packages/cli/. Without this entry, `pnpm -F dev-tracker-cli ...`
-  # fails with "No projects matched the filters".
-  - "cli"
