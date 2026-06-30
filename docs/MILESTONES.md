@@ -89,6 +89,12 @@ This keeps the core feature stable before we ship the packaging.
 | 8 | Q3 Troubleshooting runbook | ✅ **DONE 2026-06-30** | `docs/RUNBOOK.md` (347 lines) — quick diagnostics, container/DB/auth/performance/recovery sections, debug info checklist, error-message table, escalation criteria |
 | 9 | Q1 CI → ghcr.io | ⛔ BLOCKED | Defer to post-v1.0 (see strategy) |
 
+### 🎉 v1.0.0 RELEASED 2026-06-30
+
+Tagged as `v1.0.0` (annotated) and pushed to origin. This is the first stable release.
+
+Final state: 11 of 12 milestones delivered (Q1 deferred by design — see strategy).
+
 ### D1+D2+D3 delivered (2026-06-30)
 
 **Files:**
