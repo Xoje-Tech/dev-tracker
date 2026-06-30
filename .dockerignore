@@ -1,0 +1,40 @@
+# Build artifacts
+dist/
+node_modules/
+coverage/
+*.tsbuildinfo
+
+# Tests
+tests/
+playwright-report/
+test-results/
+
+# Git
+.git/
+.gitignore
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Env / secrets
+.env
+.env.local
+.env.test
+.env.*.local
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Dev docs (not for production image)
+docs/
+
+# Local dev artifacts
+prisma/dev.db*
+prisma/e2e.db*
+prisma/test.db*
+sessions.db
