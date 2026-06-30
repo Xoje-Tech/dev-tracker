@@ -84,7 +84,7 @@ This keeps the core feature stable before we ship the packaging.
 | 3 | F3 Production build verified | ✅ **DONE 2026-06-30** | `pnpm build && pnpm start` runs compiled bundle (`dist/src/server/` + `dist/client/`); SPA fallback at `src/app.ts:149-153`; E2E smoke is the live proof (3x green) |
 | 4 | D1+D2+D3 Docker + README | ✅ **DONE + VERIFIED 2026-06-30** | Multi-stage Dockerfile, docker-compose with named volume, comprehensive README; **end-to-end production-like verified with podman** — image builds clean, container starts in 1-2s, full auth flow + project CRUD + restart-persistence all work. Production deploys need HTTPS (TLS-terminating reverse proxy) for secure cookies to round-trip. |
 | 5 | D4 Upgrade script | ✅ **DONE 2026-06-30** | `scripts/upgrade.sh` automates backup + git pull + image rebuild + restart + healthcheck (auto-detects podman/docker, loads .env, supports --no-backup/--skip-build/--no-health-check) |
-| 6 | D5 CHANGELOG + semver | queued | Trivial, write at release time |
+| 6 | D5 CHANGELOG + semver | ✅ **DONE 2026-06-30** | `CHANGELOG.md` (Keep a Changelog format) with v1.0.0 release notes; `package.json` bumped to `1.0.0`; README has Versioning section explaining semver policy |
 | 7 | Q2 Backup script | queued | The README has a manual backup procedure, but a cron script is the next step |
 | 8 | Q3 Troubleshooting runbook | queued | The README has a basic matrix; a full runbook (`docs/RUNBOOK.md`) is the next step |
 | 9 | Q1 CI → ghcr.io | ⛔ BLOCKED | Defer to post-v1.0 (see strategy) |
