@@ -1,5 +1,6 @@
 node_modules
 dist
+*.tsbuildinfo
 *.db
 *.db-journal
 *.db-wal
@@ -13,3 +14,6 @@ playwright-report/
 .DS_Store
 coverage
 .vite
+packages/*/dist
+packages/*/node_modules
+packages/*/*.tsbuildinfo
