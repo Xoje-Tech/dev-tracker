@@ -14,7 +14,7 @@ dev-tracker is a pnpm workspace rooted at the repo root. The workspace declarati
 | `@dev-tracker/frontend` | `packages/frontend/` | Browser transport (Vue 3 + Vite + Tailwind 4 + Pinia, hexagonal + atomic) |
 | `@dev-tracker/client` | `packages/client/` | Core shared client (`DevTrackerClient` interface + factory + 2 impls + Zod schemas) |
 | `@dev-tracker/cli` | `packages/cli/` | Terminal transport (Commander, bin `dt`) |
-| `@dev-tracker/mcp` | `packages/mcp/` | Model Context Protocol server (stdio transport, 22 primitive + 3 workflow tools) |
+| `@dev-tracker/mcp` | `packages/mcp/` | Model Context Protocol server (stdio transport, 20 primitive + 3 workflow tools) |
 
 The full five-package layout was established by the `monorepo-packages` change (see `docs/MILESTONES.md` v1.1 work and `CHANGELOG.md`). Earlier 2-package layouts (`./` + `cli/`) are obsolete; `pnpm-workspace.yaml` now uses the glob form exclusively.
 

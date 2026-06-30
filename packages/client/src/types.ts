@@ -2,7 +2,7 @@
  * DevTrackerClient — the public contract between transports and
  * consumers (CLI, MCP, tests, agents).
  *
- * One method per backend endpoint (22 total): 5 auth + 5 projects +
+ * One method per backend endpoint (20 total): 5 auth + 5 projects +
  * 2 boards + 4 tasks + 4 tags. Inputs are validated by the matching
  * Zod input schema; outputs are validated by the matching Zod output
  * schema. Implementation lives in http.ts (HttpDevTrackerClient) and

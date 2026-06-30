@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Model Context Protocol server for dev-tracker — exposes the 22 primitive client methods as MCP tools over stdio.",
+  "description": "Model Context Protocol server for dev-tracker — exposes the 20 primitive client methods as MCP tools over stdio.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {

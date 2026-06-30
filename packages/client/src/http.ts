@@ -1,7 +1,7 @@
 /**
  * HttpDevTrackerClient — the HTTP transport for DevTrackerClient.
  *
- * One method per backend endpoint (22 total). Every method:
+ * One method per backend endpoint (20 total). Every method:
  *   1. Validates input against the matching XxxInputSchema (throws
  *      ClientValidationError synchronously before fetch if invalid).
  *   2. Sends fetch with the chosen auth header (X-API-Key if apiKey

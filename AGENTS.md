@@ -202,7 +202,7 @@ dev-tracker is a pnpm workspace with five member packages:
 | `@dev-tracker/frontend` | `packages/frontend/` | Browser transport (Vue 3 + Vite + Tailwind 4) |
 | `@dev-tracker/client` | `packages/client/` | Shared client core (DevTrackerClient + factory + 2 impls + Zod) |
 | `@dev-tracker/cli` | `packages/cli/` | Terminal transport (bin: `dt`) |
-| `@dev-tracker/mcp` | `packages/mcp/` | Model Context Protocol server (22 primitive + 3 workflow tools) |
+| `@dev-tracker/mcp` | `packages/mcp/` | Model Context Protocol server (20 primitive + 3 workflow tools) |
 
 `prisma/schema.prisma` and `prisma/migrations/` stay at the repo root. The Architecture, Project Structure, and other sections above describe the **pre-monorepo-packages** layout; they will be replaced in F6.3. Until then, treat `docs/MONOREPO.md` as authoritative for the new structure.
 

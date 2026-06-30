@@ -1,8 +1,8 @@
 /**
- * F4.4 — Manifest test for the 22 primitive MCP tools.
+ * F4.4 — Manifest test for the 20 primitive MCP tools.
  *
  * Asserts that:
- *  1. `registerTools(...)` registers exactly 22 tools, with the
+ *  1. `registerTools(...)` registers exactly 20 tools, with the
  *     expected names (one per existing backend endpoint).
  *  2. Tool registration order matches the canonical order
  *     (NFR-3): auth (5), projects (5), boards (2), tags (4), tasks (4).
@@ -88,7 +88,7 @@ describe("F4.4 — primitive tools manifest (20 tools)", () => {
     expect(EXPECTED_TOOL_NAMES).toHaveLength(20);
   });
 
-  it("registers all 22 tools in canonical NFR-3 order", () => {
+  it("registers all 20 tools in canonical NFR-3 order", () => {
     expect(EXPECTED_TOOL_NAMES).toEqual([
       // auth (5)
       "auth_register",
@@ -118,7 +118,7 @@ describe("F4.4 — primitive tools manifest (20 tools)", () => {
     ]);
   });
 
-  it("registers exactly 22 tools on a fresh server (no duplicates, no missing)", () => {
+  it("registers exactly 20 tools on a fresh server (no duplicates, no missing)", () => {
     const server = newServer();
     const client = newMockClient();
     registerTools(server, client);
