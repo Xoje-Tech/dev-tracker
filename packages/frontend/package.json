@@ -1,0 +1,36 @@
+{
+  "name": "@dev-tracker/frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dev Tracker frontend — Vue 3 + Vite + Tailwind CSS 4 + Pinia",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "pinia": "3.0.4",
+    "vue": "^3.5.39",
+    "vue-draggable-plus": "0.6.1",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.1",
+    "@types/node": "26.0.1",
+    "@vitejs/plugin-vue": "6.0.7",
+    "@vitest/coverage-v8": "4.1.9",
+    "@vue/test-utils": "2.4.11",
+    "autoprefixer": "10.5.2",
+    "jsdom": "29.1.1",
+    "postcss": "8.5.15",
+    "tailwindcss": "4.3.1",
+    "typescript": "^5.9.3",
+    "vite": "8.1.0",
+    "vitest": "4.1.9",
+    "vue-tsc": "3.3.5"
+  }
+}
