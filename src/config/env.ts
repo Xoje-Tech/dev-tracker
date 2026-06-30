@@ -8,6 +8,9 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   DATABASE_URL: z.string().default("file:./dev.db"),
   SESSION_SECRET: z.string().min(16, "SESSION_SECRET must be at least 16 characters"),
+  // Directory for connect-sqlite3 session store. Default "." (CWD) for local dev;
+  // Docker sets this to /app/data so sessions.db lands in the named volume.
+  SESSIONS_DIR: z.string().default("."),
 });
 
 const parseEnv = () => {

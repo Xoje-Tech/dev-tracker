@@ -9,9 +9,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: production
+      # NODE_ENV defaults to production; override with NODE_ENV=test for HTTP cookie testing
+      NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
-      DATABASE_URL: file:./data/dev.db
+      # Absolute path so Prisma writes to the named volume, not relative to the schema.prisma dir
+      DATABASE_URL: file:/app/data/dev.db
+      # Session store (connect-sqlite3) — also in the named volume so logins survive restart
+      SESSIONS_DIR: /app/data
       # Required: set SESSION_SECRET in a .env file next to this compose file.
       # Generate one with: openssl rand -hex 32
       SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET is required — set it in .env or your shell}

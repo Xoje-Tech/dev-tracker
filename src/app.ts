@@ -77,7 +77,7 @@ export function createApp(): Express {
     session({
       store: new SQLiteStore({
         db: "sessions.db",
-        dir: ".",
+        dir: env.SESSIONS_DIR,
       }),
       secret: env.SESSION_SECRET,
       resave: false,

@@ -25,7 +25,8 @@ COPY . .
 RUN pnpm build
 
 # Drop dev dependencies — keeps the runtime image lean
-RUN pnpm prune --prod
+# Set CI=true so pnpm prune doesn't prompt for TTY confirmation
+RUN CI=true pnpm prune --prod
 
 # =============================================================================
 # Runtime stage — minimal image, non-root, healthcheck
