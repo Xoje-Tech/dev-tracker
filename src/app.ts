@@ -143,6 +143,15 @@ export function createApp(): Express {
   );
   app.use("/api", createTagRoutes(tagController, authStrategy));
 
+  // Serve built Vue SPA from dist/client (no-op in dev mode where the file
+  // doesn't exist). Without this, /projects returns a JSON 404 because the
+  // production server has no SPA fallback. Required for E2E to load any
+  // client route.
+  app.use(express.static("dist/client"));
+  app.get(/^(?!\/api\/).*/, (_req, res) => {
+    res.sendFile("index.html", { root: "dist/client" });
+  });
+
   app.use(notFoundHandler);
   app.use(errorHandler);
 
