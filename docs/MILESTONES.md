@@ -83,7 +83,7 @@ This keeps the core feature stable before we ship the packaging.
 | 2 | **F2** E2E smoke (Playwright) | ✅ **DONE 2026-06-30** | Chromium-only smoke (register → create project → create task → drag to Done), 788ms; 3 pre-existing build bugs fixed in the process |
 | 3 | F3 Production build verified | ✅ **DONE 2026-06-30** | `pnpm build && pnpm start` runs compiled bundle (`dist/src/server/` + `dist/client/`); SPA fallback at `src/app.ts:149-153`; E2E smoke is the live proof (3x green) |
 | 4 | D1+D2+D3 Docker + README | ✅ **DONE + VERIFIED 2026-06-30** | Multi-stage Dockerfile, docker-compose with named volume, comprehensive README; **end-to-end production-like verified with podman** — image builds clean, container starts in 1-2s, full auth flow + project CRUD + restart-persistence all work. Production deploys need HTTPS (TLS-terminating reverse proxy) for secure cookies to round-trip. |
-| 5 | D4 Upgrade script | queued | Trivial once D1+D2 exist |
+| 5 | D4 Upgrade script | ✅ **DONE 2026-06-30** | `scripts/upgrade.sh` automates backup + git pull + image rebuild + restart + healthcheck (auto-detects podman/docker, loads .env, supports --no-backup/--skip-build/--no-health-check) |
 | 6 | D5 CHANGELOG + semver | queued | Trivial, write at release time |
 | 7 | Q2 Backup script | queued | The README has a manual backup procedure, but a cron script is the next step |
 | 8 | Q3 Troubleshooting runbook | queued | The README has a basic matrix; a full runbook (`docs/RUNBOOK.md`) is the next step |
