@@ -19,6 +19,8 @@
  */
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DevTrackerClient } from "@dev-tracker/client";
+import { registerAuthTools } from "./tools/auth.js";
+import { registerProjectsTools } from "./tools/projects.js";
 
 /** Module-level idempotency guard. */
 const registered = new Set<string>();
@@ -49,15 +51,25 @@ export function trackToolRegistration(name: string): boolean {
 }
 
 /**
- * Orchestrator. F4.2+ will replace the body with calls to the
- * per-domain registrars. Until then this is a no-op so the server
- * still boots cleanly.
+ * Compact alias: returns `trackToolRegistration(name)` so the per-
+ * domain registrars can do `if (guard("auth_register")) { ... }`
+ * without repeating the closure.
+ */
+export const isToolRegisteredAndTrack = trackToolRegistration;
+
+/**
+ * Orchestrator. Per-domain registrars run in a FIXED order (NFR-3):
+ * auth, projects, boards, tasks, tags.
+ *
+ * F4.2 wires auth + projects; F4.3 adds boards + tags; F4.4 adds
+ * tasks and asserts the full 22-tool manifest.
  */
 export function registerTools(
-  _server: McpServer,
-  _client: DevTrackerClient,
+  server: McpServer,
+  client: DevTrackerClient,
 ): void {
-  // Intentionally empty in F4.1. F4.2 wires auth + projects; F4.3
-  // adds boards + tags; F4.4 adds tasks and ensures the full set is
-  // wired in fixed order (auth, projects, boards, tasks, tags).
+  registerAuthTools(server, client);
+  registerProjectsTools(server, client);
+  // F4.3: registerBoardsTools + registerTagsTools
+  // F4.4: registerTasksTools
 }
