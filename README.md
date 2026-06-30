@@ -227,6 +227,18 @@ See [AGENTS.md](./AGENTS.md) for the full agent guide (architecture, conventions
 
 For deeper debugging, see [docs/RUNBOOK.md](./docs/RUNBOOK.md) (TBD — `Q3` milestone).
 
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
+- **MAJOR** — Breaking changes (API removals, schema migrations that need attention)
+- **MINOR** — New features, backward compatible
+- **PATCH** — Bug fixes, backward compatible
+
+Pre-1.0 (0.x.y): expect breaking changes per minor release.
+Post-1.0 (1.x.y): backward compatibility is preserved within a major version.
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full release history.
+
 ## License
 
 Internal use only. Not published to a public registry without explicit approval.
