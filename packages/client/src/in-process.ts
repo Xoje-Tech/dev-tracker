@@ -27,7 +27,7 @@ import * as tags from "./schemas/tags.js";
 /**
  * TestBackend — the surface a TestBackend must expose.
  *
- * 1:1 with the 22 DevTrackerClient operations plus `reset()`. The
+ * 1:1 with the 20 DevTrackerClient operations plus `reset()`. The
  * implementation is intentionally NOT validated by Zod — the
  * in-process client trusts the backend.
  *

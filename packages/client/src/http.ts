@@ -246,7 +246,7 @@ export class HttpDevTrackerClient implements DevTrackerClient {
 
   /**
    * Validate input, send fetch, validate response, map errors. One
-   * place does all the work so the 22 methods above stay tiny.
+   * place does all the work so the 20 methods above stay tiny.
    */
   private async request<TInput, TOutput>(
     endpoint: string,
