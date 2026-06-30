@@ -225,7 +225,7 @@ See [AGENTS.md](./AGENTS.md) for the full agent guide (architecture, conventions
 | `prisma db push` fails | Schema drift | `pnpm db:generate` then retry; or restore from backup |
 | Healthcheck stays `unhealthy` | Server crash on boot | `docker compose logs dev-tracker` for details |
 
-For deeper debugging, see [docs/RUNBOOK.md](./docs/RUNBOOK.md) (TBD — `Q3` milestone).
+For deeper debugging, see [docs/RUNBOOK.md](./docs/RUNBOOK.md).
 
 ## Versioning
 
