@@ -4,10 +4,13 @@ node_modules/
 coverage/
 *.tsbuildinfo
 
-# Tests
-tests/
+# Tests (keep src-co-located tests for tsc to resolve helpers.js imports)
+# Only exclude runtime test artifacts + Playwright reports
 playwright-report/
 test-results/
+tests/e2e/global-setup.ts
+tests/e2e/global-teardown.ts
+tests/e2e/.env*
 
 # Git
 .git/

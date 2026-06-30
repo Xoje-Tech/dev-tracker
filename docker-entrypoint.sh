@@ -10,7 +10,7 @@
 set -e
 
 echo "[dev-tracker] Applying Prisma schema to ${DATABASE_URL:-file:./data/dev.db}..."
-npx --no-install prisma db push --skip-generate --accept-data-loss
+./node_modules/.bin/prisma db push --skip-generate --accept-data-loss
 
 echo "[dev-tracker] Starting server..."
 exec "$@"

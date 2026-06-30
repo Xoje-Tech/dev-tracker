@@ -8,11 +8,13 @@ FROM node:26 AS build
 
 WORKDIR /app
 
-# Enable pnpm via corepack (pinned via packageManager field in package.json)
-RUN corepack enable
+# Enable pnpm via corepack (corepack ships with Node but needs explicit install in slim images)
+RUN npm install -g corepack@latest \
+    && corepack enable
 
 # Install deps first (better layer caching)
-COPY package.json pnpm-lock.yaml ./
+# pnpm-workspace.yaml carries the allowBuilds config (pnpm 11+); both must be in the build context
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Generate Prisma client + build
