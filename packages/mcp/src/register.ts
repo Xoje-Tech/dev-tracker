@@ -23,6 +23,7 @@ import { registerAuthTools } from "./tools/auth.js";
 import { registerProjectsTools } from "./tools/projects.js";
 import { registerBoardsTools } from "./tools/boards.js";
 import { registerTagsTools } from "./tools/tags.js";
+import { registerTasksTools } from "./tools/tasks.js";
 
 /** Module-level idempotency guard. */
 const registered = new Set<string>();
@@ -74,5 +75,5 @@ export function registerTools(
   registerProjectsTools(server, client);
   registerBoardsTools(server, client);
   registerTagsTools(server, client);
-  // F4.4: registerTasksTools
+  registerTasksTools(server, client);
 }
