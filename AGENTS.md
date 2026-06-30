@@ -189,3 +189,31 @@ After the "A toda la UI" sprint, `pnpm build` produces:
   - `FormField` shared chunk — 5 kB / gzip 2.1 kB
 
 Total first-load JS (gzip) for `/projects`: ~46 kB. For `/projects/:id/board`: ~65 kB (the +19 kB is the drag/drop lib).
+
+## Layout (post-monorepo-packages)
+
+> **TODO (F6.3):** This section is a stub. The full AGENTS.md rewrite for the post-`monorepo-packages` layout lands in F6.3. Until then, the canonical reference for the new layout is `docs/MONOREPO.md`.
+
+dev-tracker is a pnpm workspace with five member packages:
+
+| Package | Path | Role |
+|---------|------|------|
+| `@dev-tracker/backend` | `packages/backend/` | HTTP transport (Express + Prisma + SQLite) |
+| `@dev-tracker/frontend` | `packages/frontend/` | Browser transport (Vue 3 + Vite + Tailwind 4) |
+| `@dev-tracker/client` | `packages/client/` | Shared client core (DevTrackerClient + factory + 2 impls + Zod) |
+| `@dev-tracker/cli` | `packages/cli/` | Terminal transport (bin: `dt`) |
+| `@dev-tracker/mcp` | `packages/mcp/` | Model Context Protocol server (22 primitive + 3 workflow tools) |
+
+`prisma/schema.prisma` and `prisma/migrations/` stay at the repo root. The Architecture, Project Structure, and other sections above describe the **pre-monorepo-packages** layout; they will be replaced in F6.3. Until then, treat `docs/MONOREPO.md` as authoritative for the new structure.
+
+## Build (post-monorepo-packages)
+
+- `pnpm -r build` — topological build of all five packages
+- `pnpm -F <pkg> test` — per-package tests (e.g. `pnpm -F @dev-tracker/backend test`)
+- `pnpm test` — **backend tests only by design** (76 tests). This is intentional, not a typo. See `docs/MONOREPO.md` for the rationale; do not "fix" this script.
+- `pnpm test:client` — frontend tests
+- `pnpm test:e2e` — Playwright smoke (CLI + frontend + MCP)
+- `pnpm dev` — backend + frontend in parallel
+- `pnpm dev:client` — frontend only
+- `pnpm cli` / `pnpm cli:dev` — `dt` CLI
+- `pnpm mcp` — MCP server (stdio transport)
