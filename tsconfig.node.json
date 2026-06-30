@@ -1,29 +1,8 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "noEmit": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "declaration": false,
-    "declarationMap": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@client/auth/*": ["src/client/modules/auth/*"],
-      "@client/board/*": ["src/client/modules/board/*"],
-      "@client/projects/*": ["src/client/modules/projects/*"],
-      "@client/shared/*": ["src/client/modules/shared/*"],
-      "@client/tags/*": ["src/client/modules/tags/*"]
-    },
     "types": ["vite/client"]
   },
   "include": ["src/client/**/*", "src/client/**/*.vue"],

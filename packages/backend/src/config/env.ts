@@ -1,7 +1,35 @@
 import { z } from "zod";
 import { config } from "dotenv";
+import { existsSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-config({ override: true });
+/**
+ * Load .env files from the repo root regardless of CWD. We try the
+ * process CWD first (so overrides like `pnpm dev` still work), then
+ * fall back to walking up from this file's location to find the repo
+ * root (where .env / .env.test live in a pnpm workspace).
+ */
+const __dirname = dirname(fileURLToPath(import.meta.url));
+function findEnvFile(name: string): string | undefined {
+  const cwdCandidate = resolve(process.cwd(), name);
+  if (existsSync(cwdCandidate)) return cwdCandidate;
+  // Walk up to find the repo root (where pnpm-workspace.yaml lives).
+  let dir = __dirname;
+  for (let i = 0; i < 6; i++) {
+    if (existsSync(resolve(dir, "pnpm-workspace.yaml"))) {
+      const candidate = resolve(dir, name);
+      if (existsSync(candidate)) return candidate;
+    }
+    dir = dirname(dir);
+  }
+  return undefined;
+}
+
+for (const name of [".env", ".env.test", ".env.local"]) {
+  const path = findEnvFile(name);
+  if (path) config({ path, override: name === ".env" });
+}
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),

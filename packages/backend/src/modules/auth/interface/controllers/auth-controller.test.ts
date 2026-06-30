@@ -4,7 +4,7 @@ import type { Express } from "express";
 import { createApp } from "@/app.js";
 import { prisma } from "@/prisma.js";
 import { authResponseDtoSchema } from "@auth/application/dto/auth-response-dto.js";
-import { clearDatabase } from "../../../../../tests/helpers.js";
+import { clearDatabase } from "../../../../../../../tests/helpers.js";
 
 /**
  * Integration tests for /api/auth/me.
