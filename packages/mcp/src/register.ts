@@ -21,6 +21,8 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DevTrackerClient } from "@dev-tracker/client";
 import { registerAuthTools } from "./tools/auth.js";
 import { registerProjectsTools } from "./tools/projects.js";
+import { registerBoardsTools } from "./tools/boards.js";
+import { registerTagsTools } from "./tools/tags.js";
 
 /** Module-level idempotency guard. */
 const registered = new Set<string>();
@@ -70,6 +72,7 @@ export function registerTools(
 ): void {
   registerAuthTools(server, client);
   registerProjectsTools(server, client);
-  // F4.3: registerBoardsTools + registerTagsTools
+  registerBoardsTools(server, client);
+  registerTagsTools(server, client);
   // F4.4: registerTasksTools
 }
