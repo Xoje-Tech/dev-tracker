@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "types": ["node"]
+  },
+  "include": ["src/**/*", "src/**/*.test.ts", "tests/**/*", "vitest.config.ts"]
+}

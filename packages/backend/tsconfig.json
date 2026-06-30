@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@auth/*": ["./modules/auth/*"],
+      "@projects/*": ["./modules/projects/*"],
+      "@boards/*": ["./modules/boards/*"],
+      "@tasks/*": ["./modules/tasks/*"],
+      "@tags/*": ["./modules/tags/*"],
+      "@shared/*": ["./modules/shared/*"],
+      "@config/*": ["./config/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/client", "src/**/*.test.ts"]
+}
