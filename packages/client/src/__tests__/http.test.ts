@@ -14,7 +14,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { HttpDevTrackerClient } from "../http.js";
 import { ApiError, ClientValidationError, NetworkError } from "../errors.js";
-import { mockFetch } from "../../../../cli/test-helpers.js";
+import { mockFetch } from "../../../cli/test-helpers.js";
 
 afterEach(() => {
   vi.restoreAllMocks();
