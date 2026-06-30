@@ -1,0 +1,2 @@
+# tools/ — per-domain MCP tool registrars (auth, projects, boards, tasks, tags).
+# F4.2+ fill these in; F4.1 ships only this directory marker.
