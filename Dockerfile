@@ -49,7 +49,8 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Copy only what the runtime needs
-COPY --from=build --chown=node:node /app/dist ./dist
+COPY --from=build --chown=node:node /app/packages/backend/dist ./packages/backend/dist
+COPY --from=build --chown=node:node /app/packages/frontend/dist ./packages/frontend/dist
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/prisma ./prisma
 COPY --from=build --chown=node:node /app/package.json ./
@@ -66,4 +67,4 @@ COPY --from=build --chown=node:node /app/docker-entrypoint.sh /usr/local/bin/doc
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["node", "dist/src/server/index.js"]
+CMD ["node", "packages/backend/dist/server/index.js"]

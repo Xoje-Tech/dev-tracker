@@ -9,7 +9,7 @@
     "dev:client": "pnpm -F @dev-tracker/frontend dev",
     "dev:backend": "pnpm -F @dev-tracker/backend dev",
     "build": "pnpm -r --topological build",
-    "start": "node dist/src/server/index.js",
+    "start": "node packages/backend/dist/server/index.js",
     "cli": "cd cli && node dist/index.js",
     "cli:dev": "cd cli && tsx src/index.ts",
     "mcp": "cd mcp && node dist/index.js",
