@@ -82,12 +82,24 @@ This keeps the core feature stable before we ship the packaging.
 | 1 | **F4** Auth polish | ✅ **DONE 2026-06-30** | 9 fixes across frontend/CLI/backend; 154 tests passing |
 | 2 | **F2** E2E smoke (Playwright) | ✅ **DONE 2026-06-30** | Chromium-only smoke (register → create project → create task → drag to Done), 788ms; 3 pre-existing build bugs fixed in the process |
 | 3 | F3 Production build verified | ✅ **DONE 2026-06-30** | `pnpm build && pnpm start` runs compiled bundle (`dist/src/server/` + `dist/client/`); SPA fallback at `src/app.ts:149-153`; E2E smoke is the live proof (3x green) |
-| 4 | D1+D2+D3 Docker + README | queued | The install/upgrade story |
+| 4 | D1+D2+D3 Docker + README | ✅ **DONE 2026-06-30** | Multi-stage Dockerfile (`node:26` → `node:26-slim`), docker-compose with named volume, comprehensive README; compose syntax validated; build verification blocked on docker.sock perms |
 | 5 | D4 Upgrade script | queued | Trivial once D1+D2 exist |
 | 6 | D5 CHANGELOG + semver | queued | Trivial, write at release time |
-| 7 | Q2 Backup script | queued | Trivial |
-| 8 | Q3 Troubleshooting runbook | queued | Write AFTER using the system |
+| 7 | Q2 Backup script | queued | The README has a manual backup procedure, but a cron script is the next step |
+| 8 | Q3 Troubleshooting runbook | queued | The README has a basic matrix; a full runbook (`docs/RUNBOOK.md`) is the next step |
 | 9 | Q1 CI → ghcr.io | ⛔ BLOCKED | Defer to post-v1.0 (see strategy) |
+
+### D1+D2+D3 delivered (2026-06-30)
+
+**Files:**
+- `Dockerfile` (65 LOC) — multi-stage `node:26` build → `node:26-slim` runtime, non-root, healthcheck, entrypoint
+- `docker-compose.yml` (28 LOC) — port 3000:3000, named volume `dev-tracker-data`, required SESSION_SECRET
+- `docker-entrypoint.sh` (15 LOC) — applies Prisma schema idempotently before server start
+- `.dockerignore` (39 LOC) — excludes node_modules, dist, tests, dev DBs, secrets
+- `README.md` (212 LOC) — quickstart (Docker + manual), config table, CLI, backup/restore, upgrade, troubleshooting
+
+**Verified:** `docker compose config` validates syntax clean.
+**Blocked:** `docker compose build` not run locally — Docker socket permissions (`/var/run/docker.sock`) require user to be in `docker` group. Run `docker compose build` in your environment to confirm image builds.
 
 ### F4 delivered (2026-06-30)
 
