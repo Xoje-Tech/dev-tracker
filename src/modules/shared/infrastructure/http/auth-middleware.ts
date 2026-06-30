@@ -4,6 +4,7 @@ export interface AuthUser {
   id: string;
   email: string;
   name: string;
+  apiKey: string | null;
 }
 
 export type AuthRequest = Request & { user?: AuthUser };

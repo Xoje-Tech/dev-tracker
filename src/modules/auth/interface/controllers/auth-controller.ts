@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { RegisterUser } from "@auth/application/use-cases/register-user.js";
 import { AuthenticateUser } from "@auth/application/use-cases/authenticate-user.js";
 import { RotateApiKey } from "@auth/application/use-cases/rotate-api-key.js";
+import { toAuthResponseDto } from "@auth/application/dto/auth-response-dto.js";
 
 export class AuthController {
   constructor(
@@ -52,11 +53,14 @@ export class AuthController {
   };
 
   me = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
-    res.json({
-      id: req.user!.id,
-      email: req.user!.email,
-      name: req.user!.name,
-    });
+    res.json(
+      toAuthResponseDto({
+        id: req.user!.id,
+        email: req.user!.email,
+        name: req.user!.name,
+        apiKey: req.user!.apiKey,
+      }),
+    );
   };
 
   rotateApiKeyHandler = async (

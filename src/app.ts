@@ -51,14 +51,14 @@ function buildAuthStrategy(): (req: Request) => Promise<AuthUser | null> {
     if (req.session?.userId) {
       const user = await userRepo.findById(req.session.userId);
       if (user) {
-        return { id: user.id, email: user.email.value, name: user.name };
+        return { id: user.id, email: user.email.value, name: user.name, apiKey: user.apiKey };
       }
     }
     const apiKey = req.headers["x-api-key"] as string | undefined;
     if (apiKey) {
       const user = await userRepo.findByApiKey(apiKey);
       if (user) {
-        return { id: user.id, email: user.email.value, name: user.name };
+        return { id: user.id, email: user.email.value, name: user.name, apiKey: user.apiKey };
       }
     }
     return null;
