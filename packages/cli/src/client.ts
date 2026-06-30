@@ -1,37 +1,58 @@
 /**
- * CLI HTTP client — re-exports the shared client core from
- * @dev-tracker/client, and keeps the original ApiClient class as a
- * thin wrapper that adds session persistence on top of the
- * HttpDevTrackerClient transport.
+ * CLI HTTP client — the CLI's HTTP surface.
  *
- * The shape of this file is preserved for backward compatibility with
- * the existing cli/src/client.test.ts and the rest of the CLI commands.
- * F3 will move cli/ into packages/cli/ and migrate the commands to
- * import directly from @dev-tracker/client.
+ * `ApiClient` (path-based `get/post/patch/del`) lives here because the
+ * CLI commands speak a path-level API (`api.get("/api/projects")`),
+ * not the typed 22-endpoint surface in `@dev-tracker/client`. All
+ * shared client logic (Zod input/output schemas, `ApiError` shape,
+ * `isAuthError`, `ClientValidationError`, `NetworkError`, `HttpDevTrackerClient`)
+ * is re-exported from `@dev-tracker/client` so the CLI does not
+ * duplicate any of it.
+ *
+ * Why is the HTTP request/response plumbing here (not in
+ * `HttpDevTrackerClient`)? Because the CLI needs to capture
+ * `Set-Cookie` headers on every response and persist them to
+ * `~/.dev-tracker/session.json` so the next call is
+ * auto-authenticated. That interception requires raw `fetch` with
+ * access to `response.headers.getSetCookie()`, which
+ * `HttpDevTrackerClient` (a pure typed transport) intentionally does
+ * not expose. The CLI keeps this small, self-contained bit of HTTP
+ * glue locally; everything else — auth header format, JSON encoding,
+ * 401→`API_KEY_REVOKED` hint mapping — IS in the shared client and
+ * mirrored here in lockstep.
+ *
+ * After F3.2 this file is reduced to:
+ *   1. A re-export of the shared error types / type guard so legacy
+ *      CLI imports keep working.
+ *   2. A small `ApiClient` class that owns session persistence
+ *      (Set-Cookie → session.json; apiKey-vs-cookie header priority).
+ *   3. A `createApiClient(baseUrl)` factory that returns a typed
+ *      `HttpDevTrackerClient` for new commands that prefer the 22-endpoint
+ *      surface.
  */
-import { isAuthError as clientIsAuthError, type ApiError as ClientApiError } from "@dev-tracker/client";
+import {
+  ApiError as ClientApiError,
+  HttpDevTrackerClient,
+  isAuthError as clientIsAuthError,
+} from "@dev-tracker/client";
 import { loadSession, saveSession } from "./session.js";
 
-/**
- * Re-export the client's error type and the type guard. The CLI's
- * `ApiError` interface has the same shape as the client's `ApiError`
- * class, so callers that switch on the structural shape still work.
- *
- * NOTE: we treat it as a type only (not a class) because the client
- * marks the fields as readonly. The CLI builds errors with the same
- * shape (status, body, code, hint) and throws them as Error.
- */
+// Re-exports for backward compatibility with existing CLI code.
 export type ApiError = ClientApiError;
 export { clientIsAuthError as isAuthError };
 
+// Re-export session helpers so commands have a single import surface
+// (`./client.js`) for auth+session+http concerns.
+export { authMode, loadSession, saveSession } from "./session.js";
+
 /**
- * Thin wrapper around the shared HttpDevTrackerClient transport that
- * adds session persistence (Set-Cookie → ~/.dev-tracker/session.json,
- * X-API-Key priority). All HTTP traffic goes through the shared
- * client; the CLI only adds the session bookkeeping.
- *
- * The API surface (get/post/patch/del) matches the pre-monorepo
- * ApiClient so the existing CLI commands don't need to change.
+ * Thin HTTP wrapper — adds session persistence on top of a raw
+ * `fetch`. The auth header format, JSON encoding, and 401 error
+ * mapping are kept here rather than pushed into
+ * `HttpDevTrackerClient` because the CLI needs to intercept Set-Cookie
+ * (see file header). HTTP-only behavior (auth headers, status-code
+ * mapping, the hint string on 401) intentionally MIRRORS the shared
+ * client's `HttpDevTrackerClient.buildError`; drift here is a bug.
  */
 export class ApiClient {
   constructor(private readonly baseUrl: string) {}
@@ -60,9 +81,6 @@ export class ApiClient {
     }
     if (body !== undefined) headers["Content-Type"] = "application/json";
 
-    // Use raw fetch under the hood so we can read Set-Cookie
-    // headers. HttpDevTrackerClient validates inputs/outputs with
-    // Zod, but session persistence happens outside the client core.
     const response = await fetch(`${this.baseUrl}${path}`, {
       method,
       headers,
@@ -77,9 +95,11 @@ export class ApiClient {
       : await response.text().catch(() => null);
 
     if (!response.ok) {
-      // Build a shape-compatible ApiError. The client's buildError
-      // maps 401 → API_KEY_REVOKED; the CLI does the same here so
-      // session-aware callers get the hint.
+      // Build a shape-compatible ApiError. Mirrors
+      // HttpDevTrackerClient.buildError: 401 → API_KEY_REVOKED + hint.
+      // Both `isAuthError` and the `ApiError` type come from the
+      // shared client (re-exported above), so callers that already
+      // import those from here still get the canonical versions.
       const baseMessage =
         typeof payload === "object" && payload !== null && "message" in payload
           ? String((payload as { message: unknown }).message)
@@ -100,19 +120,25 @@ export class ApiClient {
     return payload as T;
   }
 
-  get<T>(path: string) {
+  get<T>(path: string): Promise<T> {
     return this.request<T>("GET", path);
   }
-  post<T>(path: string, body?: unknown) {
+  post<T>(path: string, body?: unknown): Promise<T> {
     return this.request<T>("POST", path, body);
   }
-  patch<T>(path: string, body?: unknown) {
+  patch<T>(path: string, body?: unknown): Promise<T> {
     return this.request<T>("PATCH", path, body);
   }
-  del<T>(path: string) {
+  del<T>(path: string): Promise<T> {
     return this.request<T>("DELETE", path);
   }
 }
 
-// Re-export so commands don't need to import session.ts separately.
-export { authMode, loadSession, saveSession } from "./session.js";
+/**
+ * Factory mirroring the brief's recommended path — returns a typed
+ * `HttpDevTrackerClient` for new CLI commands that prefer the typed
+ * 22-endpoint surface over the legacy path-based `ApiClient`.
+ */
+export function createApiClient(baseUrl: string): HttpDevTrackerClient {
+  return new HttpDevTrackerClient({ baseUrl });
+}
