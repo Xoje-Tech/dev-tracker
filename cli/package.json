@@ -14,6 +14,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@dev-tracker/client": "workspace:*",
     "commander": "^14.0.2"
   },
   "devDependencies": {
