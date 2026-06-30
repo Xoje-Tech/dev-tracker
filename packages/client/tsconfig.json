@@ -3,19 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "paths": {
-      "@/*": ["./*"],
-      "@auth/*": ["../../backend/src/modules/auth/*"],
-      "@projects/*": ["../../backend/src/modules/projects/*"],
-      "@boards/*": ["../../backend/src/modules/boards/*"],
-      "@tasks/*": ["../../backend/src/modules/tasks/*"],
-      "@tags/*": ["../../backend/src/modules/tags/*"],
-      "@shared/*": ["../../backend/src/modules/shared/*"]
-    }
+    "baseUrl": "./src"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "src/**/*.test.ts"]
