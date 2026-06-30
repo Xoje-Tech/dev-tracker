@@ -141,10 +141,29 @@ docker compose up -d
 
 ## Upgrade
 
+For Docker deployments, use the included upgrade script:
+
+```bash
+./scripts/upgrade.sh
+```
+
+What it does (in order):
+1. Backs up `dev.db` to `./dev-tracker-backup-<timestamp>.db`
+2. `git pull --ff-only origin master`
+3. Rebuilds the image
+4. Stops the container (named volume is preserved)
+5. Starts a fresh container
+6. Waits for `/api/health` to return 200
+
+Options: `--no-backup`, `--skip-build`, `--no-health-check`. Run `./scripts/upgrade.sh --help` for the full list.
+
+Manual equivalent (if you don't want the script):
+
 ```bash
 git pull
 docker compose build
 docker compose up -d
+curl http://localhost:3000/api/health
 ```
 
 The named volume (`dev-tracker-data`) persists across upgrades — **your data is safe**. The schema is migrated automatically by the entrypoint script (`prisma db push` is idempotent for SQLite).
