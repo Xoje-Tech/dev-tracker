@@ -85,8 +85,8 @@ This keeps the core feature stable before we ship the packaging.
 | 4 | D1+D2+D3 Docker + README | ✅ **DONE + VERIFIED 2026-06-30** | Multi-stage Dockerfile, docker-compose with named volume, comprehensive README; **end-to-end production-like verified with podman** — image builds clean, container starts in 1-2s, full auth flow + project CRUD + restart-persistence all work. Production deploys need HTTPS (TLS-terminating reverse proxy) for secure cookies to round-trip. |
 | 5 | D4 Upgrade script | ✅ **DONE 2026-06-30** | `scripts/upgrade.sh` automates backup + git pull + image rebuild + restart + healthcheck (auto-detects podman/docker, loads .env, supports --no-backup/--skip-build/--no-health-check) |
 | 6 | D5 CHANGELOG + semver | ✅ **DONE 2026-06-30** | `CHANGELOG.md` (Keep a Changelog format) with v1.0.0 release notes; `package.json` bumped to `1.0.0`; README has Versioning section explaining semver policy |
-| 7 | Q2 Backup script | queued | The README has a manual backup procedure, but a cron script is the next step |
-| 8 | Q3 Troubleshooting runbook | queued | The README has a basic matrix; a full runbook (`docs/RUNBOOK.md`) is the next step |
+| 7 | Q2 Backup script | ✅ **DONE 2026-06-30** | `scripts/backup.sh` — auto-detects docker/local, sqlite3 .backup for consistency, optional gzip + rotation, lock file, cron-friendly exit codes |
+| 8 | Q3 Troubleshooting runbook | ✅ **DONE 2026-06-30** | `docs/RUNBOOK.md` (347 lines) — quick diagnostics, container/DB/auth/performance/recovery sections, debug info checklist, error-message table, escalation criteria |
 | 9 | Q1 CI → ghcr.io | ⛔ BLOCKED | Defer to post-v1.0 (see strategy) |
 
 ### D1+D2+D3 delivered (2026-06-30)
