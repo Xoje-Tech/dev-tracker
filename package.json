@@ -26,8 +26,9 @@
     "typecheck": "node_modules/.bin/tsc --noEmit"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=26.0.0"
   },
+  "packageManager": "pnpm@11.9.0",
   "dependencies": {
     "@prisma/client": "6.19.3",
     "bcryptjs": "3.0.3",
