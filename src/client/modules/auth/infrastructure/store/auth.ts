@@ -1,7 +1,21 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useApi } from "@client/shared/infrastructure/composables/useApi";
+import type { ApiError } from "@client/shared/infrastructure/composables/useApi";
 import type { LoginCredentials, RegisterData, User } from "@client/auth/domain/types";
+
+/**
+ * Discriminated reason for the most recent fetchMe() outcome.
+ *
+ *   - 'expired'    : 401 — the session cookie was missing or expired
+ *   - 'network'    : fetch threw (offline, DNS, 5xx, etc.)
+ *   - 'auth_error' : 4xx other than 401 (e.g. malformed token)
+ *   - null         : fetchMe either succeeded or has not run yet
+ *
+ * Used by the auth-guard to decide whether to add ?reason=session_expired
+ * on the /login redirect.
+ */
+export type FetchMeErrorReason = "expired" | "network" | "auth_error";
 
 /**
  * Auth module — Pinia store (infrastructure layer).
@@ -21,6 +35,7 @@ export const useAuthStore = defineStore("auth", () => {
   const user = ref<User | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
+  const lastErrorReason = ref<FetchMeErrorReason | null>(null);
 
   const isAuthenticated = computed(() => user.value !== null);
 
@@ -65,8 +80,24 @@ export const useAuthStore = defineStore("auth", () => {
   async function fetchMe(): Promise<void> {
     try {
       user.value = await api.get<User>("/me");
-    } catch {
+      lastErrorReason.value = null;
+    } catch (e) {
       user.value = null;
+      // Discriminate: 401 = session expired (cookie missing/expired),
+      // 5xx / fetch-thrown = network, other 4xx = auth_error.
+      const apiErr = e as ApiError;
+      if (apiErr && typeof apiErr.status === "number") {
+        if (apiErr.status === 401) {
+          lastErrorReason.value = "expired";
+        } else if (apiErr.status >= 500) {
+          lastErrorReason.value = "network";
+        } else {
+          lastErrorReason.value = "auth_error";
+        }
+      } else {
+        // Fetch itself threw (TypeError on network failure, AbortError, etc.)
+        lastErrorReason.value = "network";
+      }
     }
   }
 
@@ -78,6 +109,7 @@ export const useAuthStore = defineStore("auth", () => {
     user,
     loading,
     error,
+    lastErrorReason,
     isAuthenticated,
     login,
     register,

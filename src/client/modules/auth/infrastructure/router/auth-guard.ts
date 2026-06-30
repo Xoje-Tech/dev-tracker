@@ -11,7 +11,9 @@ import type { NavigationGuard } from "vue-router";
  *   - Other routes: pass through
  *
  * On first hit, calls /api/auth/me to confirm the session cookie is
- * still valid. If it 401s, the store clears user.
+ * still valid. If it 401s, the store records lastErrorReason='expired'
+ * and the guard passes ?reason=session_expired to the login view so it
+ * can show a friendly banner instead of the bare login screen.
  */
 export const authGuard: NavigationGuard = async (to) => {
   const auth = useAuthStore();
@@ -21,7 +23,11 @@ export const authGuard: NavigationGuard = async (to) => {
   }
 
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
-    return { name: "login", query: { redirect: to.fullPath } };
+    const query: Record<string, string> = { redirect: to.fullPath };
+    if (auth.lastErrorReason === "expired") {
+      query.reason = "session_expired";
+    }
+    return { name: "login", query };
   }
 
   if (to.meta.guestOnly && auth.isAuthenticated) {

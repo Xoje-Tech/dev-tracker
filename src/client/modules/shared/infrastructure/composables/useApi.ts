@@ -14,7 +14,9 @@ function buildError(status: number, body: unknown): ApiError {
   const message =
     typeof body === "object" && body !== null && "message" in body
       ? String((body as { message: unknown }).message)
-      : `Request failed with status ${status}`;
+      : typeof body === "object" && body !== null && "error" in body
+        ? String((body as { error: unknown }).error)
+        : `Request failed with status ${status}`;
   const err = new Error(message) as ApiError;
   err.status = status;
   err.body = body;

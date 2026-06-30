@@ -10,6 +10,10 @@ const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
+const emit = defineEmits<{
+  "invalid-credentials": [];
+}>();
+
 const email = ref("");
 const password = ref("");
 const formError = ref<string | null>(null);
@@ -23,6 +27,11 @@ async function onSubmit(event: Event): Promise<void> {
     await router.push(redirect);
   } catch (e) {
     formError.value = e instanceof Error ? e.message : "Could not sign in";
+    // Notify the parent so it can show a contextual banner (e.g.
+    // "invalid_credentials") without polluting the inline field error.
+    if ((e as { status?: number }).status === 401) {
+      emit("invalid-credentials");
+    }
   }
 }
 </script>
