@@ -10,5 +10,4 @@ allowBuilds:
   sqlite3: true
 
 packages:
-  - "."
-  - "cli"
+  - "packages/*"
