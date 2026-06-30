@@ -10,19 +10,49 @@ import { loadSession, saveSession } from "./session.js";
 export interface ApiError extends Error {
   status: number;
   body: unknown;
+  /** Short machine-readable code, e.g. "API_KEY_REVOKED" on 401. */
+  code?: string;
+  /** Human-friendly remediation hint appended to the error message and
+   *  surfaced in JSON output under `hint`. */
+  hint?: string;
 }
 
+/** Human-readable next-step hints for specific status codes. */
+const STATUS_HINTS: Record<number, { code: string; hint: string }> = {
+  401: {
+    code: "API_KEY_REVOKED",
+    hint: "Try: dt auth rotate-key",
+  },
+};
+
 function buildError(status: number, body: unknown): ApiError {
-  const message =
+  const baseMessage =
     typeof body === "object" && body !== null && "message" in body
       ? String((body as { message: unknown }).message)
       : typeof body === "object" && body !== null && "error" in body
         ? String((body as { error: unknown }).error)
         : `Request failed with status ${status}`;
-  const err = new Error(message) as ApiError;
+  const err = new Error(baseMessage) as ApiError;
   err.status = status;
   err.body = body;
+  // Attach structured hint/code for known failure modes so callers can
+  // surface them in both human and JSON output without re-parsing the body.
+  const annotated = STATUS_HINTS[status];
+  if (annotated) {
+    err.code = annotated.code;
+    err.hint = annotated.hint;
+    err.message = `${baseMessage} (${annotated.hint})`;
+  }
   return err;
+}
+
+/** Type guard: is the thrown error a 401 from the API? */
+export function isAuthError(err: unknown): err is ApiError & { status: 401 } {
+  return (
+    err instanceof Error &&
+    "status" in err &&
+    (err as { status: unknown }).status === 401
+  );
 }
 
 export class ApiClient {

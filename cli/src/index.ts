@@ -21,8 +21,39 @@ registerBoardCommands(program);
 registerTaskCommands(program);
 registerTagCommands(program);
 
+function isJsonMode(): boolean {
+  return Boolean(program.opts<{ json?: boolean }>().json);
+}
+
 program.parseAsync(process.argv).catch((err: unknown) => {
-  if (err instanceof Error) {
+  const json = isJsonMode();
+  // ApiError carries our structured hint/code fields — surface them when
+  // running in JSON mode so callers can drive remediation automatically.
+  if (
+    json &&
+    err instanceof Error &&
+    typeof (err as { status?: unknown }).status === "number"
+  ) {
+    const apiErr = err as Error & {
+      status: number;
+      code?: string;
+      hint?: string;
+      body?: unknown;
+    };
+    console.log(
+      JSON.stringify(
+        {
+          error: apiErr.message,
+          status: apiErr.status,
+          code: apiErr.code ?? null,
+          hint: apiErr.hint ?? null,
+          body: apiErr.body ?? null,
+        },
+        null,
+        2,
+      ),
+    );
+  } else if (err instanceof Error) {
     console.error(`Error: ${err.message}`);
   } else {
     console.error(err);

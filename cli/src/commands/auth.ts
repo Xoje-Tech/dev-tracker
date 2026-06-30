@@ -29,8 +29,11 @@ function useJson(program: Command): boolean {
  * Persist the user into the session file and, if the response didn't
  * come with an API key, call /rotate-api-key so the CLI always ends
  * the handshake with a stateless credential.
+ *
+ * Exported for tests; the CLI surface is the `registerAuthCommands`
+ * factory below — don't call this directly from production code.
  */
-async function persistUserWithApiKey(
+export async function persistUserWithApiKey(
   program: Command,
   user: UserDto,
 ): Promise<{ user: UserDto; apiKey: string | null }> {
@@ -54,9 +57,14 @@ async function persistUserWithApiKey(
         "/api/auth/rotate-api-key",
       );
       existing.apiKey = rotated.apiKey;
-    } catch {
-      // If rotate fails (e.g. no cookie either), leave it for the user
-      // to retry with `dt auth rotate-key`.
+    } catch (rotateErr) {
+      // Don't fail the login flow — the user is still authenticated via
+      // cookie. Just surface the failure so they know to follow up.
+      const detail =
+        rotateErr instanceof Error ? rotateErr.message : String(rotateErr);
+      console.error(
+        `[warn] Could not rotate API key after login (${detail}). Run 'dt auth rotate-key' to get one.`,
+      );
     }
   }
 
