@@ -68,6 +68,7 @@ function buildAuthStrategy(): (req: Request) => Promise<AuthUser | null> {
 export function createApp(): Express {
   const app = express();
 
+  app.set("trust proxy", 1);
   app.use(helmet());
   app.use(cors({ origin: true, credentials: true }));
   app.use(morgan(env.NODE_ENV === "production" ? "combined" : "dev"));
@@ -84,7 +85,7 @@ export function createApp(): Express {
       saveUninitialized: false,
       cookie: {
         httpOnly: true,
-        secure: env.NODE_ENV === "production",
+        secure: env.NODE_ENV === "production" ? "auto" : false,
         maxAge: 1000 * 60 * 60 * 24 * 7,
       },
     }),
