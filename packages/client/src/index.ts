@@ -23,7 +23,8 @@ export {
 
 // Implementations
 export { HttpDevTrackerClient } from "./http.js";
-export { InProcessDevTrackerClient, type TestBackend } from "./in-process.js";
+export { InProcessDevTrackerClient } from "./in-process.js";
+export { type TestBackend } from "./testing/test-backend.js";
 
 // Backward-compat alias: cli/src/client.ts historically exported
 // `ApiClient` as the class name. Keep the alias so legacy imports
