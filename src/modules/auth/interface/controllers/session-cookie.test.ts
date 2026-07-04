@@ -49,7 +49,7 @@ describe("Session Cookie in Production (HTTP)", () => {
     expect(cookies.length).toBeGreaterThan(0);
     
     // It should NOT have the 'Secure' flag if we hit it over plain HTTP
-    const sessionCookie = cookies.find((c: string) => c.includes("connect.sid"));
+    const sessionCookie = (Array.isArray(cookies) ? cookies : [cookies]).find((c: string) => c.includes("connect.sid"));
     expect(sessionCookie).toBeDefined();
     expect(sessionCookie).not.toMatch(/Secure/i);
   });
@@ -65,7 +65,7 @@ describe("Session Cookie in Production (HTTP)", () => {
     expect(cookies).toBeDefined();
     
     // With trust proxy = 1, it should recognize HTTPS and set the Secure flag
-    const sessionCookie = cookies.find((c: string) => c.includes("connect.sid"));
+    const sessionCookie = (Array.isArray(cookies) ? cookies : [cookies]).find((c: string) => c.includes("connect.sid"));
     expect(sessionCookie).toBeDefined();
     expect(sessionCookie).toMatch(/Secure/i);
   });
