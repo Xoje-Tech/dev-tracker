@@ -22,20 +22,17 @@ Single-container Docker deployment. ~30 seconds from `git clone` to running app.
 
 ## Quickstart (Docker)
 
-Requires [Docker](https://docs.docker.com/get-docker/) 20.10+ and [Docker Compose](https://docs.docker.com/compose/install/) v2.
+Requires [Docker](https://docs.docker.com/get-docker/) 20.10+ (or Podman) and [Docker Compose](https://docs.docker.com/compose/install/) v2.
 
 ```bash
-# 1. Generate a session secret (one-time, persists across restarts via .env)
-echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env
+# 1. Run the bootstrap script to generate a session secret and start the app
+./scripts/bootstrap.sh
 
-# 2. Build and start
-docker compose up -d
-
-# 3. Verify
+# 2. Verify
 curl http://localhost:3000/api/health
 # → {"status":"ok",...}
 
-# 4. Open the app
+# 3. Open the app
 xdg-open http://localhost:3000     # Linux
 open http://localhost:3000         # macOS
 ```
@@ -224,6 +221,7 @@ See [AGENTS.md](./AGENTS.md) for the full agent guide (architecture, conventions
 | `SQLITE_BUSY` errors | Another process holds the DB lock | Stop any direct `dev.db` access; container should be the only writer |
 | `prisma db push` fails | Schema drift | `pnpm db:generate` then retry; or restore from backup |
 | Healthcheck stays `unhealthy` | Server crash on boot | `docker compose logs dev-tracker` for details |
+| Quickstart fails silently | Podman + docker-compose-plugin recycling stale images | Always use `docker compose up --build -d` |
 
 For deeper debugging, see [docs/RUNBOOK.md](./docs/RUNBOOK.md).
 
