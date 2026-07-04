@@ -59,7 +59,14 @@ export class ApiClient {
   constructor(private readonly baseUrl: string) {}
 
   private async persistCookies(response: Response): Promise<void> {
-    const setCookies = (response.headers as unknown as { getSetCookie?: () => string[] }).getSetCookie?.();
+    // Node 18+ provides getSetCookie() on Headers. Fallback to get("set-cookie") just in case.
+    let setCookies = (response.headers as unknown as { getSetCookie?: () => string[] }).getSetCookie?.();
+    if (!setCookies || setCookies.length === 0) {
+      const raw = response.headers.get("set-cookie");
+      if (raw) {
+        setCookies = [raw]; // connect.sid is usually the only one we care about in this CLI context
+      }
+    }
     if (!setCookies || setCookies.length === 0) return;
     const existing = (await loadSession()) ?? { baseUrl: this.baseUrl };
     const pairs = setCookies.map((c) => c.split(";")[0]).filter(Boolean);
