@@ -36,12 +36,14 @@ export function registerTaskCommands(program: Command): void {
     .requiredOption("--title <title>")
     .option("--description <text>")
     .option("--priority <p>", "low | medium | high", "medium")
+    .requiredOption("--order <n>", "position index", Number)
     .action(
       async (opts: {
         column: string;
         title: string;
         description?: string;
         priority?: string;
+        order: number;
       }) => {
         const json = useJson(program);
         const api = client(program);
@@ -49,6 +51,7 @@ export function registerTaskCommands(program: Command): void {
           columnId: opts.column,
           title: opts.title,
           priority: opts.priority ?? "medium",
+          order: opts.order,
         };
         if (opts.description) body.description = opts.description;
         const t = await api.post<TaskDto>("/api/", body);
