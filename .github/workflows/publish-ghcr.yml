@@ -1,8 +1,10 @@
 name: Publish to GHCR
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'dev-tracker-v*'
+      - 'v*'
 
 permissions:
   contents: read
