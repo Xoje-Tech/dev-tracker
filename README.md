@@ -79,24 +79,40 @@ All configuration via environment variables:
 
 For Docker, set `SESSION_SECRET` in a `.env` file next to `docker-compose.yml`. The `${SESSION_SECRET:?...}` syntax in compose will fail loudly if it's missing.
 
-## CLI
+## CLI Installation
+
+You can install the standalone `dt` CLI directly to your system without needing Node.js or cloning the repository. The installer will detect your OS and architecture, download the correct binary, and automatically add it to your PATH (`~/.dev-tracker/bin`).
+
+Run this command in your terminal:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Xoje-Tech/dev-tracker/master/scripts/install.sh | bash
+```
+
+Once installed, restart your terminal or `source ~/.bashrc` (or `.zshrc`), and you can use the CLI:
+
+```bash
+dt --help
+```
+
+## CLI Usage
 
 The `dt` CLI talks to a running dev-tracker instance via the REST API using API-key auth.
 
 ```bash
 # One-time setup (auto-rotates an API key and stores it in ~/.dev-tracker/session.json)
-pnpm cli -- auth register --email you@example.com --password 'pick-a-good-one' --name "Your Name"
+dt auth register --email you@example.com --password 'pick-a-good-one' --name "Your Name"
 
 # Now use it
-pnpm cli -- projects list
-pnpm cli -- tasks create --column <col-id> --title "Do the thing" --priority high
-pnpm cli -- auth me   # show current user + auth mode
+dt projects list
+dt tasks create --column <col-id> --title "Do the thing" --priority high
+dt auth me   # show current user + auth mode
 ```
 
 The CLI auto-detects `localhost:3000` by default. For a remote instance:
 
 ```bash
-DEV_TRACKER_URL=https://dev-tracker.internal:3000 pnpm cli -- projects list
+DEV_TRACKER_URL=https://dev-tracker.internal:3000 dt projects list
 ```
 
 ## Backup & restore
