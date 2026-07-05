@@ -1,0 +1,21 @@
+project: dev-tracker
+version: 1.0.0
+stack:
+  runtime: node
+  language: typescript
+  package_manager: pnpm
+  backend_framework: express-5
+  frontend_framework: vue-3
+  orm: prisma-6
+  database: sqlite
+  testing: vitest
+strict_tdd: true
+persistence: hybrid
+conventions:
+  architecture: hexagonal-screaming
+  frontend_architecture: atomic-design
+  path_aliases: specific-modules
+testing:
+  runner: vitest
+  layers: [unit, integration]
+  quality_tools: [tsc]
