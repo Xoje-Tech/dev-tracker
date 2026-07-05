@@ -1,0 +1,11 @@
+services:
+  dev-tracker-server:
+    image: ghcr.io/xoje-tech/dev-tracker-server:latest
+    build: .
+    ports:
+      - "6789:3000"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    restart: unless-stopped
