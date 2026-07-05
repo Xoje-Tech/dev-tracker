@@ -12,7 +12,7 @@ export class McpClient {
     });
 
     if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({}));
+      const errorBody: any = await response.json().catch(() => ({}));
       throw new Error(errorBody.error || response.statusText || "HTTP Error");
     }
 

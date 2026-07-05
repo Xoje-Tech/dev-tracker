@@ -21,7 +21,7 @@ describe("McpClient", () => {
   });
 
   it("throws formatted error on non-2xx responses", async () => {
-    const mockFetch = vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({ error: "Not Found" }), { status: 404 }));
+    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({ error: "Not Found" }), { status: 404 }));
     const client = new McpClient("http://localhost:3000/api", "test-key");
 
     await expect(client.get("/projects")).rejects.toThrow("Not Found");
