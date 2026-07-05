@@ -5,8 +5,9 @@
 # Base Stage — setup alpine & corepack
 # =============================================================================
 FROM node:26-alpine AS base
-# Habilita corepack para usar pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g corepack@latest && corepack enable && corepack prepare pnpm@latest --activate
+# Prisma requires openssl in alpine
+RUN apk add --no-cache openssl
 WORKDIR /app
 
 # =============================================================================
@@ -55,4 +56,4 @@ VOLUME ["/app/data"]
 
 EXPOSE 6789
 
-CMD ["node", "dist/server/index.js"]
+CMD ["node", "dist/src/server/index.js"]
