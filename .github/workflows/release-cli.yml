@@ -1,0 +1,43 @@
+name: Release CLI Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    name: Build and Upload CLI Binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        working-directory: ./cli
+        run: pnpm install
+
+      - name: Build and package CLI
+        working-directory: ./cli
+        run: pnpm run package
+
+      - name: Upload binaries to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            cli/binaries/dt-linux-x64
+            cli/binaries/dt-macos-x64
+            cli/binaries/dt-macos-arm64
