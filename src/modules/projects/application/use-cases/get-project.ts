@@ -15,6 +15,7 @@ export class GetProject {
       id: project.id,
       name: project.name,
       description: project.description,
+      repoUrl: project.repoUrl,
       archived: project.archived,
       createdAt: project.createdAt.toISOString(),
       updatedAt: project.updatedAt.toISOString(),

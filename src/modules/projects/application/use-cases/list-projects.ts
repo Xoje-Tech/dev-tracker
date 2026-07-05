@@ -10,6 +10,7 @@ export class ListProjects {
       id: p.id,
       name: p.name,
       description: p.description,
+      repoUrl: p.repoUrl,
       archived: p.archived,
       createdAt: p.createdAt.toISOString(),
       updatedAt: p.updatedAt.toISOString(),

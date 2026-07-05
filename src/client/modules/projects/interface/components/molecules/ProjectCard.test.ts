@@ -71,4 +71,20 @@ describe("ProjectCard", () => {
     const wrapper = mountCard();
     expect(wrapper.text()).toContain("owner");
   });
+
+  it("renders a link if repoUrl is present", async () => {
+    const wrapper = mountCard();
+    await wrapper.setProps({ project: { ...sampleProject, repoUrl: "https://github.com/xoje-tech/dev-tracker" } });
+    
+    const link = wrapper.find("a");
+    expect(link.exists()).toBe(true);
+    expect(link.attributes("href")).toBe("https://github.com/xoje-tech/dev-tracker");
+    expect(link.text()).toContain("github.com/xoje-tech/dev-tracker");
+  });
+
+  it("does not render a link if repoUrl is missing", () => {
+    const wrapper = mountCard();
+    const link = wrapper.find("a");
+    expect(link.exists()).toBe(false);
+  });
 });
