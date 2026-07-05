@@ -3,7 +3,7 @@ services:
     image: ghcr.io/xoje-tech/dev-tracker-server:latest
     build: .
     ports:
-      - "6789:6789"
+      - "6789:3000"
     volumes:
       - ./data:/app/data
     env_file:
