@@ -12,20 +12,25 @@ const router = useRouter();
 
 const name = ref("");
 const description = ref("");
+const repoUrl = ref("");
 const nameError = ref<string | null>(null);
+const repoUrlError = ref<string | null>(null);
 const formError = ref<string | null>(null);
 const submitting = ref(false);
 
 function reset(): void {
   name.value = "";
   description.value = "";
+  repoUrl.value = "";
   nameError.value = null;
+  repoUrlError.value = null;
   formError.value = null;
 }
 
 async function onSubmit(event: Event): Promise<void> {
   event.preventDefault();
   nameError.value = null;
+  repoUrlError.value = null;
   formError.value = null;
 
   const trimmed = name.value.trim();
@@ -38,11 +43,22 @@ async function onSubmit(event: Event): Promise<void> {
     return;
   }
 
+  const urlVal = repoUrl.value.trim();
+  if (urlVal) {
+    try {
+      new URL(urlVal);
+    } catch (e) {
+      repoUrlError.value = "Must be a valid URL";
+      return;
+    }
+  }
+
   submitting.value = true;
   try {
     const project = await projectsStore.create({
       name: trimmed,
       description: description.value.trim() || undefined,
+      repoUrl: urlVal || undefined,
     });
     reset();
     await router.push({ name: "board", params: { id: project.id } });
@@ -73,6 +89,17 @@ async function onSubmit(event: Event): Promise<void> {
         :rows="3"
         placeholder="What is this project about?"
         :disabled="submitting"
+      />
+    </FormField>
+    <FormField label="Repository URL" html-for="project-repo-url" :error="repoUrlError">
+      <BaseInput
+        id="project-repo-url"
+        v-model="repoUrl"
+        placeholder="https://github.com/..."
+        :invalid="!!repoUrlError"
+        :disabled="submitting"
+        autocomplete="off"
+        type="url"
       />
     </FormField>
     <p v-if="formError" class="text-sm text-red-600" role="alert">{{ formError }}</p>

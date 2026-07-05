@@ -9,6 +9,7 @@ function toDomainProject(p: PrismaProject): Project {
     id: p.id,
     name: p.name,
     description: p.description,
+    repoUrl: p.repoUrl,
     archived: p.archived,
     createdAt: p.createdAt,
     updatedAt: p.updatedAt,
@@ -61,6 +62,7 @@ export class PrismaProjectRepository implements ProjectRepository {
           id: project.id,
           name: project.name,
           description: project.description,
+          repoUrl: project.repoUrl,
           archived: project.archived,
           createdAt: project.createdAt,
           updatedAt: project.updatedAt,
@@ -84,6 +86,7 @@ export class PrismaProjectRepository implements ProjectRepository {
       data: {
         name: project.name,
         description: project.description,
+        repoUrl: project.repoUrl,
       },
     });
     return toDomainProject(updated);
