@@ -5,6 +5,14 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.2.0...dev-tracker-v1.2.1) (2026-07-05)
+
+
+### Bug Fixes
+
+* **devops:** trigger GHCR publish on tag push instead of release published ([302e77f](https://github.com/Xoje-Tech/dev-tracker/commit/302e77f800dfb9a6270a1ccf6c1c43f70929a74e))
+* **devops:** trigger GHCR publish on tag push instead of release published ([eabcc86](https://github.com/Xoje-Tech/dev-tracker/commit/eabcc861e63b158d06f242e0d0c00547cf998f72))
+
 ## [1.2.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.1.0...dev-tracker-v1.2.0) (2026-07-05)
 
 
