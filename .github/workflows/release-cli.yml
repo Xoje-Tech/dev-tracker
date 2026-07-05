@@ -30,7 +30,11 @@ jobs:
 
       - name: Build and package CLI
         working-directory: ./cli
-        run: pnpm run package
+        run: |
+          pnpm run package
+          mv binaries/dev-tracker-cli-linux-x64 binaries/dt-linux-x64
+          mv binaries/dev-tracker-cli-macos-x64 binaries/dt-macos-x64
+          mv binaries/dev-tracker-cli-macos-arm64 binaries/dt-macos-arm64
 
       - name: Upload binaries to Release
         uses: softprops/action-gh-release@v2
