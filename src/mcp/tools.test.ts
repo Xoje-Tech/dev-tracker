@@ -48,10 +48,28 @@ describe("executeTool", () => {
     const result = await executeTool(mockClient, "create_task", {
       projectId: "p1", title: "T1", description: "D1", columnId: "c1"
     });
-    
+
     expect(mockClient.post).toHaveBeenCalledWith("/tasks", {
       projectId: "p1", title: "T1", description: "D1", columnId: "c1"
     });
     expect(result.content[0].text).toContain('{"id":"123"}');
+  });
+
+  it("executes move_task via POST /tasks/:id/move with translated body", async () => {
+    const mockClient = new McpClient("url", "key");
+    vi.mocked(mockClient.post).mockResolvedValueOnce({ ok: true });
+
+    const result = await executeTool(mockClient, "move_task", {
+      taskId: "t1", columnId: "c2"
+    });
+
+    // MCP contract exposes { taskId, columnId } but backend expects
+    // { targetColumnId, newIndex }. The handler must translate and
+    // default newIndex to 0 (append to end of target column).
+    expect(mockClient.post).toHaveBeenCalledWith("/tasks/t1/move", {
+      targetColumnId: "c2",
+      newIndex: 0,
+    });
+    expect(result.content[0].text).toContain('{"ok":true}');
   });
 });
