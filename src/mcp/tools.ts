@@ -37,7 +37,14 @@ export async function executeTool(client: McpClient, name: string, args: any) {
       result = await client.post("/tasks", args);
       break;
     case "move_task":
-      result = await client.put(`/tasks/${args.taskId}/move`, { columnId: args.columnId });
+      // Backend expects { targetColumnId, newIndex }; MCP exposes only
+      // { taskId, columnId } so the LLM never has to think about indices.
+      // We translate columnId → targetColumnId and default newIndex to 0
+      // (append to end of target column).
+      result = await client.post(`/tasks/${args.taskId}/move`, {
+        targetColumnId: args.columnId,
+        newIndex: 0,
+      });
       break;
     default:
       throw new Error(`Unknown tool: ${name}`);
