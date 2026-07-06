@@ -10,8 +10,8 @@ export function createBoardRoutes(
   const router = Router();
   const auth = createAuthMiddleware(authStrategy);
 
-  router.get("/projects/:projectId/board", auth, controller.get);
-  router.post("/projects/:projectId/board", auth, controller.createDefault);
+  router.get("/:projectId/board", auth, controller.get);
+  router.post("/:projectId/board", auth, controller.createDefault);
 
   return router;
 }

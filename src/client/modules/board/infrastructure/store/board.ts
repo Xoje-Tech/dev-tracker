@@ -18,15 +18,15 @@ import type {
  * keeping the nested shape avoids cross-store sync after a move.
  *
  * Endpoints:
- *   GET  /api/projects/:projectId/board       — fetch (creates default if missing)
- *   POST /api/                                — create task
- *   PATCH /api/tasks/:id                      — update task
- *   DELETE /api/tasks/:id                     — delete task
- *   POST /api/tasks/:id/move                  — move task (column + index)
+ *   GET  /api/boards/:projectId/board     — fetch (creates default if missing)
+ *   POST /api/tasks                       — create task
+ *   PATCH /api/tasks/:id                  — update task
+ *   DELETE /api/tasks/:id                 — delete task
+ *   POST /api/tasks/:id/move              — move task (column + index)
  */
 export const useBoardStore = defineStore("board", () => {
-  const boardApi = useApi("/api/projects");
-  const taskApi = useApi("/api");
+  const boardApi = useApi("/api/boards");
+  const taskApi = useApi("/api/tasks");
 
   const board = ref<Board | null>(null);
   const loading = ref(false);
@@ -65,12 +65,12 @@ export const useBoardStore = defineStore("board", () => {
   }
 
   async function createTask(input: CreateTaskInput): Promise<BoardTask> {
-    const created = await taskApi.post<BoardTask>("/", {
+    const created = await taskApi.post<BoardTask>("", {
       columnId: input.columnId,
       title: input.title,
       description: input.description,
       priority: input.priority ?? "medium",
-      order: 0,
+      // order removed — server computes it (CreateTask use case: max+1 within column)
       assigneeId: input.assigneeId,
     });
     if (board.value) {

@@ -12,8 +12,8 @@ export function createTagRoutes(
   const router = Router();
   const auth = createAuthMiddleware(authStrategy);
 
-  router.post("/tags", auth, validateBody(tagDtoSchema), controller.create);
-  router.get("/tags", auth, controller.list);
+  router.post("/", auth, validateBody(tagDtoSchema), controller.create);
+  router.get("/", auth, controller.list);
   router.post("/tasks/:taskId/tags/:tagId", auth, controller.addToTask);
   router.delete("/tasks/:taskId/tags/:tagId", auth, controller.removeFromTask);
 

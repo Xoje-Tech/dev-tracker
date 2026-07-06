@@ -28,7 +28,7 @@ export async function executeTool(client: McpClient, name: string, args: any) {
       result = await client.get("/projects");
       break;
     case "get_project_board":
-      result = await client.get(`/projects/${args.projectId}/board`);
+      result = await client.get(`/boards/${args.projectId}/board`);
       break;
     case "create_project":
       result = await client.post("/projects", args);

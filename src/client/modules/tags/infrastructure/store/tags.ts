@@ -6,10 +6,10 @@ import type { CreateTagInput, Tag } from "@client/tags/domain/types";
 /**
  * Tags module — Pinia store.
  * Endpoints:
- *   GET    /api/tags                      — list
- *   POST   /api/tags                      — create
- *   POST   /api/tasks/:taskId/tags/:tagId — assign to task
- *   DELETE /api/tasks/:taskId/tags/:tagId — unassign from task
+ *   GET    /api/tags                              — list
+ *   POST   /api/tags                              — create
+ *   POST   /api/tags/tasks/:taskId/tags/:tagId    — assign to task
+ *   DELETE /api/tags/tasks/:taskId/tags/:tagId    — unassign from task
  *
  * The assign/unassign actions are wired here but cannot be exercised
  * from the kanban yet — see the gap note in AGENTS.md (BoardTaskDto
@@ -19,7 +19,6 @@ import type { CreateTagInput, Tag } from "@client/tags/domain/types";
  */
 export const useTagsStore = defineStore("tags", () => {
   const api = useApi("/api/tags");
-  const taskApi = useApi("/api");
 
   const tags = ref<Tag[]>([]);
   const loading = ref(false);
@@ -44,11 +43,11 @@ export const useTagsStore = defineStore("tags", () => {
   }
 
   async function assignToTask(taskId: string, tagId: string): Promise<void> {
-    await taskApi.post(`/tasks/${taskId}/tags/${tagId}`);
+    await api.post(`/tasks/${taskId}/tags/${tagId}`, undefined);
   }
 
   async function unassignFromTask(taskId: string, tagId: string): Promise<void> {
-    await taskApi.del(`/tasks/${taskId}/tags/${tagId}`);
+    await api.del(`/tasks/${taskId}/tags/${tagId}`);
   }
 
   return {

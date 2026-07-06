@@ -45,13 +45,15 @@ export function registerTagCommands(program: Command): void {
       success(`Created tag ${t.id} "${t.name}"`, json, t);
     });
 
+  // URLs use the new mount-prefix convention (see issue #41):
+  // /api/tags/tasks/:taskId/tags/:tagId
   tags
     .command("assign <taskId> <tagId>")
     .description("Assign a tag to a task")
     .action(async (taskId: string, tagId: string) => {
       const json = useJson(program);
       const api = client(program);
-      await api.post(`/api/tasks/${taskId}/tags/${tagId}`);
+      await api.post(`/api/tags/tasks/${taskId}/tags/${tagId}`);
       success(`Assigned tag ${tagId} to task ${taskId}`, json);
     });
 
@@ -61,7 +63,7 @@ export function registerTagCommands(program: Command): void {
     .action(async (taskId: string, tagId: string) => {
       const json = useJson(program);
       const api = client(program);
-      await api.del(`/api/tasks/${taskId}/tags/${tagId}`);
+      await api.del(`/api/tags/tasks/${taskId}/tags/${tagId}`);
       success(`Removed tag ${tagId} from task ${taskId}`, json);
     });
 }

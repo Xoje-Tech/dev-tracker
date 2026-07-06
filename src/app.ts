@@ -122,7 +122,7 @@ export function createApp(): Express {
     new CreateDefaultBoard(prismaBoardRepo),
     new GetBoard(prismaBoardRepo, prisma),
   );
-  app.use("/api", createBoardRoutes(boardController, authStrategy));
+  app.use("/api/boards", createBoardRoutes(boardController, authStrategy));
 
   // Tasks module (fully wired)
   const prismaTaskRepo = new PrismaTaskRepository(prisma);
@@ -132,7 +132,7 @@ export function createApp(): Express {
     new MoveTask(prismaTaskRepo, prisma),
     new DeleteTask(prismaTaskRepo),
   );
-  app.use("/api", createTaskRoutes(taskController, authStrategy));
+  app.use("/api/tasks", createTaskRoutes(taskController, authStrategy));
 
   // Tags module (fully wired)
   const prismaTagRepo = new PrismaTagRepository(prisma);
@@ -142,7 +142,7 @@ export function createApp(): Express {
     new AddTagToTask(prismaTagRepo),
     new RemoveTagFromTask(prismaTagRepo),
   );
-  app.use("/api", createTagRoutes(tagController, authStrategy));
+  app.use("/api/tags", createTagRoutes(tagController, authStrategy));
 
   // Serve built Vue SPA from dist/client (no-op in dev mode where the file
   // doesn't exist). Without this, /projects returns a JSON 404 because the

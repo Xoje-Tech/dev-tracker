@@ -43,7 +43,7 @@ export function registerBoardCommands(program: Command): void {
     .action(async (projectId: string) => {
       const json = useJson(program);
       const api = client(program);
-      const b = await api.get<BoardDto>(`/api/projects/${projectId}/board`);
+      const b = await api.get<BoardDto>(`/api/boards/${projectId}/board`);
       if (json) {
         jsonOut(b);
         return;
@@ -68,7 +68,7 @@ export function registerBoardCommands(program: Command): void {
     .action(async (projectId: string) => {
       const json = useJson(program);
       const api = client(program);
-      const b = await api.post<BoardDto>(`/api/projects/${projectId}/board`);
+      const b = await api.post<BoardDto>(`/api/boards/${projectId}/board`);
       success(`Board ${b.id} initialized`, json, b);
     });
 
