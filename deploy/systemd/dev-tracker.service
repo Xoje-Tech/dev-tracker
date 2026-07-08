@@ -1,0 +1,14 @@
+[Unit]
+Description=Dev Tracker Production Stack (Podman Compose)
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=%h/dev-tracker-server
+ExecStart=/usr/bin/podman compose up -d
+ExecStop=/usr/bin/podman compose down
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
