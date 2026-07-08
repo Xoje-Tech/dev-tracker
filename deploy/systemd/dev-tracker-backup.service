@@ -1,0 +1,6 @@
+[Unit]
+Description=Dev Tracker Daily Backup Service
+
+[Service]
+Type=oneshot
+ExecStart=%h/dev-tracker-server/scripts/backup.sh
