@@ -1,8 +1,7 @@
 services:
   dev-tracker-server:
     image: ghcr.io/xoje-tech/dev-tracker-server:latest
-    ports:
-      - "127.0.0.1:6789:3000"  # Expose locally for local CLI and MCP
+    network_mode: host
     volumes:
       - ./data:/app/data
     env_file:
@@ -12,9 +11,7 @@ services:
   caddy:
     image: docker.io/library/caddy:2-alpine
     restart: unless-stopped
-    ports:
-      - "8080:80"             # Map to unprivileged port on host (change to 80 if running as root/privileged start)
-      - "8443:443"            # Map to unprivileged port on host (change to 443 if running as root/privileged start)
+    network_mode: host
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - ./caddy_data:/data
