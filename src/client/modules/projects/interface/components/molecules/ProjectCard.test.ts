@@ -22,6 +22,11 @@ function mountCard() {
     routes: [
       { path: "/", name: "projects", component: { template: "<div/>" } },
       {
+        path: "/projects/:id",
+        name: "project-detail",
+        component: { template: "<div/>" },
+      },
+      {
         path: "/projects/:id/board",
         name: "board",
         component: { template: "<div/>" },
