@@ -28,6 +28,7 @@ const board = computed(() => boardStore.board);
 onMounted(async () => {
   await projectsStore.fetchOne(id);
   await boardStore.fetchBoard(id);
+  await projectsStore.fetchMemories(id);
   initializeForm();
 });
 
@@ -232,6 +233,67 @@ function cancelEdit(): void {
                   <p class="text-xs text-slate-500">Run <code class="rounded bg-slate-100 px-1 py-0.5 font-mono text-[11px] text-pink-600">dt board get {{ project.id.slice(0, 8) }}</code> to explore columns from your terminal.</p>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- Engram Memory Bank Card -->
+          <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+              <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                🧠 Engram Memory Bank
+                <span class="rounded bg-indigo-50 px-2 py-0.5 text-xs text-indigo-600 font-bold">
+                  {{ projectsStore.memories.length }}
+                </span>
+              </h2>
+              <span v-if="projectsStore.memoriesWarning" class="text-xs text-amber-600 italic">
+                ⚠️ {{ projectsStore.memoriesWarning }}
+              </span>
+            </div>
+
+            <!-- List of observations -->
+            <div v-if="projectsStore.memories.length > 0" class="mt-4 divide-y divide-slate-100 max-h-96 overflow-y-auto pr-1">
+              <div 
+                v-for="obs in projectsStore.memories" 
+                :key="obs.id"
+                class="py-4 first:pt-0 last:pb-0"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <h3 class="text-sm font-semibold text-slate-800 leading-snug">
+                    {{ obs.title }}
+                  </h3>
+                  <BaseBadge 
+                    :variant="
+                      obs.type === 'decision'
+                        ? 'info'
+                        : obs.type === 'architecture'
+                          ? 'default'
+                          : obs.type === 'bugfix'
+                            ? 'danger'
+                            : 'success'
+                    "
+                  >
+                    {{ obs.type.toUpperCase() }}
+                  </BaseBadge>
+                </div>
+                
+                <!-- Structured Content -->
+                <p class="mt-2 text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">
+                  {{ obs.content }}
+                </p>
+                
+                <div class="mt-3 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                  <span>Session: {{ obs.session_id }}</span>
+                  <span>{{ new Date(obs.created_at).toLocaleDateString() }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else class="mt-4 text-center py-6">
+              <p class="text-sm text-slate-500">No memories registered in Engram for this project yet.</p>
+              <p class="text-xs text-slate-400 mt-1 leading-relaxed max-w-md mx-auto">
+                As AI agents implement features or bugfixes using specs, learnings are saved autonomously into your persistent Engram network.
+              </p>
             </div>
           </div>
         </div>
