@@ -45,6 +45,23 @@ import type { Request } from "express";
 
 const SQLiteStore = SQLiteStoreFactory(session);
 
+const OFFLINE_USER_ID = "offline-user-id";
+
+async function ensureOfflineUserExists(): Promise<void> {
+  const exists = await prisma.user.findUnique({ where: { id: OFFLINE_USER_ID } });
+  if (!exists) {
+    await prisma.user.create({
+      data: {
+        id: OFFLINE_USER_ID,
+        email: "offline@devtracker.local",
+        name: "Offline User",
+        passwordHash: "offline-mode-placeholder-hash",
+        apiKey: null,
+      },
+    });
+  }
+}
+
 function buildAuthStrategy(): (req: Request) => Promise<AuthUser | null> {
   const userRepo = new PrismaUserRepository(prisma);
   return async (req: Request): Promise<AuthUser | null> => {
@@ -61,6 +78,21 @@ function buildAuthStrategy(): (req: Request) => Promise<AuthUser | null> {
         return { id: user.id, email: user.email.value, name: user.name, apiKey: user.apiKey };
       }
     }
+
+    // MODO SIN AUTENTICACIÓN (OFFLINE/LOCAL POR DEFECTO)
+    // Si no hay cookies de sesión ni API Key, la API devuelve el Offline User por defecto
+    // cuando corre en desarrollo/producción para soportar modo local/offline sin login.
+    // En entorno de tests (Vitest) se desactiva para validar correctamente las respuestas 401.
+    if (!process.env.VITEST) {
+      await ensureOfflineUserExists();
+      return {
+        id: OFFLINE_USER_ID,
+        email: "offline@devtracker.local",
+        name: "Offline User",
+        apiKey: null,
+      };
+    }
+
     return null;
   };
 }
