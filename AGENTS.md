@@ -138,6 +138,23 @@ dev-tracker/
 9. **Atomic design bottom-up**
 10. **Pinia store in `infrastructure/store/`** — mirrors backend hexagonal convention
 
+## Git Flow & Pull Request Policy
+
+To maintain a healthy commit history, high-quality reviews, and continuous delivery, this project strictly adheres to the following Git Flow guidelines:
+
+### 1. Branch Strategy
+
+*   **`master` (Production)**: Stores the stable, production-ready code. **Never** open a Pull Request targeting `master` directly for individual features, refactors, or fixes.
+*   **`develop` (Integration)**: The active development branch. **All individual Pull Requests (`feat/*`, `fix/*`, `refactor/*`, etc.) must target `develop` as their base branch.**
+*   **Feature / Fix Branches (`type/description`)**: Branched off from `develop`. Use short, descriptive, lower-case kebab names matching the regex `^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)\/[a-z0-9._-]+$`.
+
+### 2. Workflows & Integration
+
+1.  **Start work**: Create your branch off of `develop`: `git checkout -b feat/my-cool-feature develop`.
+2.  **Commit changes**: Follow the **Conventional Commits** standard (e.g., `feat(auth): add offline mode`).
+3.  **Submit Pull Request**: Always target **`develop`** as the base branch of your PR.
+4.  **Release to `master`**: Integrations to `master` are accumulated in `develop` and promoted periodically using structured releases (such as Release Please) or release branch merges.
+
 ## Commands
 
 ```bash
