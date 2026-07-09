@@ -20,24 +20,30 @@ Single-container Docker deployment. ~30 seconds from `git clone` to running app.
 - **CLI:** Commander.js, built and bundled as `dt`
 - **Auth:** Dual — session cookies (browser) + API key (programmatic)
 
-## Quickstart (Docker)
+## Quickstart (Podman / Docker)
 
-Requires [Docker](https://docs.docker.com/get-docker/) 20.10+ (or Podman) and [Docker Compose](https://docs.docker.com/compose/install/) v2.
+Requires [Podman](https://podman.io/) and `podman-compose` (or Docker and Docker Compose v2). We strongly recommend Podman for its daemonless, rootless architecture.
 
 ```bash
-# 1. Run the bootstrap script to generate a session secret and start the app
-./scripts/bootstrap.sh
+# 1. Create your environment file
+echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env
+echo "DATABASE_URL=file:/app/data/dev.db" >> .env
 
-# 2. Verify
-curl http://localhost:3000/api/health
+# 2. Start the application (always use --build for local developments to prevent stale image recycling)
+podman-compose up -d --build
+
+# 3. Verify
+curl http://localhost:6789/api/health
 # → {"status":"ok",...}
 
-# 3. Open the app
-xdg-open http://localhost:3000     # Linux
-open http://localhost:3000         # macOS
+# 4. Open the app
+xdg-open http://localhost:6789     # Linux
+open http://localhost:6789         # macOS
 ```
 
-First boot takes ~30s (image build + dependency install + Prisma schema push). Subsequent boots: ~2s.
+First boot takes ~30s (image build + dependency install). Subsequent boots: ~2s.
+
+The database is persisted automatically to the `./data` directory relative to your `compose.yaml`.
 
 ## Quickstart (manual, no Docker)
 

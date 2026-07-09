@@ -5,6 +5,152 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.2.0...dev-tracker-v1.2.1) (2026-07-05)
+
+
+### Bug Fixes
+
+* **devops:** trigger GHCR publish on tag push instead of release published ([302e77f](https://github.com/Xoje-Tech/dev-tracker/commit/302e77f800dfb9a6270a1ccf6c1c43f70929a74e))
+* **devops:** trigger GHCR publish on tag push instead of release published ([eabcc86](https://github.com/Xoje-Tech/dev-tracker/commit/eabcc861e63b158d06f242e0d0c00547cf998f72))
+
+## [1.2.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.1.0...dev-tracker-v1.2.0) (2026-07-05)
+
+
+### Features
+
+* **backend:** include tagIds in BoardTaskDto and TaskResponseDto ([8c638a8](https://github.com/Xoje-Tech/dev-tracker/commit/8c638a833862b003b0416b1bd501646322f7fdba))
+* **ci:** automate CLI binary releases via GitHub Actions ([c85ade6](https://github.com/Xoje-Tech/dev-tracker/commit/c85ade69530623a945bbbcb532692890bc6c86ed))
+* **ci:** automate version bumping and changelog with release-please ([ec4b008](https://github.com/Xoje-Tech/dev-tracker/commit/ec4b008c0e51ac264a7302d9a68d9606047c536e))
+* **ci:** automate versioning with release-please ([a7263a2](https://github.com/Xoje-Tech/dev-tracker/commit/a7263a22de5e01dc9086664c217ea05a9e89273f))
+* **cli:** add standalone packaging and global curl-to-bash installer (fixes [#9](https://github.com/Xoje-Tech/dev-tracker/issues/9)) ([143fa71](https://github.com/Xoje-Tech/dev-tracker/commit/143fa7188e1e130028ae6a96d7eb9d28380a3f5e))
+* **cli:** add standalone packaging and global curl-to-bash installer (fixes [#9](https://github.com/Xoje-Tech/dev-tracker/issues/9)) ([8f06346](https://github.com/Xoje-Tech/dev-tracker/commit/8f06346341a51f5699e6e4d51b829000258029a7))
+* **client/auth:** LoginView with atomic component layers ([01d051c](https://github.com/Xoje-Tech/dev-tracker/commit/01d051c63c895866870f69e27e48361973b9810c))
+* **client/auth:** Pinia auth store + client path aliases ([705043e](https://github.com/Xoje-Tech/dev-tracker/commit/705043e4d3992ac2b69a7ed9ddbbe17db549adbd))
+* **client/board:** BoardView wires board fetch, modals, and drag/drop ([37bc1ca](https://github.com/Xoje-Tech/dev-tracker/commit/37bc1ca1da565ce108a6edb3b0037b166a968016))
+* **client/board:** domain types and Pinia store ([bfb92ca](https://github.com/Xoje-Tech/dev-tracker/commit/bfb92cae0d68ac6b895e32557726dc0fb303590a))
+* **client/board:** KanbanColumn and KanbanBoard organisms with drag/drop ([1cb09f5](https://github.com/Xoje-Tech/dev-tracker/commit/1cb09f5a7f524cab7c7757b26ad94ed0b187f7e5))
+* **client/board:** PriorityBadge atom + TaskCard/ColumnHeader/TaskForm molecules ([6cb279d](https://github.com/Xoje-Tech/dev-tracker/commit/6cb279dc87e9682890fe3e77b92aeda8971e185b))
+* **client/board:** render tag pills on TaskCard ([af5eb10](https://github.com/Xoje-Tech/dev-tracker/commit/af5eb1014fc1cd9b4a08f0cc9062efdd51611b80))
+* **client/board:** wire tag assignment in BoardView via TaskForm ([5dcd29e](https://github.com/Xoje-Tech/dev-tracker/commit/5dcd29ed5218903ffb478689bcad748cffee98a8))
+* **client/projects:** domain types and Pinia store ([a720d7f](https://github.com/Xoje-Tech/dev-tracker/commit/a720d7fe4294a301ff46da4ce07a88343f0e7388))
+* **client/projects:** ProjectCard and NewProjectForm molecules ([6b7f75f](https://github.com/Xoje-Tech/dev-tracker/commit/6b7f75fbc81ad03b4118adefaf3136b7cd58d3ea))
+* **client/projects:** ProjectsView with grid and new-project modal ([e4b476c](https://github.com/Xoje-Tech/dev-tracker/commit/e4b476cb4dab3414d0338b1de08cedc68faf2006))
+* **client/shared:** add FormField, EmptyState, PageHeader molecules ([22d2905](https://github.com/Xoje-Tech/dev-tracker/commit/22d29051628656e4e2de284bd3bf714a4e16d703))
+* **client/shared:** add useApi composable and Base atoms ([fd31a3c](https://github.com/Xoje-Tech/dev-tracker/commit/fd31a3c502f03f626b581876bfe944684a668538))
+* **client/shared:** expand atom library for upcoming modules ([a79ce97](https://github.com/Xoje-Tech/dev-tracker/commit/a79ce97526ac6a36c587b9c358ee15302a3da0e0))
+* **client/tags:** domain types and Pinia store ([b9ed378](https://github.com/Xoje-Tech/dev-tracker/commit/b9ed378cfe1f58c1cc62d3dc8c44abfd6b2486ee))
+* **client/tags:** TagsView with list and new-tag modal ([5fcbd08](https://github.com/Xoje-Tech/dev-tracker/commit/5fcbd087f8786223e379baaab0e33c99864ec5ae))
+* **client:** AppLayout template + TopBarUser molecule ([8be24ee](https://github.com/Xoje-Tech/dev-tracker/commit/8be24eed0c4e3dd30b0e7d31a33f7f4e19a51f50))
+* **client:** auth guard, routing, redirect post-login ([d255d76](https://github.com/Xoje-Tech/dev-tracker/commit/d255d767664764c6a12f82788e887b0892f9c345))
+* **client:** wire router + close pending frontend setup ([5772a1b](https://github.com/Xoje-Tech/dev-tracker/commit/5772a1b72bacb5afa7ad1e9f5a0fae77cfce36d7))
+* **cli:** scaffold dev-tracker-cli workspace package ([5aacc65](https://github.com/Xoje-Tech/dev-tracker/commit/5aacc65763f8c3d58aebd5b5f36a4e6c71cdbba8))
+* **devops:** Containerizar servidor con Podman y publicar en GHCR ([6c3e4d0](https://github.com/Xoje-Tech/dev-tracker/commit/6c3e4d08f0155b430010e4d1453f72ae587c008d))
+* **devops:** containerize server with Podman and GHCR workflow ([46a8c0b](https://github.com/Xoje-Tech/dev-tracker/commit/46a8c0b923917a652490a344c31839701f9c4a79)), closes [#25](https://github.com/Xoje-Tech/dev-tracker/issues/25)
+* initial project scaffold ([8bd883f](https://github.com/Xoje-Tech/dev-tracker/commit/8bd883f9793db99d1101a6d194d5858b9e785c85))
+* **projects,boards:** full implementation of Projects and Boards modules ([234c4fb](https://github.com/Xoje-Tech/dev-tracker/commit/234c4fbe0de5d4d533fc31b9cee934246fe8dc40))
+* **projects:** add repoUrl to backend domain, dtos, and frontend types ([2f3107b](https://github.com/Xoje-Tech/dev-tracker/commit/2f3107b3cc6dac81b03e0edd0090d631335c334c))
+* **projects:** add repoUrl to project model (fixes [#8](https://github.com/Xoje-Tech/dev-tracker/issues/8)) ([3ef1632](https://github.com/Xoje-Tech/dev-tracker/commit/3ef1632548d3d47912adfd866751e56224226af6))
+* **projects:** render repoUrl link in ProjectCard and add input in NewProjectForm ([4bcf273](https://github.com/Xoje-Tech/dev-tracker/commit/4bcf273a3ce4656f6c39bbddd1a89a6e74dc8ed5))
+* **tasks,tags:** full implementation with move algorithm and tag management ([a473a39](https://github.com/Xoje-Tech/dev-tracker/commit/a473a391d59d7919738a804116ee0f119e1a199a))
+
+
+### Bug Fixes
+
+* **auth:** set trust proxy and secure cookie auto in production to fix HTTP deploy cookies (fixes [#1](https://github.com/Xoje-Tech/dev-tracker/issues/1)) ([c921b52](https://github.com/Xoje-Tech/dev-tracker/commit/c921b5257e052de8523ecd6a2bfabb5ef32760d7))
+* **backend:** add missing src/server entry point and fix dotenv override ([756145f](https://github.com/Xoje-Tech/dev-tracker/commit/756145f0c19c2eb525e273f88f4424e479dd2689))
+* **build:** tsc-alias in build, correct dist path in start, SPA fallback in app ([45ed4fa](https://github.com/Xoje-Tech/dev-tracker/commit/45ed4faba6bda6c347f57623b8f128fa61a75426))
+* **ci:** bump node version to 26 in release action to align with repo standard ([6f2729e](https://github.com/Xoje-Tech/dev-tracker/commit/6f2729ef13fea9fb43a9bd6eca90aabf4fae889e))
+* **ci:** remove pnpm version conflict ([a07b5fb](https://github.com/Xoje-Tech/dev-tracker/commit/a07b5fb9393e205aef86911a890d9f931c5e234b))
+* **ci:** remove pnpm version conflict in release action ([e25771d](https://github.com/Xoje-Tech/dev-tracker/commit/e25771ddd68b9614219b28419b67d0d29656df0a))
+* **ci:** rename generated CLI binaries for install script ([523b5bc](https://github.com/Xoje-Tech/dev-tracker/commit/523b5bcf174084b20080ea04855905ba3bb7910c))
+* **ci:** rename generated CLI binaries to match install script expectations ([989ff99](https://github.com/Xoje-Tech/dev-tracker/commit/989ff993fe7ece06194fda1003e0ec492340553e))
+* **ci:** update node version to 22 ([d0a86c5](https://github.com/Xoje-Tech/dev-tracker/commit/d0a86c51378187075ea5736322909ea98443f75f))
+* **ci:** update node version to 22 in release action ([d03bbc4](https://github.com/Xoje-Tech/dev-tracker/commit/d03bbc42b548a64d3de96d4a27120b8833c07694))
+* **cli:** 401 hint, authMode cookie bug, rotate warning + test infra bootstrap ([6dd7b6a](https://github.com/Xoje-Tech/dev-tracker/commit/6dd7b6aa9c6a3404646782038a95bf9b6501a388))
+* **cli:** add fallback for Set-Cookie header extraction in native fetch (fixes [#6](https://github.com/Xoje-Tech/dev-tracker/issues/6)) ([334b0f3](https://github.com/Xoje-Tech/dev-tracker/commit/334b0f3eab55fc3f74b0f89a13ad134225829168))
+* **cli:** add missing --order option to tasks create ([62e2d7d](https://github.com/Xoje-Tech/dev-tracker/commit/62e2d7d27c33bf119f72efe4372ed97ca4fd9a4e))
+* **client:** F4 auth polish, session-expired banner and error discrimination ([a96a1da](https://github.com/Xoje-Tech/dev-tracker/commit/a96a1dad5b515e6246690d33530d917973f1c71a))
+* **cli:** switch from ESM to CommonJS to fix pkg module resolution ([540d1eb](https://github.com/Xoje-Tech/dev-tracker/commit/540d1ebb0fd68370e7ab9c5edcb9d4b89ce7bfe0))
+* **cli:** switch to CommonJS for pkg compatibility ([22fb38f](https://github.com/Xoje-Tech/dev-tracker/commit/22fb38f9963ff874b8a863a6c50ac876266ffae0))
+* **cli:** use direct cd in root cli scripts ([da7b733](https://github.com/Xoje-Tech/dev-tracker/commit/da7b733e965f7264ff6454fc60a05505d8e3934f))
+* **config:** remove quotes from DATABASE_URL to support systemd and update SESSION_SECRET placeholder (fixes [#3](https://github.com/Xoje-Tech/dev-tracker/issues/3)) ([9cc179a](https://github.com/Xoje-Tech/dev-tracker/commit/9cc179af23e0a7ea88dc85182909d5b2353b78c0))
+* **dev-tracker:** make Docker image build and run end-to-end ([d767d11](https://github.com/Xoje-Tech/dev-tracker/commit/d767d119431e4323c340886be2cc4c69f0314590))
+* **dev-tracker:** production-ready persistence + NODE_ENV override ([8205f81](https://github.com/Xoje-Tech/dev-tracker/commit/8205f81f04c705fefb2733bbac2458dff22a4724))
+* **devops:** map correct internal port 3000 in compose.yaml ([66b5e8d](https://github.com/Xoje-Tech/dev-tracker/commit/66b5e8db9902823c057b6f90caf15d945611eb7f))
+* **docker:** correct path to compiled server entrypoint ([9c6ddc4](https://github.com/Xoje-Tech/dev-tracker/commit/9c6ddc48bb2eb4f571aef6dfdf0f54efcb57dff9))
+* **server:** /api/auth/me returns full authResponseDtoSchema shape ([d903317](https://github.com/Xoje-Tech/dev-tracker/commit/d903317333678511a914fd9d34aae497915e4f15))
+* **test:** exclude src/client from backend vitest config ([dfe2b1a](https://github.com/Xoje-Tech/dev-tracker/commit/dfe2b1aa09405de5990d8a1f80a39fc41ae0b892))
+* **test:** handle string or array headers in cookie test to fix build ([3f312e5](https://github.com/Xoje-Tech/dev-tracker/commit/3f312e54a1ff7925dfd8324b1088de2317f80c6b))
+
+## [1.1.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.0.0...dev-tracker-v1.1.0) (2026-07-05)
+
+
+### Features
+
+* **backend:** include tagIds in BoardTaskDto and TaskResponseDto ([8c638a8](https://github.com/Xoje-Tech/dev-tracker/commit/8c638a833862b003b0416b1bd501646322f7fdba))
+* **ci:** automate CLI binary releases via GitHub Actions ([c85ade6](https://github.com/Xoje-Tech/dev-tracker/commit/c85ade69530623a945bbbcb532692890bc6c86ed))
+* **ci:** automate version bumping and changelog with release-please ([ec4b008](https://github.com/Xoje-Tech/dev-tracker/commit/ec4b008c0e51ac264a7302d9a68d9606047c536e))
+* **ci:** automate versioning with release-please ([a7263a2](https://github.com/Xoje-Tech/dev-tracker/commit/a7263a22de5e01dc9086664c217ea05a9e89273f))
+* **cli:** add standalone packaging and global curl-to-bash installer (fixes [#9](https://github.com/Xoje-Tech/dev-tracker/issues/9)) ([143fa71](https://github.com/Xoje-Tech/dev-tracker/commit/143fa7188e1e130028ae6a96d7eb9d28380a3f5e))
+* **cli:** add standalone packaging and global curl-to-bash installer (fixes [#9](https://github.com/Xoje-Tech/dev-tracker/issues/9)) ([8f06346](https://github.com/Xoje-Tech/dev-tracker/commit/8f06346341a51f5699e6e4d51b829000258029a7))
+* **client/auth:** LoginView with atomic component layers ([01d051c](https://github.com/Xoje-Tech/dev-tracker/commit/01d051c63c895866870f69e27e48361973b9810c))
+* **client/auth:** Pinia auth store + client path aliases ([705043e](https://github.com/Xoje-Tech/dev-tracker/commit/705043e4d3992ac2b69a7ed9ddbbe17db549adbd))
+* **client/board:** BoardView wires board fetch, modals, and drag/drop ([37bc1ca](https://github.com/Xoje-Tech/dev-tracker/commit/37bc1ca1da565ce108a6edb3b0037b166a968016))
+* **client/board:** domain types and Pinia store ([bfb92ca](https://github.com/Xoje-Tech/dev-tracker/commit/bfb92cae0d68ac6b895e32557726dc0fb303590a))
+* **client/board:** KanbanColumn and KanbanBoard organisms with drag/drop ([1cb09f5](https://github.com/Xoje-Tech/dev-tracker/commit/1cb09f5a7f524cab7c7757b26ad94ed0b187f7e5))
+* **client/board:** PriorityBadge atom + TaskCard/ColumnHeader/TaskForm molecules ([6cb279d](https://github.com/Xoje-Tech/dev-tracker/commit/6cb279dc87e9682890fe3e77b92aeda8971e185b))
+* **client/board:** render tag pills on TaskCard ([af5eb10](https://github.com/Xoje-Tech/dev-tracker/commit/af5eb1014fc1cd9b4a08f0cc9062efdd51611b80))
+* **client/board:** wire tag assignment in BoardView via TaskForm ([5dcd29e](https://github.com/Xoje-Tech/dev-tracker/commit/5dcd29ed5218903ffb478689bcad748cffee98a8))
+* **client/projects:** domain types and Pinia store ([a720d7f](https://github.com/Xoje-Tech/dev-tracker/commit/a720d7fe4294a301ff46da4ce07a88343f0e7388))
+* **client/projects:** ProjectCard and NewProjectForm molecules ([6b7f75f](https://github.com/Xoje-Tech/dev-tracker/commit/6b7f75fbc81ad03b4118adefaf3136b7cd58d3ea))
+* **client/projects:** ProjectsView with grid and new-project modal ([e4b476c](https://github.com/Xoje-Tech/dev-tracker/commit/e4b476cb4dab3414d0338b1de08cedc68faf2006))
+* **client/shared:** add FormField, EmptyState, PageHeader molecules ([22d2905](https://github.com/Xoje-Tech/dev-tracker/commit/22d29051628656e4e2de284bd3bf714a4e16d703))
+* **client/shared:** add useApi composable and Base atoms ([fd31a3c](https://github.com/Xoje-Tech/dev-tracker/commit/fd31a3c502f03f626b581876bfe944684a668538))
+* **client/shared:** expand atom library for upcoming modules ([a79ce97](https://github.com/Xoje-Tech/dev-tracker/commit/a79ce97526ac6a36c587b9c358ee15302a3da0e0))
+* **client/tags:** domain types and Pinia store ([b9ed378](https://github.com/Xoje-Tech/dev-tracker/commit/b9ed378cfe1f58c1cc62d3dc8c44abfd6b2486ee))
+* **client/tags:** TagsView with list and new-tag modal ([5fcbd08](https://github.com/Xoje-Tech/dev-tracker/commit/5fcbd087f8786223e379baaab0e33c99864ec5ae))
+* **client:** AppLayout template + TopBarUser molecule ([8be24ee](https://github.com/Xoje-Tech/dev-tracker/commit/8be24eed0c4e3dd30b0e7d31a33f7f4e19a51f50))
+* **client:** auth guard, routing, redirect post-login ([d255d76](https://github.com/Xoje-Tech/dev-tracker/commit/d255d767664764c6a12f82788e887b0892f9c345))
+* **client:** wire router + close pending frontend setup ([5772a1b](https://github.com/Xoje-Tech/dev-tracker/commit/5772a1b72bacb5afa7ad1e9f5a0fae77cfce36d7))
+* **cli:** scaffold dev-tracker-cli workspace package ([5aacc65](https://github.com/Xoje-Tech/dev-tracker/commit/5aacc65763f8c3d58aebd5b5f36a4e6c71cdbba8))
+* **devops:** Containerizar servidor con Podman y publicar en GHCR ([6c3e4d0](https://github.com/Xoje-Tech/dev-tracker/commit/6c3e4d08f0155b430010e4d1453f72ae587c008d))
+* **devops:** containerize server with Podman and GHCR workflow ([46a8c0b](https://github.com/Xoje-Tech/dev-tracker/commit/46a8c0b923917a652490a344c31839701f9c4a79)), closes [#25](https://github.com/Xoje-Tech/dev-tracker/issues/25)
+* initial project scaffold ([8bd883f](https://github.com/Xoje-Tech/dev-tracker/commit/8bd883f9793db99d1101a6d194d5858b9e785c85))
+* **projects,boards:** full implementation of Projects and Boards modules ([234c4fb](https://github.com/Xoje-Tech/dev-tracker/commit/234c4fbe0de5d4d533fc31b9cee934246fe8dc40))
+* **projects:** add repoUrl to backend domain, dtos, and frontend types ([2f3107b](https://github.com/Xoje-Tech/dev-tracker/commit/2f3107b3cc6dac81b03e0edd0090d631335c334c))
+* **projects:** add repoUrl to project model (fixes [#8](https://github.com/Xoje-Tech/dev-tracker/issues/8)) ([3ef1632](https://github.com/Xoje-Tech/dev-tracker/commit/3ef1632548d3d47912adfd866751e56224226af6))
+* **projects:** render repoUrl link in ProjectCard and add input in NewProjectForm ([4bcf273](https://github.com/Xoje-Tech/dev-tracker/commit/4bcf273a3ce4656f6c39bbddd1a89a6e74dc8ed5))
+* **tasks,tags:** full implementation with move algorithm and tag management ([a473a39](https://github.com/Xoje-Tech/dev-tracker/commit/a473a391d59d7919738a804116ee0f119e1a199a))
+
+
+### Bug Fixes
+
+* **auth:** set trust proxy and secure cookie auto in production to fix HTTP deploy cookies (fixes [#1](https://github.com/Xoje-Tech/dev-tracker/issues/1)) ([c921b52](https://github.com/Xoje-Tech/dev-tracker/commit/c921b5257e052de8523ecd6a2bfabb5ef32760d7))
+* **backend:** add missing src/server entry point and fix dotenv override ([756145f](https://github.com/Xoje-Tech/dev-tracker/commit/756145f0c19c2eb525e273f88f4424e479dd2689))
+* **build:** tsc-alias in build, correct dist path in start, SPA fallback in app ([45ed4fa](https://github.com/Xoje-Tech/dev-tracker/commit/45ed4faba6bda6c347f57623b8f128fa61a75426))
+* **ci:** bump node version to 26 in release action to align with repo standard ([6f2729e](https://github.com/Xoje-Tech/dev-tracker/commit/6f2729ef13fea9fb43a9bd6eca90aabf4fae889e))
+* **ci:** remove pnpm version conflict ([a07b5fb](https://github.com/Xoje-Tech/dev-tracker/commit/a07b5fb9393e205aef86911a890d9f931c5e234b))
+* **ci:** remove pnpm version conflict in release action ([e25771d](https://github.com/Xoje-Tech/dev-tracker/commit/e25771ddd68b9614219b28419b67d0d29656df0a))
+* **ci:** rename generated CLI binaries for install script ([523b5bc](https://github.com/Xoje-Tech/dev-tracker/commit/523b5bcf174084b20080ea04855905ba3bb7910c))
+* **ci:** rename generated CLI binaries to match install script expectations ([989ff99](https://github.com/Xoje-Tech/dev-tracker/commit/989ff993fe7ece06194fda1003e0ec492340553e))
+* **ci:** update node version to 22 ([d0a86c5](https://github.com/Xoje-Tech/dev-tracker/commit/d0a86c51378187075ea5736322909ea98443f75f))
+* **ci:** update node version to 22 in release action ([d03bbc4](https://github.com/Xoje-Tech/dev-tracker/commit/d03bbc42b548a64d3de96d4a27120b8833c07694))
+* **cli:** 401 hint, authMode cookie bug, rotate warning + test infra bootstrap ([6dd7b6a](https://github.com/Xoje-Tech/dev-tracker/commit/6dd7b6aa9c6a3404646782038a95bf9b6501a388))
+* **cli:** add fallback for Set-Cookie header extraction in native fetch (fixes [#6](https://github.com/Xoje-Tech/dev-tracker/issues/6)) ([334b0f3](https://github.com/Xoje-Tech/dev-tracker/commit/334b0f3eab55fc3f74b0f89a13ad134225829168))
+* **cli:** add missing --order option to tasks create ([62e2d7d](https://github.com/Xoje-Tech/dev-tracker/commit/62e2d7d27c33bf119f72efe4372ed97ca4fd9a4e))
+* **client:** F4 auth polish, session-expired banner and error discrimination ([a96a1da](https://github.com/Xoje-Tech/dev-tracker/commit/a96a1dad5b515e6246690d33530d917973f1c71a))
+* **cli:** switch from ESM to CommonJS to fix pkg module resolution ([540d1eb](https://github.com/Xoje-Tech/dev-tracker/commit/540d1ebb0fd68370e7ab9c5edcb9d4b89ce7bfe0))
+* **cli:** switch to CommonJS for pkg compatibility ([22fb38f](https://github.com/Xoje-Tech/dev-tracker/commit/22fb38f9963ff874b8a863a6c50ac876266ffae0))
+* **cli:** use direct cd in root cli scripts ([da7b733](https://github.com/Xoje-Tech/dev-tracker/commit/da7b733e965f7264ff6454fc60a05505d8e3934f))
+* **config:** remove quotes from DATABASE_URL to support systemd and update SESSION_SECRET placeholder (fixes [#3](https://github.com/Xoje-Tech/dev-tracker/issues/3)) ([9cc179a](https://github.com/Xoje-Tech/dev-tracker/commit/9cc179af23e0a7ea88dc85182909d5b2353b78c0))
+* **dev-tracker:** make Docker image build and run end-to-end ([d767d11](https://github.com/Xoje-Tech/dev-tracker/commit/d767d119431e4323c340886be2cc4c69f0314590))
+* **dev-tracker:** production-ready persistence + NODE_ENV override ([8205f81](https://github.com/Xoje-Tech/dev-tracker/commit/8205f81f04c705fefb2733bbac2458dff22a4724))
+* **devops:** map correct internal port 3000 in compose.yaml ([66b5e8d](https://github.com/Xoje-Tech/dev-tracker/commit/66b5e8db9902823c057b6f90caf15d945611eb7f))
+* **docker:** correct path to compiled server entrypoint ([9c6ddc4](https://github.com/Xoje-Tech/dev-tracker/commit/9c6ddc48bb2eb4f571aef6dfdf0f54efcb57dff9))
+* **server:** /api/auth/me returns full authResponseDtoSchema shape ([d903317](https://github.com/Xoje-Tech/dev-tracker/commit/d903317333678511a914fd9d34aae497915e4f15))
+* **test:** exclude src/client from backend vitest config ([dfe2b1a](https://github.com/Xoje-Tech/dev-tracker/commit/dfe2b1aa09405de5990d8a1f80a39fc41ae0b892))
+* **test:** handle string or array headers in cookie test to fix build ([3f312e5](https://github.com/Xoje-Tech/dev-tracker/commit/3f312e54a1ff7925dfd8324b1088de2317f80c6b))
+
 ## [Unreleased]
 
 ## [1.0.0] - 2026-06-30

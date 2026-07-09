@@ -14,7 +14,7 @@ export function createTaskRoutes(
   const router = Router();
   const auth = createAuthMiddleware(authStrategy);
 
-  router.post("/", auth, validateBody(createTaskDtoSchema), controller.create);
+  router.post("/tasks", auth, validateBody(createTaskDtoSchema), controller.create);
   router.patch("/tasks/:id", auth, validateBody(updateTaskDtoSchema), controller.update);
   router.post("/tasks/:id/move", auth, validateBody(moveTaskDtoSchema), controller.move);
   router.delete("/tasks/:id", auth, controller.delete);
