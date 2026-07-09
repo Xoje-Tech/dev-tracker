@@ -5,13 +5,14 @@ import { registerProjectCommands } from "./commands/projects.js";
 import { registerBoardCommands } from "./commands/board.js";
 import { registerTaskCommands } from "./commands/tasks.js";
 import { registerTagCommands } from "./commands/tags.js";
+import { registerSystemCommands } from "./commands/system.js";
 
 const program = new Command();
 
 program
   .name("dt")
   .description("dev-tracker CLI — manage projects, boards, tasks and tags from the terminal")
-  .version("0.1.0")
+  .version("1.2.1")
   .option("-u, --url <url>", "API base URL", process.env.DEV_TRACKER_URL ?? "http://localhost:3000")
   .option("--json", "output machine-readable JSON instead of human format", false);
 
@@ -20,6 +21,7 @@ registerProjectCommands(program);
 registerBoardCommands(program);
 registerTaskCommands(program);
 registerTagCommands(program);
+registerSystemCommands(program);
 
 function isJsonMode(): boolean {
   return Boolean(program.opts<{ json?: boolean }>().json);
