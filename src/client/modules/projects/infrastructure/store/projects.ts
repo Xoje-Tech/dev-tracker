@@ -74,13 +74,31 @@ export const useProjectsStore = defineStore("projects", () => {
     replaceOne(project);
   }
 
+  const memories = ref<any[]>([]);
+  const memoriesWarning = ref<string | null>(null);
+
+  async function fetchMemories(id: string): Promise<void> {
+    memories.value = [];
+    memoriesWarning.value = null;
+    try {
+      const res = await api.get<{ memories: any[]; warning: string | null }>(`/${id}/memories`);
+      memories.value = res.memories;
+      memoriesWarning.value = res.warning;
+    } catch (e) {
+      memoriesWarning.value = "Failed to load Engram memories";
+    }
+  }
+
   return {
     projects,
     current,
+    memories,
+    memoriesWarning,
     loading,
     error,
     fetchAll,
     fetchOne,
+    fetchMemories,
     create,
     update,
     archive,

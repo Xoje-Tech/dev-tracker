@@ -11,6 +11,7 @@ const envSchema = z.object({
   // Directory for connect-sqlite3 session store. Default "." (CWD) for local dev;
   // Docker sets this to /app/data so sessions.db lands in the named volume.
   SESSIONS_DIR: z.string().default("."),
+  ENGRAM_API_URL: z.string().default("http://127.0.0.1:7437"),
 });
 
 const parseEnv = () => {
