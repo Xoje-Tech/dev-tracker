@@ -1,3 +1,16 @@
-:80 {
-    reverse_proxy dev-tracker-server:3000
+:8080 {
+    header {
+        # Prevenir Clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Prevenir MIME-sniffing
+        X-Content-Type-Options "nosniff"
+        # Limitar fuga de Referrer
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Desactivar acceso a hardware del cliente innecesario
+        Permissions-Policy "geolocation=(), camera=(), microphone=()"
+        # Content Security Policy (CSP) inicial para Vue 3 + Tailwind 4
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';"
+    }
+
+    reverse_proxy 127.0.0.1:6789
 }
