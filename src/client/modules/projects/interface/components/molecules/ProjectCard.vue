@@ -10,7 +10,7 @@ const props = defineProps<{
 const router = useRouter();
 
 function open(): void {
-  void router.push({ name: "board", params: { id: props.project.id } });
+  void router.push({ name: "project-detail", params: { id: props.project.id } });
 }
 </script>
 
