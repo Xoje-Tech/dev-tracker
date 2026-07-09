@@ -16,6 +16,7 @@ export function createProjectRoutes(
   router.post("/", auth, validateBody(createProjectDtoSchema), controller.create);
   router.get("/", auth, controller.list);
   router.get("/:id", auth, controller.get);
+  router.get("/:id/memories", auth, controller.getMemories);
   router.patch("/:id", auth, validateBody(updateProjectDtoSchema), controller.update);
   router.post("/:id/archive", auth, controller.archive);
 
