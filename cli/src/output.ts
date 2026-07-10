@@ -5,6 +5,8 @@
  * via a parameter to keep the helpers pure and easy to test.
  */
 
+import { Command } from "commander";
+
 export function jsonOut(value: unknown): void {
   console.log(JSON.stringify(value, null, 2));
 }
@@ -40,4 +42,14 @@ export function success(msg: string, json: boolean, data?: unknown): void {
   } else {
     console.log(msg);
   }
+}
+
+/**
+ * Resolve the root program and check the --json flag.
+ * Subcommands receive their own Command instance via register*Commands(program),
+ * but program.parent points back to root.
+ */
+export function useJson(program: Command): boolean {
+  const root = program.parent ?? program;
+  return Boolean(root.opts<{ json?: boolean }>().json);
 }
