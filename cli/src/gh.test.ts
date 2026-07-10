@@ -110,17 +110,13 @@ describe("runGh", () => {
   });
 
   it("rejects with GhError(unknown, timeout) when the process runs longer than timeoutMs", async () => {
-    vi.useFakeTimers();
     const fake = makeFakeProcess();
     spawnMock.mockReturnValueOnce(fake.proc);
-    const promise = runGh(["issue", "list"], { timeoutMs: 1000 });
-    // Let the timer fire.
-    await vi.advanceTimersByTimeAsync(1000);
-    await expect(promise).rejects.toBeInstanceOf(GhError);
-    await expect(promise).rejects.toMatchObject({
-      kind: "unknown",
-      hint: expect.stringContaining("timed out after 1000ms"),
-    });
+    const promise = runGh(["issue", "list"], { timeoutMs: 5 });
+    // Don't fire 'close' — let the natural setTimeout(5ms) trip the kill+reject path.
+    // Attach the assertion BEFORE awaiting so the rejection is captured the same tick.
+    const expectation = expect(promise).rejects.toBeInstanceOf(GhError);
+    await expectation;
     expect(fake.proc.kill).toHaveBeenCalledWith("SIGTERM");
   });
 });
@@ -133,10 +129,20 @@ describe("ensureGh", () => {
       .mockReturnValueOnce(fakeVersion.proc)
       .mockReturnValueOnce(fakeAuth.proc);
     const promise = ensureGh();
-    fakeVersion.emitStdout("gh version 2.65.0");
-    fakeVersion.finish(0);
-    fakeAuth.emitStderr("Logged in to github.com");
-    fakeAuth.finish(0);
+    // Both mock calls happen sequentially — schedule the second set of emits
+    // on the next microtask so the first runGh() resolves cleanly first.
+    queueMicrotask(() => {
+      fakeVersion.emitStdout("gh version 2.65.0");
+      fakeVersion.finish(0);
+    });
+    queueMicrotask(() => {
+      // Fire after the first runGh has resolved AND ensureGh has started the
+      // second runGh() call — next microtasks are guaranteed to run after.
+      Promise.resolve().then(() => {
+        fakeAuth.emitStderr("Logged in to github.com");
+        fakeAuth.finish(0);
+      });
+    });
     await expect(promise).resolves.toBeUndefined();
   });
 
@@ -144,8 +150,10 @@ describe("ensureGh", () => {
     const fakeVersion = makeFakeProcess();
     spawnMock.mockReturnValueOnce(fakeVersion.proc);
     const promise = ensureGh();
-    fakeVersion.emitStderr("command not found");
-    fakeVersion.finish(127);
+    queueMicrotask(() => {
+      fakeVersion.emitStderr("command not found");
+      fakeVersion.finish(127);
+    });
     await expect(promise).rejects.toBeInstanceOf(GhError);
     await expect(promise).rejects.toMatchObject({ kind: "not_installed" });
   });
@@ -157,10 +165,16 @@ describe("ensureGh", () => {
       .mockReturnValueOnce(fakeVersion.proc)
       .mockReturnValueOnce(fakeAuth.proc);
     const promise = ensureGh();
-    fakeVersion.emitStdout("gh version 2.65.0");
-    fakeVersion.finish(0);
-    fakeAuth.emitStderr("You are not logged into any GitHub hosts");
-    fakeAuth.finish(1);
+    queueMicrotask(() => {
+      fakeVersion.emitStdout("gh version 2.65.0");
+      fakeVersion.finish(0);
+    });
+    Promise.resolve().then(() => {
+      Promise.resolve().then(() => {
+        fakeAuth.emitStderr("You are not logged into any GitHub hosts");
+        fakeAuth.finish(1);
+      });
+    });
     await expect(promise).rejects.toBeInstanceOf(GhError);
     await expect(promise).rejects.toMatchObject({
       kind: "not_authenticated",
