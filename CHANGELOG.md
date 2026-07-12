@@ -5,6 +5,51 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.2.1...dev-tracker-v1.3.0) (2026-07-12)
+
+
+### Features
+
+* add mcp sdk and start script ([2d7ddb2](https://github.com/Xoje-Tech/dev-tracker/commit/2d7ddb2634aa6608cf2a66444947e0e1440f6dd1))
+* **auth:** add unauthenticated local offline mode using fallback user ([4a3fce1](https://github.com/Xoje-Tech/dev-tracker/commit/4a3fce122228fd0f0096996d8410c6e3abc1e237))
+* **auth:** add unauthenticated local offline mode using fallback user ([9b44484](https://github.com/Xoje-Tech/dev-tracker/commit/9b4448456415dae8cc3c6badcce6329f82c1f747))
+* **cli:** add cache module with atomic write, mtime, age helpers ([f6a1b61](https://github.com/Xoje-Tech/dev-tracker/commit/f6a1b61220caecdb6a74650ec60857233b239990))
+* **cli:** add gh CLI wrapper with spawn, ensureGh, error parsing ([67dff1e](https://github.com/Xoje-Tech/dev-tracker/commit/67dff1e40fd82631dcebb3a964c6c42a0a21f558))
+* **cli:** add hand-rolled type-guard parsers for issue/pr/run/branch ([61574e0](https://github.com/Xoje-Tech/dev-tracker/commit/61574e0739b87ffe5b0f48f19e16a59f11e069d9))
+* **cli:** add update and server update deploy commands ([43ef0d1](https://github.com/Xoje-Tech/dev-tracker/commit/43ef0d107b7fffefd55df004090a7dbdfc8620ee))
+* **cli:** add update and server update deploy commands ([249d965](https://github.com/Xoje-Tech/dev-tracker/commit/249d96591f5acb004f7f6b17378c2eda753b496f))
+* **cli:** dt github sync — foundation (PR 1 of 3) ([a601103](https://github.com/Xoje-Tech/dev-tracker/commit/a60110308c9fbf295090790a36d0ef1a6f2fa584))
+* **client:** implement ProjectDetailView with sprint progress statistics ([fdd1cd1](https://github.com/Xoje-Tech/dev-tracker/commit/fdd1cd11bddce9c66107d0a27a2827cac8e36350))
+* **client:** implement ProjectDetailView with sprint progress statistics ([891f0a1](https://github.com/Xoje-Tech/dev-tracker/commit/891f0a1c811c9e11c8e66d8c6ab816071fdfa75b))
+* **client:** integrate Engram memory bank card in ProjectDetailView ([0df9e8e](https://github.com/Xoje-Tech/dev-tracker/commit/0df9e8eb1bbacdd5b5d3a015d7ff6bbce2933b67))
+* **client:** integrate Engram memory bank card in ProjectDetailView ([78be2b5](https://github.com/Xoje-Tech/dev-tracker/commit/78be2b5d83b0ef4e315f9a2d10775640ccadb95a))
+* **cli:** extract useJson(program) helper to output.ts for reuse ([d55bdc3](https://github.com/Xoje-Tech/dev-tracker/commit/d55bdc3815da6835ac9b14493b09d3efb3d2bf03))
+* **cli:** GitHub sync (pull + push) for issues, PRs, branches and runs ([696c36d](https://github.com/Xoje-Tech/dev-tracker/commit/696c36d4c2a1ab83cca27c64638e966a23e96125))
+* **cli:** GitHub sync (pull + push) for issues, PRs, branches and runs ([d058be2](https://github.com/Xoje-Tech/dev-tracker/commit/d058be2942b31e717c66f59893609a5d2f3992c0))
+* **deploy:** production deployment configuration and orchestration scripts ([91c1793](https://github.com/Xoje-Tech/dev-tracker/commit/91c17937058f20427392b9dfd2b303472456ff06))
+* **deploy:** production deployment configuration and orchestration scripts ([50ce906](https://github.com/Xoje-Tech/dev-tracker/commit/50ce906bf14ea7d4972c3739ab6ff186bc63538e))
+* format error response for mcp ([c765cd3](https://github.com/Xoje-Tech/dev-tracker/commit/c765cd3efa9a04e41bbb3bb6ca6b6d6164658eb8))
+* implement mcp server entrypoint and transport ([cc70a45](https://github.com/Xoje-Tech/dev-tracker/commit/cc70a45a32447185d7313f065155cecb40a2a635))
+* implement mcp tool schemas and handlers ([258d6e2](https://github.com/Xoje-Tech/dev-tracker/commit/258d6e2f8f34a7c63740b6c0ad810bc452f6e9b1))
+* implement McpClient wrapper ([da9c64a](https://github.com/Xoje-Tech/dev-tracker/commit/da9c64aefbcd414d791c52f89a6bce30b7680d6f))
+* **mcp:** implement native mcp server ([96fd1e1](https://github.com/Xoje-Tech/dev-tracker/commit/96fd1e1512f0d8da2ee0e662864c2926371235e7))
+
+
+### Bug Fixes
+
+* build errors due to strict typescript checks ([40df9c8](https://github.com/Xoje-Tech/dev-tracker/commit/40df9c85323e2ea12adb7a1f6a11913db4108052))
+* **ci:** trigger CLI release on dev-tracker component tag ([cb292d6](https://github.com/Xoje-Tech/dev-tracker/commit/cb292d6a6755498bd70dfa8ffcbdd70d382fbc84))
+* **cli:** pass --json &lt;fields&gt; to gh so sync paths return JSON, not TSV ([9ce58c6](https://github.com/Xoje-Tech/dev-tracker/commit/9ce58c6117a33b6c252843e0cf55398ec963401a))
+* **cli:** pass --json &lt;fields&gt; to gh so sync/refresh paths get JSON instead of TSV ([8ced09f](https://github.com/Xoje-Tech/dev-tracker/commit/8ced09f94c49e2c46dec58d0fac559ea4c61eb35))
+* **docker:** add userns_mode to keep-id for podman volume write permissions ([d92398f](https://github.com/Xoje-Tech/dev-tracker/commit/d92398fbe858c736ce34c09d79eecfcc7e569b02))
+* **docker:** correct production ports and env vars in compose ([c3d1e13](https://github.com/Xoje-Tech/dev-tracker/commit/c3d1e1322a7ec5f4a3d23a7a1aeb89fc0e01d6f7))
+* **docker:** correct production ports and env vars in compose ([4554380](https://github.com/Xoje-Tech/dev-tracker/commit/4554380abb97f4b57128e86d0efb08b96aa5bd11))
+* **docker:** resolve sqlite readonly error with podman volumes ([8ac38e3](https://github.com/Xoje-Tech/dev-tracker/commit/8ac38e330ad1888cdfd1a73b7730b4b820d9793b))
+* **mcp:** align create_task route and move_task verb/body ([54c2357](https://github.com/Xoje-Tech/dev-tracker/commit/54c23573f7f6dd7c9b8a7a21ff7b277e7271a365))
+* **mcp:** align create_task route and move_task verb/body ([28b063b](https://github.com/Xoje-Tech/dev-tracker/commit/28b063bfb85c6e67149c035ab64cdcb938602a29))
+* **mcp:** make createTaskDto.order optional ([55fe344](https://github.com/Xoje-Tech/dev-tracker/commit/55fe344d6643c842f84f1b91ace3029e6cb08e4e))
+* **mcp:** make createTaskDto.order optional ([3545a96](https://github.com/Xoje-Tech/dev-tracker/commit/3545a96af4128a80741509324a6a4aa2d10904ea))
+
 ## [1.2.1](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.2.0...dev-tracker-v1.2.1) (2026-07-05)
 
 
