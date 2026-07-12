@@ -38,6 +38,51 @@ import { jsonOut, success, table, useJson } from "../output.js";
 const MAX_ISSUE_COMMENTS = 30;
 const STALE_THRESHOLD_HOURS = 24;
 
+/**
+ * Field lists passed to `gh <subcommand> --json <fields>`. These are the
+ * MINIMUM fields `parsers.ts` needs to validate the payload — `gh` will
+ * include all of them in the JSON output, and `parseX` throws ParseError
+ * if any required field is missing or malformed. We can't drop these
+ * flags because `gh issue list`/`gh pr list`/`gh run list` return
+ * tab-separated text by default; without `--json` the JSON.parse in
+ * pullX would fail silently (after the E1 fix: throw).
+ */
+const ISSUE_LIST_FIELDS = [
+  "number",
+  "title",
+  "body",
+  "state",
+  "labels",
+  "author",
+  "assignees",
+  "comments",
+  "createdAt",
+  "updatedAt",
+  "closedAt",
+  "url",
+].join(",");
+const PR_LIST_FIELDS = [
+  ...ISSUE_LIST_FIELDS.split(","),
+  "headRefName",
+  "baseRefName",
+  "mergeable",
+  "reviewDecision",
+  "statusCheckRollup",
+  "reviews",
+].join(",");
+const RUN_LIST_FIELDS = [
+  "databaseId",
+  "name",
+  "status",
+  "conclusion",
+  "headBranch",
+  "event",
+  "url",
+  "createdAt",
+].join(",");
+const RUN_LIST_LIMIT = 20;
+const ENTITY_LIST_LIMIT = 1000;
+
 interface PullSummary {
   issues: number;
   prs: number;
@@ -121,7 +166,16 @@ async function readRemoteBranches(): Promise<BranchRef[]> {
 /* ───────────────────────── entity-specific pull handlers ───────────────────────── */
 
 async function pullIssues(): Promise<number> {
-  const result = await runGh(["issue", "list"]);
+  const result = await runGh([
+    "issue",
+    "list",
+    "--state",
+    "open",
+    "--json",
+    ISSUE_LIST_FIELDS,
+    "--limit",
+    String(ENTITY_LIST_LIMIT),
+  ]);
   if (result.exitCode !== 0) {
     throw new GhError(
       "unknown",
@@ -149,7 +203,16 @@ async function pullIssues(): Promise<number> {
 }
 
 async function pullPrs(): Promise<number> {
-  const result = await runGh(["pr", "list"]);
+  const result = await runGh([
+    "pr",
+    "list",
+    "--state",
+    "open",
+    "--json",
+    PR_LIST_FIELDS,
+    "--limit",
+    String(ENTITY_LIST_LIMIT),
+  ]);
   if (result.exitCode !== 0) {
     throw new GhError(
       "unknown",
@@ -186,7 +249,14 @@ async function pullBranches(): Promise<number> {
 }
 
 async function pullRuns(): Promise<number> {
-  const result = await runGh(["run", "list"]);
+  const result = await runGh([
+    "run",
+    "list",
+    "--limit",
+    String(RUN_LIST_LIMIT),
+    "--json",
+    RUN_LIST_FIELDS,
+  ]);
   if (result.exitCode !== 0) {
     throw new GhError(
       "unknown",
