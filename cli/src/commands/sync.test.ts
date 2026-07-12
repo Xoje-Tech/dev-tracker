@@ -485,10 +485,13 @@ describe("dt sync filtered subcommands", () => {
     await runSync(["sync", "issues"]);
 
     expect(runGhMock).toHaveBeenCalledTimes(1);
-    expect(runGhMock.mock.calls[0]![0] as string[]).toEqual([
-      "issue",
-      "list",
-    ]);
+    const callArgs = runGhMock.mock.calls[0]![0] as string[];
+    expect(callArgs[0]).toBe("issue");
+    expect(callArgs[1]).toBe("list");
+    // Production code passes --state open --json <FIELDS> --limit <N> so the
+    // response is JSON. Tests don't assert the exact field list to keep the
+    // contract focused on the subcommand path.
+    expect(callArgs).toContain("--json");
     const writes = writeMirrorMock.mock.calls;
     expect(writes.every((c) => c[0] === "issues")).toBe(true);
   });

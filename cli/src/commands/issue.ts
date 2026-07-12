@@ -28,6 +28,26 @@ import { success, useJson } from "../output.js";
 const PUSH_REFRESH_DELAY_MS = 2000;
 
 /**
+ * Field list passed to `gh issue view <n> --json <fields>`. `gh issue view`
+ * defaults to a human-readable text body; without `--json` we can't parse
+ * the response and the cache refresh after a push would silently fail.
+ */
+const ISSUE_VIEW_FIELDS = [
+  "number",
+  "title",
+  "body",
+  "state",
+  "labels",
+  "author",
+  "assignees",
+  "comments",
+  "createdAt",
+  "updatedAt",
+  "closedAt",
+  "url",
+].join(",");
+
+/**
  * Sleep `ms` milliseconds. Wrapped so tests can stub it via fake timers
  * without changing production semantics.
  */
@@ -43,7 +63,13 @@ function delay(ms: number): Promise<void> {
  * success. We do NOT write a half-truthful mirror on failure.
  */
 async function refreshIssueMirror(n: number): Promise<IssuePayload> {
-  const result = await runGh(["issue", "view", String(n)]);
+  const result = await runGh([
+    "issue",
+    "view",
+    String(n),
+    "--json",
+    ISSUE_VIEW_FIELDS,
+  ]);
   if (result.exitCode !== 0) {
     throw new GhError(
       "unknown",

@@ -18,12 +18,44 @@ import { success, useJson } from "../output.js";
 
 const PUSH_REFRESH_DELAY_MS = 2000;
 
+/**
+ * Field list passed to `gh pr view <n> --json <fields>`. `gh pr view`
+ * defaults to a human-readable text body; without `--json` the cache
+ * refresh after a push review would silently fail.
+ */
+const PR_VIEW_FIELDS = [
+  "number",
+  "title",
+  "body",
+  "state",
+  "labels",
+  "author",
+  "assignees",
+  "comments",
+  "createdAt",
+  "updatedAt",
+  "closedAt",
+  "url",
+  "headRefName",
+  "baseRefName",
+  "mergeable",
+  "reviewDecision",
+  "statusCheckRollup",
+  "reviews",
+].join(",");
+
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function refreshPrMirror(n: number): Promise<PrPayload> {
-  const result = await runGh(["pr", "view", String(n)]);
+  const result = await runGh([
+    "pr",
+    "view",
+    String(n),
+    "--json",
+    PR_VIEW_FIELDS,
+  ]);
   if (result.exitCode !== 0) {
     throw new GhError(
       "unknown",
