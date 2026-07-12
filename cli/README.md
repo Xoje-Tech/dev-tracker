@@ -46,6 +46,59 @@ dt tags create --name urgent --color "#ef4444"
 dt tags assign <task-id> <tag-id>
 ```
 
+## GitHub sync (`dt sync`, `dt issue`, `dt pr`)
+
+Mirror a subset of GitHub state (open issues, open PRs, branches, last 20
+Actions runs) into a local gitignored cache at `<repo>/.dev-tracker/sync/`,
+then drive single-entity push operations back to GitHub. All GitHub I/O is
+mediated through the `gh` CLI — auth, pagination and rate-limits stay with
+the existing `gh-app-token-renew` pipeline.
+
+```bash
+# Mirror everything in parallel (issues, PRs, branches, runs).
+dt sync pull
+
+# Refresh only one entity type (the others' mirror mtime is untouched).
+dt sync issues
+dt sync prs
+dt sync branches
+dt sync runs
+
+# Age per entity type; exit 1 if any > 24h stale.
+dt sync status
+```
+
+Push operations follow the same shape: post the change, sleep 2s to
+absorb GitHub's eventual consistency, re-pull and overwrite the affected
+mirror file.
+
+```bash
+# Issues
+dt issue comment 10 --body "Looks good"
+dt issue close 10
+dt issue reopen 10
+
+# PRs
+dt pr comment 55 --body "LGTM"
+dt pr review 55 --approve --body "LGTM"
+dt pr review 55 --request-changes --body "Please fix X"
+dt pr review 55 --comment --body "Question about line 12"
+```
+
+All commands respect the root `--json` flag for machine-readable output:
+
+```bash
+dt --json sync pull
+dt --json issue comment 10 --body "hi"
+```
+
+### Requirements
+
+- `gh` CLI installed and authenticated. If either check fails, `dt sync`
+  exits non-zero with a remediation hint that points to
+  `~/.hermes/skills/github/gh-app-token-renew/assets/renew-gh-token.sh`
+  for token renewal.
+
 ## Authentication
 
 The CLI prefers **API keys** (sent as `X-API-Key`) over session cookies.

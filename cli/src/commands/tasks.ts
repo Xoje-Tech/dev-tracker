@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { ApiClient } from "../client.js";
-import { jsonOut, success } from "../output.js";
+import { jsonOut, success, useJson } from "../output.js";
 
 interface TaskDto {
   id: string;
@@ -18,9 +18,6 @@ interface TaskDto {
 
 function client(program: Command): ApiClient {
   return new ApiClient(program.opts<{ url: string }>().url);
-}
-function useJson(program: Command): boolean {
-  return Boolean(program.opts<{ json?: boolean }>().json);
 }
 
 export function registerTaskCommands(program: Command): void {

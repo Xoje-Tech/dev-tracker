@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { ApiClient } from "../client.js";
-import { jsonOut, success, table } from "../output.js";
+import { jsonOut, success, table, useJson } from "../output.js";
 
 interface TagDto {
   id: string;
@@ -10,9 +10,6 @@ interface TagDto {
 
 function client(program: Command): ApiClient {
   return new ApiClient(program.opts<{ url: string }>().url);
-}
-function useJson(program: Command): boolean {
-  return Boolean(program.opts<{ json?: boolean }>().json);
 }
 
 export function registerTagCommands(program: Command): void {

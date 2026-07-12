@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import { ApiClient } from "../client.js";
 import { loadSession } from "../session.js";
-import { jsonOut, success, table } from "../output.js";
+import { jsonOut, success, table, useJson } from "../output.js";
 
 interface ProjectDto {
   id: string;
@@ -15,9 +15,6 @@ interface ProjectDto {
 
 function client(program: Command): ApiClient {
   return new ApiClient(program.opts<{ url: string }>().url);
-}
-function useJson(program: Command): boolean {
-  return Boolean(program.opts<{ json?: boolean }>().json);
 }
 function requireAuth(): void {
   // The server will 401 if there's no session; this is a soft check.

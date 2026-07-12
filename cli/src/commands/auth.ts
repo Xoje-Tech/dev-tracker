@@ -7,7 +7,7 @@ import {
   saveSession,
   sessionPath,
 } from "../session.js";
-import { jsonOut, success } from "../output.js";
+import { jsonOut, success, useJson } from "../output.js";
 
 interface UserDto {
   id: string;
@@ -19,10 +19,6 @@ interface UserDto {
 function client(program: Command): ApiClient {
   const opts = program.opts<{ url: string }>();
   return new ApiClient(opts.url);
-}
-
-function useJson(program: Command): boolean {
-  return Boolean(program.opts<{ json?: boolean }>().json);
 }
 
 /**
