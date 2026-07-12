@@ -6,6 +6,9 @@ import { registerBoardCommands } from "./commands/board.js";
 import { registerTaskCommands } from "./commands/tasks.js";
 import { registerTagCommands } from "./commands/tags.js";
 import { registerSystemCommands } from "./commands/system.js";
+import { registerSyncCommands } from "./commands/sync.js";
+import { registerIssueCommands } from "./commands/issue.js";
+import { registerPrCommands } from "./commands/pr.js";
 
 const program = new Command();
 
@@ -22,6 +25,9 @@ registerBoardCommands(program);
 registerTaskCommands(program);
 registerTagCommands(program);
 registerSystemCommands(program);
+registerSyncCommands(program);
+registerIssueCommands(program);
+registerPrCommands(program);
 
 function isJsonMode(): boolean {
   return Boolean(program.opts<{ json?: boolean }>().json);
