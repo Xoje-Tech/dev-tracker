@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useApi } from "@client/shared/infrastructure/composables/useApi";
+import { PROJECTS_ROUTES } from "@projects/domain/routes";
+import { TASKS_ROUTES } from "@tasks/domain/routes";
 import type {
   Board,
   BoardColumn,
@@ -25,8 +27,8 @@ import type {
  *   POST /api/tasks/:id/move                  — move task (column + index)
  */
 export const useBoardStore = defineStore("board", () => {
-  const boardApi = useApi("/api/projects");
-  const taskApi = useApi("/api");
+  const boardApi = useApi(PROJECTS_ROUTES.base);
+  const taskApi = useApi(TASKS_ROUTES.base);
 
   const board = ref<Board | null>(null);
   const loading = ref(false);

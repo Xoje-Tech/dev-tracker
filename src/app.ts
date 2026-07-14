@@ -12,6 +12,7 @@ import { AuthenticateUser } from "@auth/application/use-cases/authenticate-user.
 import { RotateApiKey } from "@auth/application/use-cases/rotate-api-key.js";
 import { AuthController } from "@auth/interface/controllers/auth-controller.js";
 import { createAuthRoutes } from "@auth/interface/routes/auth-routes.js";
+import { AUTH_ROUTES } from "@auth/domain/routes.js";
 import { PrismaProjectRepository } from "@projects/infrastructure/persistence/prisma-project-repository.js";
 import { CreateProject } from "@projects/application/use-cases/create-project.js";
 import { ListProjects } from "@projects/application/use-cases/list-projects.js";
@@ -20,11 +21,13 @@ import { UpdateProject } from "@projects/application/use-cases/update-project.js
 import { ArchiveProject } from "@projects/application/use-cases/archive-project.js";
 import { ProjectController } from "@projects/interface/controllers/project-controller.js";
 import { createProjectRoutes } from "@projects/interface/routes/project-routes.js";
+import { PROJECTS_ROUTES } from "@projects/domain/routes.js";
 import { PrismaBoardRepository } from "@boards/infrastructure/persistence/prisma-board-repository.js";
 import { CreateDefaultBoard } from "@boards/application/use-cases/create-default-board.js";
 import { GetBoard } from "@boards/application/use-cases/get-board.js";
 import { BoardController } from "@boards/interface/controllers/board-controller.js";
 import { createBoardRoutes } from "@boards/interface/routes/board-routes.js";
+import { BOARD_ROUTES } from "@boards/domain/routes.js";
 import { PrismaTaskRepository } from "@tasks/infrastructure/persistence/prisma-task-repository.js";
 import { CreateTask } from "@tasks/application/use-cases/create-task.js";
 import { UpdateTask } from "@tasks/application/use-cases/update-task.js";
@@ -32,6 +35,7 @@ import { MoveTask } from "@tasks/application/use-cases/move-task.js";
 import { DeleteTask } from "@tasks/application/use-cases/delete-task.js";
 import { TaskController } from "@tasks/interface/controllers/task-controller.js";
 import { createTaskRoutes } from "@tasks/interface/routes/task-routes.js";
+import { TASKS_ROUTES } from "@tasks/domain/routes.js";
 import { PrismaTagRepository } from "@tags/infrastructure/persistence/prisma-tag-repository.js";
 import { CreateTag } from "@tags/application/use-cases/create-tag.js";
 import { ListTags } from "@tags/application/use-cases/list-tags.js";
@@ -39,6 +43,7 @@ import { AddTagToTask } from "@tags/application/use-cases/add-tag-to-task.js";
 import { RemoveTagFromTask } from "@tags/application/use-cases/remove-tag-from-task.js";
 import { TagController } from "@tags/interface/controllers/tag-controller.js";
 import { createTagRoutes } from "@tags/interface/routes/tag-routes.js";
+import { TAGS_ROUTES } from "@tags/domain/routes.js";
 import { prisma } from "@/prisma.js";
 import type { AuthUser } from "@shared/infrastructure/http/auth-middleware.js";
 import type { Request } from "express";
@@ -135,7 +140,7 @@ export function createApp(): Express {
     new AuthenticateUser(prismaUserRepo),
     new RotateApiKey(prismaUserRepo),
   );
-  app.use("/api/auth", createAuthRoutes(authController, authStrategy));
+  app.use(AUTH_ROUTES.base, createAuthRoutes(authController, authStrategy));
 
   // Projects module (fully wired)
   const prismaProjectRepo = new PrismaProjectRepository(prisma);
@@ -147,14 +152,14 @@ export function createApp(): Express {
     new UpdateProject(prismaProjectRepo),
     new ArchiveProject(prismaProjectRepo),
   );
-  app.use("/api/projects", createProjectRoutes(projectController, authStrategy));
+  app.use(PROJECTS_ROUTES.base, createProjectRoutes(projectController, authStrategy));
 
   // Boards module (fully wired)
   const boardController = new BoardController(
     new CreateDefaultBoard(prismaBoardRepo),
     new GetBoard(prismaBoardRepo, prisma),
   );
-  app.use("/api", createBoardRoutes(boardController, authStrategy));
+  app.use(BOARD_ROUTES.base, createBoardRoutes(boardController, authStrategy));
 
   // Tasks module (fully wired)
   const prismaTaskRepo = new PrismaTaskRepository(prisma);
@@ -164,7 +169,7 @@ export function createApp(): Express {
     new MoveTask(prismaTaskRepo, prisma),
     new DeleteTask(prismaTaskRepo),
   );
-  app.use("/api", createTaskRoutes(taskController, authStrategy));
+  app.use(TASKS_ROUTES.base, createTaskRoutes(taskController, authStrategy));
 
   // Tags module (fully wired)
   const prismaTagRepo = new PrismaTagRepository(prisma);
@@ -174,7 +179,7 @@ export function createApp(): Express {
     new AddTagToTask(prismaTagRepo),
     new RemoveTagFromTask(prismaTagRepo),
   );
-  app.use("/api", createTagRoutes(tagController, authStrategy));
+  app.use(TAGS_ROUTES.base, createTagRoutes(tagController, authStrategy));
 
   // Serve built Vue SPA from dist/client (no-op in dev mode where the file
   // doesn't exist). Without this, /projects returns a JSON 404 because the

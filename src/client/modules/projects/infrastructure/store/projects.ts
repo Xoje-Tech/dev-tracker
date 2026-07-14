@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useApi } from "@client/shared/infrastructure/composables/useApi";
+import { PROJECTS_ROUTES } from "@projects/domain/routes";
 import type {
   CreateProjectInput,
   Project,
@@ -17,7 +18,7 @@ import type {
  *   POST   /:id/archive   — archive
  */
 export const useProjectsStore = defineStore("projects", () => {
-  const api = useApi("/api/projects");
+  const api = useApi(PROJECTS_ROUTES.base);
 
   const projects = ref<Project[]>([]);
   const current = ref<Project | null>(null);
