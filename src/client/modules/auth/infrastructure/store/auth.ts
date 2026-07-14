@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useApi } from "@client/shared/infrastructure/composables/useApi";
 import type { ApiError } from "@client/shared/infrastructure/composables/useApi";
+import { AUTH_ROUTES } from "@auth/domain/routes";
 import type { LoginCredentials, RegisterData, User } from "@client/auth/domain/types";
 
 /**
@@ -30,7 +31,7 @@ export type FetchMeErrorReason = "expired" | "network" | "auth_error";
  * credentials: 'include' via the shared useApi wrapper.
  */
 export const useAuthStore = defineStore("auth", () => {
-  const api = useApi("/api/auth");
+  const api = useApi(AUTH_ROUTES.base);
 
   const user = ref<User | null>(null);
   const loading = ref(false);
