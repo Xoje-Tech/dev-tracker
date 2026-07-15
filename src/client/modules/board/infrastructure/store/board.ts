@@ -83,7 +83,7 @@ export const useBoardStore = defineStore("board", () => {
   }
 
   async function updateTask(id: string, input: UpdateTaskInput): Promise<BoardTask> {
-    const updated = await taskApi.patch<BoardTask>(`/tasks/${id}`, input);
+    const updated = await taskApi.patch<BoardTask>(`/${id}`, input);
     if (board.value) {
       for (const col of board.value.columns) {
         const idx = col.tasks.findIndex((t) => t.id === id);
@@ -97,7 +97,7 @@ export const useBoardStore = defineStore("board", () => {
   }
 
   async function deleteTask(id: string): Promise<void> {
-    await taskApi.del(`/tasks/${id}`);
+    await taskApi.del(`/${id}`);
     if (board.value) {
       for (const col of board.value.columns) {
         const idx = col.tasks.findIndex((t) => t.id === id);
@@ -114,7 +114,7 @@ export const useBoardStore = defineStore("board", () => {
     fromColumnId: string,
     input: MoveTaskInput,
   ): Promise<void> {
-    await taskApi.post(`/tasks/${taskId}/move`, input);
+    await taskApi.post(`/${taskId}/move`, input);
     if (!board.value) return;
 
     const fromCol = board.value.columns.find((c) => c.id === fromColumnId);

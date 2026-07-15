@@ -6,7 +6,7 @@
  * `:projectId` segment.
  */
 export const BOARD_ROUTES = {
-  base: '/api/projects',
-  get: '/projects/:projectId/board',
-  createDefault: '/projects/:projectId/board',
+  base: '/api/boards',
+  get: '/:projectId/board',
+  createDefault: '/:projectId/board',
 } as const;
