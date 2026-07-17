@@ -19,6 +19,16 @@ export const schemas = {
     taskId: z.string().min(1, "Required"),
     columnId: z.string().min(1, "Required"),
   }),
+  update_task: z.object({
+    taskId: z.string().min(1, "Required"),
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(2000).nullable().optional(),
+    priority: z.enum(["low", "medium", "high"]).optional(),
+    assigneeId: z.string().nullable().optional(),
+  }),
+  delete_task: z.object({
+    taskId: z.string().min(1, "Required"),
+  }),
 };
 
 export async function executeTool(client: McpClient, name: string, args: any) {
@@ -45,6 +55,14 @@ export async function executeTool(client: McpClient, name: string, args: any) {
         targetColumnId: args.columnId,
         newIndex: 0,
       });
+      break;
+    case "update_task": {
+      const { taskId, ...body } = args;
+      result = await client.patch(`/tasks/${taskId}`, body);
+      break;
+    }
+    case "delete_task":
+      result = await client.delete(`/tasks/${args.taskId}`);
       break;
     default:
       throw new Error(`Unknown tool: ${name}`);

@@ -9,6 +9,8 @@ vi.mock("./client", () => {
         get: vi.fn(),
         post: vi.fn(),
         put: vi.fn(),
+        patch: vi.fn(),
+        delete: vi.fn(),
       };
     })
   };
@@ -27,6 +29,21 @@ describe("Tool Schemas", () => {
     })).toEqual({ 
       projectId: "1", title: "Task", description: "desc", columnId: "2" 
     });
+  });
+
+  it("validates update_task schema", () => {
+    expect(() => schemas.update_task.parse({})).toThrow();
+    expect(schemas.update_task.parse({ taskId: "t1", title: "New title" })).toEqual({
+      taskId: "t1", title: "New title"
+    });
+    expect(schemas.update_task.parse({ taskId: "t1", priority: "high" })).toEqual({
+      taskId: "t1", priority: "high"
+    });
+  });
+
+  it("validates delete_task schema", () => {
+    expect(() => schemas.delete_task.parse({})).toThrow();
+    expect(schemas.delete_task.parse({ taskId: "t1" })).toEqual({ taskId: "t1" });
   });
 });
 
@@ -71,5 +88,27 @@ describe("executeTool", () => {
       newIndex: 0,
     });
     expect(result.content[0].text).toContain('{"ok":true}');
+  });
+
+  it("executes update_task via PATCH /tasks/:id", async () => {
+    const mockClient = new McpClient("url", "key");
+    vi.mocked(mockClient.patch).mockResolvedValueOnce({ id: "t1", title: "New title" });
+
+    const result = await executeTool(mockClient, "update_task", {
+      taskId: "t1", title: "New title"
+    });
+
+    expect(mockClient.patch).toHaveBeenCalledWith("/tasks/t1", { title: "New title" });
+    expect(result.content[0].text).toContain('{"id":"t1","title":"New title"}');
+  });
+
+  it("executes delete_task via DELETE /tasks/:id", async () => {
+    const mockClient = new McpClient("url", "key");
+    vi.mocked(mockClient.delete).mockResolvedValueOnce({ success: true });
+
+    const result = await executeTool(mockClient, "delete_task", { taskId: "t1" });
+
+    expect(mockClient.delete).toHaveBeenCalledWith("/tasks/t1");
+    expect(result.content[0].text).toContain('{"success":true}');
   });
 });

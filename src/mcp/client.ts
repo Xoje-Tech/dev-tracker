@@ -43,4 +43,17 @@ export class McpClient {
       body: body ? JSON.stringify(body) : undefined,
     });
   }
+
+  async patch(path: string, body: any) {
+    return this.request(path, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+  }
+
+  async delete(path: string) {
+    return this.request(path, {
+      method: "DELETE",
+    });
+  }
 }
