@@ -6,7 +6,7 @@
  */
 export const TAGS_ROUTES = {
   base: '/api/tags',
-  collection: '/tags',
+  collection: '/',
   attach: '/tasks/:taskId/tags/:tagId',
   detach: '/tasks/:taskId/tags/:tagId',
 } as const;

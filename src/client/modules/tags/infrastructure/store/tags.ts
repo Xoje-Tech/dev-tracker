@@ -21,7 +21,7 @@ import type { CreateTagInput, Tag } from "@client/tags/domain/types";
  */
 export const useTagsStore = defineStore("tags", () => {
   const api = useApi(TAGS_ROUTES.base);
-  const taskApi = useApi(TASKS_ROUTES.base);
+  const tagsApi = useApi(TAGS_ROUTES.base);
 
   const tags = ref<Tag[]>([]);
   const loading = ref(false);
@@ -46,11 +46,11 @@ export const useTagsStore = defineStore("tags", () => {
   }
 
   async function assignToTask(taskId: string, tagId: string): Promise<void> {
-    await taskApi.post(`/tasks/${taskId}/tags/${tagId}`);
+    await tagsApi.post(`/tasks/${taskId}/tags/${tagId}`);
   }
 
   async function unassignFromTask(taskId: string, tagId: string): Promise<void> {
-    await taskApi.del(`/tasks/${taskId}/tags/${tagId}`);
+    await tagsApi.del(`/tasks/${taskId}/tags/${tagId}`);
   }
 
   return {
