@@ -117,7 +117,7 @@ async function runPr(
   program
     .name("dt")
     .option("--json", "machine-readable output", false)
-    .option("-u, --url <url>", "API base URL", "http://localhost:3000");
+    .option("-u, --url <url>", "API base URL", "http://localhost:6789");
   registerPrCommands(program);
   if (opts.json) {
     process.argv = ["node", "dt", "--json", ...args];
