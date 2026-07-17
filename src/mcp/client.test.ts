@@ -26,6 +26,21 @@ describe("McpClient", () => {
 
     await expect(client.get("/projects")).rejects.toThrow("Not Found");
   });
+
+  it("throws descriptive error with details on validation failures", async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({
+      error: "Validation failed",
+      details: {
+        title: ["Required"],
+        columnId: ["Invalid ID"]
+      }
+    }), { status: 400 }));
+    const client = new McpClient("http://localhost:3000/api", "test-key");
+
+    await expect(client.get("/projects")).rejects.toThrow(
+      "Validation failed:\ntitle: Required\ncolumnId: Invalid ID"
+    );
+  });
   
   it("sends POST payload correctly", async () => {
     const mockFetch = vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({ id: "1" })));

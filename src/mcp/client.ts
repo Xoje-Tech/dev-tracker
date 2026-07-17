@@ -13,7 +13,14 @@ export class McpClient {
 
     if (!response.ok) {
       const errorBody: any = await response.json().catch(() => ({}));
-      throw new Error(errorBody.error || response.statusText || "HTTP Error");
+      let msg = errorBody.error || response.statusText || "HTTP Error";
+      if (errorBody.error === "Validation failed" && errorBody.details) {
+        const issues = Object.entries(errorBody.details)
+          .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(", ") : String(msgs)}`)
+          .join("\n");
+        msg = `Validation failed:\n${issues}`;
+      }
+      throw new Error(msg);
     }
 
     return response.json();
