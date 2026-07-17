@@ -235,7 +235,7 @@ See [AGENTS.md](./AGENTS.md) for the full agent guide (architecture, conventions
 
 ## Model Context Protocol (MCP) Server
 
-Dev Tracker ships with a Model Context Protocol (MCP) server that allows AI agents (such as Hermes, Cursor, Claude Desktop, and Windsurf) to interact with your projects and tasks directly.
+Dev Tracker ships with a Model Context Protocol (MCP) server that allows AI agents (such as Hermes and OpenCode) to interact with your projects and tasks directly.
 
 ### Auto-Configuration
 
@@ -245,7 +245,7 @@ You can automatically detect and configure the MCP server for all supported agen
 pnpm run mcp:setup
 ```
 
-The script will look for active installations of Hermes, Claude Desktop, Cursor, and Windsurf, and automatically register the `dev-tracker` MCP server in their preferences with the correct absolute paths and ports.
+The script will look for active installations of Hermes and OpenCode, and automatically register the `dev-tracker` MCP server in their preferences with the correct absolute paths and ports.
 
 ### Manual Configuration
 
