@@ -1,0 +1,7 @@
+{
+  "extra_extensions": {
+    ".ts": "typescript",
+    ".vue": "vue",
+    ".css": "css"
+  }
+}
