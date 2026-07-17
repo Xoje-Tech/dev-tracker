@@ -16,7 +16,7 @@ program
   .name("dt")
   .description("dev-tracker CLI — manage projects, boards, tasks and tags from the terminal")
   .version("1.2.1")
-  .option("-u, --url <url>", "API base URL", process.env.DEV_TRACKER_URL ?? "http://localhost:3000")
+  .option("-u, --url <url>", "API base URL", process.env.DEV_TRACKER_URL ?? "http://localhost:6789")
   .option("--json", "output machine-readable JSON instead of human format", false);
 
 registerAuthCommands(program);
