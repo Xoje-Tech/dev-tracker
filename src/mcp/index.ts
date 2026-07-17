@@ -76,6 +76,32 @@ export function setupServer() {
             required: ["taskId", "columnId"],
           },
         },
+        {
+          name: "update_task",
+          description: "Update task properties (title, description, priority, assigneeId)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              taskId: { type: "string" },
+              title: { type: "string" },
+              description: { type: "string" },
+              priority: { type: "string", enum: ["low", "medium", "high"] },
+              assigneeId: { type: "string" },
+            },
+            required: ["taskId"],
+          },
+        },
+        {
+          name: "delete_task",
+          description: "Delete a task by ID",
+          inputSchema: {
+            type: "object",
+            properties: {
+              taskId: { type: "string" },
+            },
+            required: ["taskId"],
+          },
+        },
       ],
     };
   });
