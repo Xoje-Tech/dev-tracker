@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import type { CreateMilestone } from "@milestones/application/use-cases/create-milestone.js";
 import type { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
-import type { CreateMilestoneDto } from "@milestones/application/dto/milestone-dto.js";
+import type { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
+import type { CreateMilestoneDto, UpdateMilestoneDto } from "@milestones/application/dto/milestone-dto.js";
 import type {
   ListMilestonesFilter,
 } from "@milestones/domain/repositories/milestone-repository.js";
@@ -22,6 +23,7 @@ export class MilestoneController {
   constructor(
     private readonly createMilestone: CreateMilestone,
     private readonly listMilestones: ListMilestones,
+    private readonly updateMilestone: UpdateMilestone,
   ) {}
 
   create = async (
@@ -62,6 +64,28 @@ export class MilestoneController {
         projectId,
         actorId,
         filter,
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  update = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const projectId = req.params.projectId as string;
+      const milestoneId = req.params.milestoneId as string;
+      const actorId = req.user!.id;
+      const dto = req.body as UpdateMilestoneDto;
+      const result = await this.updateMilestone.execute(
+        projectId,
+        milestoneId,
+        actorId,
+        dto,
       );
       res.status(200).json(result);
     } catch (error) {

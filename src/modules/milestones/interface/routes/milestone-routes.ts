@@ -2,7 +2,10 @@ import { Router } from "express";
 import { MilestoneController } from "@milestones/interface/controllers/milestone-controller.js";
 import { createAuthMiddleware } from "@shared/infrastructure/http/auth-middleware.js";
 import { validateBody } from "@shared/infrastructure/http/validate-middleware.js";
-import { createMilestoneDtoSchema } from "@milestones/application/dto/milestone-dto.js";
+import {
+  createMilestoneDtoSchema,
+  updateMilestoneDtoSchema,
+} from "@milestones/application/dto/milestone-dto.js";
 import type { AuthStrategy } from "@shared/infrastructure/http/auth-middleware.js";
 import { MILESTONES_ROUTES } from "@milestones/domain/routes.js";
 
@@ -37,6 +40,13 @@ export function createMilestoneRoutes(
   );
 
   router.get(MILESTONES_ROUTES.collection, auth, controller.list);
+
+  router.patch(
+    MILESTONES_ROUTES.item,
+    auth,
+    validateBody(updateMilestoneDtoSchema),
+    controller.update,
+  );
 
   return router;
 }
