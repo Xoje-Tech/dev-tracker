@@ -9,6 +9,11 @@ export default defineConfig({
     exclude: ["src/client/**", "node_modules/**"],
     setupFiles: ["./tests/setup.ts"],
     globalSetup: ["./tests/global-setup.ts"],
+    // PR B set fileParallelism: false to prevent cross-file state bleed
+    // in the shared Prisma client + test.db. PR C inherits this fix
+    // (develop was merged with it). Removing this will reintroduce the
+    // intermittent failures documented in PR #79.
+    fileParallelism: false,
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],
