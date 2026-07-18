@@ -45,6 +45,24 @@ import { TagController } from "@tags/interface/controllers/tag-controller.js";
 import { createTagRoutes } from "@tags/interface/routes/tag-routes.js";
 import { TAGS_ROUTES } from "@tags/domain/routes.js";
 import { prisma } from "@/prisma.js";
+import { PrismaMilestoneRepository } from "@milestones/infrastructure/persistence/prisma-milestone-repository.js";
+import { MilestoneMembershipGuard } from "@milestones/application/membership-guard.js";
+import { CreateMilestone } from "@milestones/application/use-cases/create-milestone.js";
+import { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
+import { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
+import { DeleteMilestone } from "@milestones/application/use-cases/delete-milestone.js";
+import { ArchiveMilestone } from "@milestones/application/use-cases/archive-milestone.js";
+import { MilestoneController } from "@milestones/interface/controllers/milestone-controller.js";
+import { createMilestoneRoutes } from "@milestones/interface/routes/milestone-routes.js";
+import { MILESTONES_ROUTES } from "@milestones/domain/routes.js";
+import { PrismaSprintRepository } from "@sprints/infrastructure/persistence/prisma-sprint-repository.js";
+import { SprintMembershipGuard } from "@sprints/application/membership-guard.js";
+import { CreateSprint } from "@sprints/application/use-cases/create-sprint.js";
+import { ListSprints } from "@sprints/application/use-cases/list-sprints.js";
+import { UpdateSprint } from "@sprints/application/use-cases/update-sprint.js";
+import { DeleteSprint } from "@sprints/application/use-cases/delete-sprint.js";
+import { SprintController } from "@sprints/interface/controllers/sprint-controller.js";
+import { createSprintRoutes } from "@sprints/interface/routes/sprint-routes.js";
 import type { AuthUser } from "@shared/infrastructure/http/auth-middleware.js";
 import type { Request } from "express";
 
@@ -180,6 +198,35 @@ export function createApp(): Express {
     new RemoveTagFromTask(prismaTagRepo),
   );
   app.use(TAGS_ROUTES.base, createTagRoutes(tagController, authStrategy));
+
+  // Milestones module (wired in PR D) — REST nested under /api/projects/:projectId/milestones
+  // Mounted BEFORE sprints so the milestones router matches first for /:projectId/milestones/*.
+  // Both share the same /api/projects base; Express routes by prefix and dispatches to
+  // whichever router's path pattern matches the request.
+  const prismaMilestoneRepo = new PrismaMilestoneRepository(prisma);
+  const milestoneMembershipGuard = new MilestoneMembershipGuard(prisma);
+  const milestoneController = new MilestoneController(
+    new CreateMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
+    new ListMilestones(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
+    new UpdateMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
+    new DeleteMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
+    new ArchiveMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
+  );
+  app.use(MILESTONES_ROUTES.base, createMilestoneRoutes(milestoneController, authStrategy));
+
+  // Sprints module (wired in PR D) — REST nested under /api/projects/:projectId/sprints
+  // SPRINTS_ROUTES only defines collection/item (no `base`); the base mount is hard-coded
+  // here to match MILESTONES_ROUTES.base, since both routers are siblings under /api/projects.
+  const SPRINTS_BASE = "/api/projects" as const;
+  const prismaSprintRepo = new PrismaSprintRepository(prisma);
+  const sprintMembershipGuard = new SprintMembershipGuard(prisma);
+  const sprintController = new SprintController(
+    new CreateSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
+    new ListSprints(prismaSprintRepo, sprintMembershipGuard, prisma),
+    new UpdateSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
+    new DeleteSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
+  );
+  app.use(SPRINTS_BASE, createSprintRoutes(sprintController, authStrategy));
 
   // Serve built Vue SPA from dist/client (no-op in dev mode where the file
   // doesn't exist). Without this, /projects returns a JSON 404 because the
