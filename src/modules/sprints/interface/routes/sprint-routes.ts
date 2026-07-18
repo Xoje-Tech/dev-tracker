@@ -24,6 +24,7 @@ export function createSprintRoutes(
 
   router.post(SPRINTS_ROUTES.collection, auth, controller.create);
   router.get(SPRINTS_ROUTES.collection, auth, controller.list);
+  router.get(SPRINTS_ROUTES.item, auth, controller.get);
   router.patch(SPRINTS_ROUTES.item, auth, controller.update);
   router.delete(SPRINTS_ROUTES.item, auth, controller.delete);
 

@@ -49,6 +49,7 @@ import { PrismaMilestoneRepository } from "@milestones/infrastructure/persistenc
 import { MilestoneMembershipGuard } from "@milestones/application/membership-guard.js";
 import { CreateMilestone } from "@milestones/application/use-cases/create-milestone.js";
 import { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
+import { GetMilestone } from "@milestones/application/use-cases/get-milestone.js";
 import { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
 import { DeleteMilestone } from "@milestones/application/use-cases/delete-milestone.js";
 import { ArchiveMilestone } from "@milestones/application/use-cases/archive-milestone.js";
@@ -59,6 +60,7 @@ import { PrismaSprintRepository } from "@sprints/infrastructure/persistence/pris
 import { SprintMembershipGuard } from "@sprints/application/membership-guard.js";
 import { CreateSprint } from "@sprints/application/use-cases/create-sprint.js";
 import { ListSprints } from "@sprints/application/use-cases/list-sprints.js";
+import { GetSprint } from "@sprints/application/use-cases/get-sprint.js";
 import { UpdateSprint } from "@sprints/application/use-cases/update-sprint.js";
 import { DeleteSprint } from "@sprints/application/use-cases/delete-sprint.js";
 import { SprintController } from "@sprints/interface/controllers/sprint-controller.js";
@@ -208,6 +210,7 @@ export function createApp(): Express {
   const milestoneController = new MilestoneController(
     new CreateMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
     new ListMilestones(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
+    new GetMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
     new UpdateMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
     new DeleteMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
     new ArchiveMilestone(prismaMilestoneRepo, milestoneMembershipGuard, prisma),
@@ -223,6 +226,7 @@ export function createApp(): Express {
   const sprintController = new SprintController(
     new CreateSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
     new ListSprints(prismaSprintRepo, sprintMembershipGuard, prisma),
+    new GetSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
     new UpdateSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
     new DeleteSprint(prismaSprintRepo, sprintMembershipGuard, prisma),
   );

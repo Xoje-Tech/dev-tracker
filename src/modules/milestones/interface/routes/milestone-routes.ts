@@ -41,6 +41,8 @@ export function createMilestoneRoutes(
 
   router.get(MILESTONES_ROUTES.collection, auth, controller.list);
 
+  router.get(MILESTONES_ROUTES.item, auth, controller.get);
+
   router.patch(
     MILESTONES_ROUTES.item,
     auth,

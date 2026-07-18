@@ -9,6 +9,7 @@ import { PrismaSprintRepository } from "@sprints/infrastructure/persistence/pris
 import { SprintMembershipGuard } from "@sprints/application/membership-guard.js";
 import { CreateSprint } from "@sprints/application/use-cases/create-sprint.js";
 import { ListSprints } from "@sprints/application/use-cases/list-sprints.js";
+import { GetSprint } from "@sprints/application/use-cases/get-sprint.js";
 import { UpdateSprint } from "@sprints/application/use-cases/update-sprint.js";
 import { DeleteSprint } from "@sprints/application/use-cases/delete-sprint.js";
 import { SprintController } from "@sprints/interface/controllers/sprint-controller.js";
@@ -104,6 +105,7 @@ export function defaultController(): SprintController {
   return new SprintController(
     new CreateSprint(repo, guard, prisma),
     new ListSprints(repo, guard, prisma),
+    new GetSprint(repo, guard, prisma),
     new UpdateSprint(repo, guard, prisma),
     new DeleteSprint(repo, guard, prisma),
   );
