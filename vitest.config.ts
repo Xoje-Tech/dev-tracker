@@ -9,12 +9,9 @@ export default defineConfig({
     exclude: ["src/client/**", "node_modules/**"],
     setupFiles: ["./tests/setup.ts"],
     globalSetup: ["./tests/global-setup.ts"],
-    // PR B: disable file-parallelism. The project shares a single Prisma
-    // client + SQLite test.db across all test files; running them in
-    // parallel causes cross-file state bleed (one file's beforeEach
-    // wipe races with another file's beforeAll session prime). Forks
-    // pool with per-file DBs would be the proper fix, but is out of
-    // scope for PR B. See roadmap-and-sprints/issues for the follow-up.
+    // PR B set fileParallelism: false to prevent cross-file state bleed
+    // in the shared Prisma client + test.db. Removing this will
+    // reintroduce the intermittent failures documented in PR #79.
     fileParallelism: false,
     coverage: {
       provider: "v8",
@@ -30,6 +27,7 @@ export default defineConfig({
       "@tasks": resolve(process.cwd(), "src/modules/tasks"),
       "@tags": resolve(process.cwd(), "src/modules/tags"),
       "@milestones": resolve(process.cwd(), "src/modules/milestones"),
+      "@sprints": resolve(process.cwd(), "src/modules/sprints"),
       "@shared": resolve(process.cwd(), "src/modules/shared"),
       "@config": resolve(process.cwd(), "src/config"),
     },
