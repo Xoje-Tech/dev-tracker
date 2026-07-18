@@ -1,3 +1,11 @@
+-- Initial migration: emitted by `prisma migrate dev --name roadmap_and_sprints`
+-- on a project with no prior prisma/migrations/ history. Prisma generated
+-- CREATE TABLE statements for every model in schema.prisma (User, Project,
+-- Milestone, Sprint, ProjectMember, Board, Column, Task, Tag, TaskTag),
+-- not just the new ones. Future migrations are deltas on top of this
+-- baseline. Do not split retroactively without coordinating with downstream
+-- deploys that already ran this file.
+--
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
