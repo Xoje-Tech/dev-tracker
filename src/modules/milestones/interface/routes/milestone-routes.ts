@@ -48,6 +48,8 @@ export function createMilestoneRoutes(
     controller.update,
   );
 
+  router.delete(MILESTONES_ROUTES.item, auth, controller.delete);
+
   return router;
 }
 

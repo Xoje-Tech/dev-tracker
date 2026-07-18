@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import type { CreateMilestone } from "@milestones/application/use-cases/create-milestone.js";
 import type { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
 import type { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
+import type { DeleteMilestone } from "@milestones/application/use-cases/delete-milestone.js";
 import type { CreateMilestoneDto, UpdateMilestoneDto } from "@milestones/application/dto/milestone-dto.js";
 import type {
   ListMilestonesFilter,
@@ -24,6 +25,7 @@ export class MilestoneController {
     private readonly createMilestone: CreateMilestone,
     private readonly listMilestones: ListMilestones,
     private readonly updateMilestone: UpdateMilestone,
+    private readonly deleteMilestone: DeleteMilestone,
   ) {}
 
   create = async (
@@ -88,6 +90,24 @@ export class MilestoneController {
         dto,
       );
       res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  delete = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const projectId = req.params.projectId as string;
+      const milestoneId = req.params.milestoneId as string;
+      const actorId = req.user!.id;
+      await this.deleteMilestone.execute(projectId, milestoneId, actorId);
+      // 204 No Content per spec; Express will not send a body when status
+      // is set to 204 explicitly here.
+      res.status(204).send();
     } catch (error) {
       next(error);
     }
