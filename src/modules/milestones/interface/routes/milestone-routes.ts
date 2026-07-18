@@ -36,6 +36,8 @@ export function createMilestoneRoutes(
     controller.create,
   );
 
+  router.get(MILESTONES_ROUTES.collection, auth, controller.list);
+
   return router;
 }
 

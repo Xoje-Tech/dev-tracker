@@ -45,7 +45,10 @@ describe("POST /api/projects/:projectId/milestones (create)", () => {
   let projectId: string;
 
   beforeAll(() => {
-    app = buildMilestonesTestApp(defaultController());
+    app = buildMilestonesTestApp(
+      defaultController(),
+      "sessions-milestones-create.db",
+    );
   });
 
   afterAll(async () => {

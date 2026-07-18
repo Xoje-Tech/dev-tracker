@@ -62,32 +62,19 @@ export class PrismaMilestoneRepository implements MilestoneRepository {
       where.status = { not: "archived" };
     }
 
-    // Prisma's orderBy doesn't expose NULLS LAST; SQLite sorts NULL first
-    // when ascending. Use $queryRaw for deterministic NULLS-LAST ordering,
-    // then materialize into domain entities. Falls back to Prisma orderBy
-    // if the raw query returns zero rows (shouldn't happen, but defends
-    // against future SQLite version drift).
-    const rows = await this.prisma.$queryRaw<PrismaMilestone[]>`
-      SELECT * FROM "Milestone"
-      WHERE "projectId" = ${projectId}
-        ${includeArchived
-          ? this.prisma.$queryRaw``
-          : this.prisma.$queryRaw`AND "status" <> 'archived'`}
-      ORDER BY
-        CASE WHEN "targetDate" IS NULL THEN 1 ELSE 0 END ASC,
-        "targetDate" ASC,
-        "createdAt" ASC
-    `;
-    if (rows.length === 0) {
-      // Defensive fallback for empty projects — ensures consistent behavior
-      // when the raw query is unable to satisfy the type system or when
-      // the table is empty.
-      const prismaRows = await this.prisma.milestone.findMany({
-        where,
-        orderBy: [{ createdAt: "asc" }],
-      });
-      return prismaRows.map(toDomain);
-    }
+    // Prisma 6.x orderBy supports `nulls: "last"` natively, so we use
+    // findMany instead of $queryRaw. This keeps the query portable and
+    // avoids the template-literal parameter expansion that broke with
+    // conditional SQL fragments. SQLite sorts NULL first when ascending
+    // by default — `nulls: "last"` overrides that for our ordering
+    // contract: targetDate ASC NULLS LAST, then createdAt ASC.
+    const rows = await this.prisma.milestone.findMany({
+      where,
+      orderBy: [
+        { targetDate: { sort: "asc", nulls: "last" } },
+        { createdAt: "asc" },
+      ],
+    });
     return rows.map(toDomain);
   }
 

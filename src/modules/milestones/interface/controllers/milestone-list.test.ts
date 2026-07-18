@@ -42,7 +42,10 @@ describe("GET /api/projects/:projectId/milestones (list)", () => {
   let projectId: string;
 
   beforeAll(() => {
-    app = buildMilestonesTestApp(defaultController());
+    app = buildMilestonesTestApp(
+      defaultController(),
+      "sessions-milestones-list.db",
+    );
   });
 
   afterAll(async () => {

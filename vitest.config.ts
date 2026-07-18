@@ -9,6 +9,13 @@ export default defineConfig({
     exclude: ["src/client/**", "node_modules/**"],
     setupFiles: ["./tests/setup.ts"],
     globalSetup: ["./tests/global-setup.ts"],
+    // PR B: disable file-parallelism. The project shares a single Prisma
+    // client + SQLite test.db across all test files; running them in
+    // parallel causes cross-file state bleed (one file's beforeEach
+    // wipe races with another file's beforeAll session prime). Forks
+    // pool with per-file DBs would be the proper fix, but is out of
+    // scope for PR B. See roadmap-and-sprints/issues for the follow-up.
+    fileParallelism: false,
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],

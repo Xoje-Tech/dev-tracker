@@ -8,6 +8,7 @@ import { errorHandler } from "@shared/infrastructure/http/error-handler.js";
 import { PrismaMilestoneRepository } from "@milestones/infrastructure/persistence/prisma-milestone-repository.js";
 import { MilestoneMembershipGuard } from "@milestones/application/membership-guard.js";
 import { CreateMilestone } from "@milestones/application/use-cases/create-milestone.js";
+import { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
 import { MilestoneController } from "@milestones/interface/controllers/milestone-controller.js";
 import { createMilestoneRoutes } from "@milestones/interface/routes/milestone-routes.js";
 
@@ -96,12 +97,11 @@ export function buildMilestonesTestApp(
  * you don't need to mock the use case.
  */
 export function defaultController(): MilestoneController {
+  const repo = new PrismaMilestoneRepository(prisma);
+  const guard = new MilestoneMembershipGuard(prisma);
   return new MilestoneController(
-    new CreateMilestone(
-      new PrismaMilestoneRepository(prisma),
-      new MilestoneMembershipGuard(prisma),
-      prisma,
-    ),
+    new CreateMilestone(repo, guard, prisma),
+    new ListMilestones(repo, guard, prisma),
   );
 }
 
