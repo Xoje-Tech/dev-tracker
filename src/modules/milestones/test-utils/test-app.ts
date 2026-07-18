@@ -11,6 +11,7 @@ import { CreateMilestone } from "@milestones/application/use-cases/create-milest
 import { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
 import { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
 import { DeleteMilestone } from "@milestones/application/use-cases/delete-milestone.js";
+import { ArchiveMilestone } from "@milestones/application/use-cases/archive-milestone.js";
 import { MilestoneController } from "@milestones/interface/controllers/milestone-controller.js";
 import { createMilestoneRoutes } from "@milestones/interface/routes/milestone-routes.js";
 
@@ -106,6 +107,7 @@ export function defaultController(): MilestoneController {
     new ListMilestones(repo, guard, prisma),
     new UpdateMilestone(repo, guard, prisma),
     new DeleteMilestone(repo, guard, prisma),
+    new ArchiveMilestone(repo, guard, prisma),
   );
 }
 

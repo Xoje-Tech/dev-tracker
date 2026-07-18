@@ -50,6 +50,8 @@ export function createMilestoneRoutes(
 
   router.delete(MILESTONES_ROUTES.item, auth, controller.delete);
 
+  router.post(MILESTONES_ROUTES.archive, auth, controller.archive);
+
   return router;
 }
 

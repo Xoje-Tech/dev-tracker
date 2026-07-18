@@ -3,6 +3,7 @@ import type { CreateMilestone } from "@milestones/application/use-cases/create-m
 import type { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
 import type { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
 import type { DeleteMilestone } from "@milestones/application/use-cases/delete-milestone.js";
+import type { ArchiveMilestone } from "@milestones/application/use-cases/archive-milestone.js";
 import type { CreateMilestoneDto, UpdateMilestoneDto } from "@milestones/application/dto/milestone-dto.js";
 import type {
   ListMilestonesFilter,
@@ -26,6 +27,7 @@ export class MilestoneController {
     private readonly listMilestones: ListMilestones,
     private readonly updateMilestone: UpdateMilestone,
     private readonly deleteMilestone: DeleteMilestone,
+    private readonly archiveMilestone: ArchiveMilestone,
   ) {}
 
   create = async (
@@ -56,11 +58,11 @@ export class MilestoneController {
     try {
       const projectId = req.params.projectId as string;
       const actorId = req.user!.id;
-      // The optional ?archived=true query flag toggles whether archived
-      // milestones appear in the list. Default is to hide them (live-only).
-      const includeArchived =
-        typeof req.query.archived === "string" &&
-        req.query.archived.toLowerCase() === "true";
+      // The canonical ?includeArchived=true flag controls whether archived
+      // milestones appear in the list; the legacy ?archived=true alias is
+      // honoured for backwards compatibility with the create/list commits.
+      // Default is live-only.
+      const includeArchived = parseIncludeArchived(req.query);
       const filter: ListMilestonesFilter = { includeArchived };
       const result = await this.listMilestones.execute(
         projectId,
@@ -112,4 +114,47 @@ export class MilestoneController {
       next(error);
     }
   };
+
+  archive = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const projectId = req.params.projectId as string;
+      const milestoneId = req.params.milestoneId as string;
+      const actorId = req.user!.id;
+      const result = await this.archiveMilestone.execute(
+        projectId,
+        milestoneId,
+        actorId,
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
+/**
+ * parseIncludeArchived — accepts both `?includeArchived=true` (canonical
+ * name, used by the archive cluster) and `?archived=true` (legacy alias
+ * from the create/list clusters). Returns true only when one of the two
+ * flag values is "true" (case-insensitive). Anything else defaults to false.
+ *
+ * `req.query` is loosely typed by Express's typings (string keys, possibly
+ * nested objects, possibly arrays). We coerce safely here without pulling
+ * in the `qs` package — its types are not a direct dependency of this
+ * project.
+ */
+function parseIncludeArchived(query: Request["query"]): boolean {
+  const canonical = readStringFlag(query["includeArchived"]);
+  if (canonical !== undefined) return canonical;
+  const alias = readStringFlag(query["archived"]);
+  return alias ?? false;
+}
+
+function readStringFlag(value: unknown): boolean | undefined {
+  if (typeof value !== "string") return undefined;
+  return value.toLowerCase() === "true";
 }
