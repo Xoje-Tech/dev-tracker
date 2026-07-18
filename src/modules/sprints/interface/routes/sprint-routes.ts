@@ -12,6 +12,7 @@ import type { SprintController } from "@sprints/interface/controllers/sprint-con
 
 export const SPRINTS_ROUTES = {
   collection: "/:projectId/sprints",
+  item: "/:projectId/sprints/:sprintId",
 } as const;
 
 export function createSprintRoutes(
@@ -23,6 +24,8 @@ export function createSprintRoutes(
 
   router.post(SPRINTS_ROUTES.collection, auth, controller.create);
   router.get(SPRINTS_ROUTES.collection, auth, controller.list);
+  router.patch(SPRINTS_ROUTES.item, auth, controller.update);
+  router.delete(SPRINTS_ROUTES.item, auth, controller.delete);
 
   return router;
 }
