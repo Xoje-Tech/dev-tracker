@@ -7,6 +7,7 @@ import BaseModal from "@client/shared/interface/components/atoms/BaseModal.vue";
 import BaseSpinner from "@client/shared/interface/components/atoms/BaseSpinner.vue";
 import EmptyState from "@client/shared/interface/components/molecules/EmptyState.vue";
 import PageHeader from "@client/shared/interface/components/molecules/PageHeader.vue";
+import BoardTabs from "@client/shared/interface/components/molecules/BoardTabs.vue";
 import KanbanBoard from "@client/board/interface/components/organisms/KanbanBoard.vue";
 import TaskForm from "@client/board/interface/components/molecules/TaskForm.vue";
 import { useBoardStore } from "@client/board/infrastructure/store/board";
@@ -24,6 +25,12 @@ const projectId = computed(() => String(route.params.id));
 const project = computed(() =>
   projectsStore.projects.find((p) => p.id === projectId.value) ?? null,
 );
+
+// BoardTabs — only Board and Milestones for now; Sprints added in a later SDD.
+const boardTabs = computed(() => [
+  { label: "Board", to: `/projects/${projectId.value}/board` },
+  { label: "Milestones", to: `/projects/${projectId.value}/milestones` },
+]);
 
 type DialogState =
   | { kind: "closed" }
@@ -163,6 +170,9 @@ function backToProjects(): void {
       :title="project?.name ?? 'Board'"
       :subtitle="project?.description ?? undefined"
     >
+      <template #tabs>
+        <BoardTabs :tabs="boardTabs" />
+      </template>
       <template #actions>
         <BaseButton variant="secondary" @click="backToProjects">Back to projects</BaseButton>
       </template>
