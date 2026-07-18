@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import type { CreateMilestone } from "@milestones/application/use-cases/create-milestone.js";
 import type { ListMilestones } from "@milestones/application/use-cases/list-milestones.js";
+import type { GetMilestone } from "@milestones/application/use-cases/get-milestone.js";
 import type { UpdateMilestone } from "@milestones/application/use-cases/update-milestone.js";
 import type { DeleteMilestone } from "@milestones/application/use-cases/delete-milestone.js";
 import type { ArchiveMilestone } from "@milestones/application/use-cases/archive-milestone.js";
@@ -25,6 +26,7 @@ export class MilestoneController {
   constructor(
     private readonly createMilestone: CreateMilestone,
     private readonly listMilestones: ListMilestones,
+    private readonly getMilestone: GetMilestone,
     private readonly updateMilestone: UpdateMilestone,
     private readonly deleteMilestone: DeleteMilestone,
     private readonly archiveMilestone: ArchiveMilestone,
@@ -68,6 +70,26 @@ export class MilestoneController {
         projectId,
         actorId,
         filter,
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  get = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const projectId = req.params.projectId as string;
+      const milestoneId = req.params.milestoneId as string;
+      const actorId = req.user!.id;
+      const result = await this.getMilestone.execute(
+        projectId,
+        milestoneId,
+        actorId,
       );
       res.status(200).json(result);
     } catch (error) {
