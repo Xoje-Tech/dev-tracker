@@ -22,6 +22,7 @@ export default defineConfig({
       "@boards": resolve(process.cwd(), "src/modules/boards"),
       "@tasks": resolve(process.cwd(), "src/modules/tasks"),
       "@tags": resolve(process.cwd(), "src/modules/tags"),
+      "@sprints": resolve(process.cwd(), "src/modules/sprints"),
       "@shared": resolve(process.cwd(), "src/modules/shared"),
       "@config": resolve(process.cwd(), "src/config"),
     },
