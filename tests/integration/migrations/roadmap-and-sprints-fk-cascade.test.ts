@@ -56,4 +56,16 @@ describe("roadmap and sprints migration foreign-key contract", () => {
       /CONSTRAINT\s+"Task_sprintId_fkey"\s+FOREIGN KEY\s*\("sprintId"\)\s+REFERENCES\s+"Sprint"\s*\("id"\)\s+ON DELETE SET NULL/i,
     );
   });
+
+  it("declares Sprint(milestoneId) -> Milestone(id) ON DELETE SET NULL", async () => {
+    const clause = "Sprint(milestoneId) -> Milestone(id) ON DELETE SET NULL";
+    const sql = await loadRoadmapMigrationSql(clause);
+
+    expect(
+      sql,
+      `Missing FK clause: ${clause}`,
+    ).toMatch(
+      /CONSTRAINT\s+"Sprint_milestoneId_fkey"\s+FOREIGN KEY\s*\("milestoneId"\)\s+REFERENCES\s+"Milestone"\s*\("id"\)\s+ON DELETE SET NULL/i,
+    );
+  });
 });
