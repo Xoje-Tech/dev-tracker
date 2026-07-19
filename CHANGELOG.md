@@ -5,6 +5,60 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.3.0...dev-tracker-v1.4.0) (2026-07-19)
+
+
+### Features
+
+* **cli:** add milestone + sprint sub-commands (PR cli-mcp / Phase 4) ([064b8b9](https://github.com/Xoje-Tech/dev-tracker/commit/064b8b944f024b3ac13e0cf913faadb9895cb350))
+* **cli:** implement M2M hardening — isTTY auto-detect, structured JSON errors ([c61c8f3](https://github.com/Xoje-Tech/dev-tracker/commit/c61c8f359322b8642f63b3ab30be8a67e1c03d9a))
+* **cli:** M2M hardening — isTTY auto-detect + structured JSON errors ([0a061e0](https://github.com/Xoje-Tech/dev-tracker/commit/0a061e014d1b145f93b1716d28dcbf7b162271de))
+* **mcp:** add 11 milestone/sprint tools (7 → 18 surface, PR cli-mcp / Phase 3) ([95c93d4](https://github.com/Xoje-Tech/dev-tracker/commit/95c93d42cdaa273a2934cd21c9273d46d8a45a99))
+* **mcp:** add auto-configuration script for mcp setup ([#32](https://github.com/Xoje-Tech/dev-tracker/issues/32)) ([bf5c06b](https://github.com/Xoje-Tech/dev-tracker/commit/bf5c06b5352b1c833e2b51ee796ebc4068e46e6a))
+* **mcp:** add auto-configuration script for mcp setup ([#32](https://github.com/Xoje-Tech/dev-tracker/issues/32)) ([b7b351a](https://github.com/Xoje-Tech/dev-tracker/commit/b7b351ac9f12e76862ce7d289752d3efade25055))
+* **mcp:** add tailored mcp setup script for Hermes and OpenCode ([#32](https://github.com/Xoje-Tech/dev-tracker/issues/32)) ([2c151e8](https://github.com/Xoje-Tech/dev-tracker/commit/2c151e8e4cd2f672eef65a00e4014b895ad536ce))
+* **mcp:** add update_task and delete_task tools to MCP server ([#71](https://github.com/Xoje-Tech/dev-tracker/issues/71)) ([b69a2aa](https://github.com/Xoje-Tech/dev-tracker/commit/b69a2aae62f85976b18357fec8cdc90159d4aec2))
+* **mcp:** add update_task and delete_task tools to MCP server ([#71](https://github.com/Xoje-Tech/dev-tracker/issues/71)) ([db1a936](https://github.com/Xoje-Tech/dev-tracker/commit/db1a9366f2808c7f38250c1344db1c158cf9ca5d))
+* **milestones:** domain value objects (MilestoneTitle, MilestoneStatus, transitions) ([061e15b](https://github.com/Xoje-Tech/dev-tracker/commit/061e15bf2d81a100facee7accd74ca87ff52ee04))
+* **milestones:** GREEN archive-milestone cluster ([6fcd207](https://github.com/Xoje-Tech/dev-tracker/commit/6fcd2075924333a39c26f192f129a4688471c6e4))
+* **milestones:** GREEN create-milestone ([ed50448](https://github.com/Xoje-Tech/dev-tracker/commit/ed5044824da702adcd2168b935d8a320043067c6))
+* **milestones:** GREEN delete-milestone ([4d0a1da](https://github.com/Xoje-Tech/dev-tracker/commit/4d0a1dacc4f315d5cc94916197acb76fdd420af4))
+* **milestones:** GREEN list-milestones cluster ([1d982fd](https://github.com/Xoje-Tech/dev-tracker/commit/1d982fd5192f4f4143ef401cd59fca8810135cd8))
+* **milestones:** GREEN update-milestone ([5f20ece](https://github.com/Xoje-Tech/dev-tracker/commit/5f20ece193fe8f226260dada20b710e9c9db7943))
+* **rest:** add GET /:id routes for milestones and sprints (PR cli-mcp / Phase 1) ([2ab719b](https://github.com/Xoje-Tech/dev-tracker/commit/2ab719b508d83d78f0a0ae2945c67bec1da24d82))
+* **roadmap-and-sprints-ui:** add Vue 3 + Pinia surface for milestones (PR ui-milestones) ([cefb31d](https://github.com/Xoje-Tech/dev-tracker/commit/cefb31d41287ee50c3ea335bc3844250b78931a9))
+* **roadmap-and-sprints-ui:** add Vue 3 + Pinia surface for sprints (PR ui-sprints) ([774773e](https://github.com/Xoje-Tech/dev-tracker/commit/774773e9a080a9e33c3683b8bdf700ba39191bc8))
+* **roadmap-and-sprints:** add child-first clearDatabase helper ([262bd5a](https://github.com/Xoje-Tech/dev-tracker/commit/262bd5ac8a3029d53eea1229eaf2a379de483f1a))
+* **roadmap-and-sprints:** add CLI + MCP surfaces for milestones/sprints (PR cli-mcp) ([37c5c94](https://github.com/Xoje-Tech/dev-tracker/commit/37c5c9495de898d187e4149ff39cadd30d1e8646))
+* **roadmap-and-sprints:** add foundation (Milestone/Sprint schema, FK contract, helper ordering) ([aa19521](https://github.com/Xoje-Tech/dev-tracker/commit/aa1952192768b932650fb12f49e7f45cdd69270c))
+* **roadmap-and-sprints:** add milestone and sprint schema ([c862fa4](https://github.com/Xoje-Tech/dev-tracker/commit/c862fa4eba8328954db2477c313dbb4deb01fd18))
+* **roadmap-and-sprints:** add Milestones module (REST + tests) ([eed1828](https://github.com/Xoje-Tech/dev-tracker/commit/eed1828b449ccadd74b1108783cb6170e4dbfcf6))
+* **roadmap-and-sprints:** add Sprints module (REST + tests) ([3e7b23f](https://github.com/Xoje-Tech/dev-tracker/commit/3e7b23f842e688a4c2377b58063c564fa9963790))
+* **roadmap-and-sprints:** wire milestones + sprints routers in createApp() (PR D, final) ([a9b688c](https://github.com/Xoje-Tech/dev-tracker/commit/a9b688ccec3cd0264b19d8dcad0a3da573f8c72f))
+* **sprints:** add path aliases + extract SPRINTS_ROUTES to domain/routes (PR ui-sprints / Phase 1) ([306880c](https://github.com/Xoje-Tech/dev-tracker/commit/306880c1baf59844004b1d1b40bc988af7019d61))
+* **sprints:** GREEN create-sprint cluster ([63bd4d0](https://github.com/Xoje-Tech/dev-tracker/commit/63bd4d08d7150ce6d930d03174754173e94f4d6f))
+* **sprints:** GREEN list-sprints cluster (impl committed earlier) ([8b399e6](https://github.com/Xoje-Tech/dev-tracker/commit/8b399e6d71ec138dbaa7295b4a42a4bd6de7b286))
+* **sprints:** GREEN update + delete clusters ([4bb24d7](https://github.com/Xoje-Tech/dev-tracker/commit/4bb24d7a9b73703427ca59e0411659cf87f50090))
+* **sprints:** wire update + delete controller methods and routes ([d81f464](https://github.com/Xoje-Tech/dev-tracker/commit/d81f4642d6d34d009574faa235a69a307b3e9420))
+* **ui:** add MilestonesList organism + MilestonesView page (PR ui-milestones / Phase 4) ([178bb22](https://github.com/Xoje-Tech/dev-tracker/commit/178bb22a3ffbf6d8de277f062158f23308cc67ab))
+* **ui:** add MilestoneStatusBadge, MilestoneCard, MilestoneForm (PR ui-milestones / Phase 3) ([75e4003](https://github.com/Xoje-Tech/dev-tracker/commit/75e4003c3f2aecf358ac2e2ee187b154bd8f1683))
+* **ui:** add path aliases + shared BoardTabs molecule + PageHeader slot (PR ui-milestones / Phase 1) ([286a8ae](https://github.com/Xoje-Tech/dev-tracker/commit/286a8aef96fde02d090353b2d4feb5f079f3aaf8))
+* **ui:** add SprintCard + SprintForm molecules (PR ui-sprints / Phase 3) ([e434d9f](https://github.com/Xoje-Tech/dev-tracker/commit/e434d9f38e165d51731a9a47ba32656745a651f4))
+* **ui:** add SprintsList organism + SprintsView page (PR ui-sprints / Phase 4) ([bd279e2](https://github.com/Xoje-Tech/dev-tracker/commit/bd279e2f7cc39945174964b69deaab7b8d6653af))
+* **ui:** add useMilestonesStore Pinia store (PR ui-milestones / Phase 2) ([806fd08](https://github.com/Xoje-Tech/dev-tracker/commit/806fd08010b65a8d8445a52a53d03aa419cf905f))
+* **ui:** add useSprintsStore Pinia store (PR ui-sprints / Phase 2) ([2476f95](https://github.com/Xoje-Tech/dev-tracker/commit/2476f959602e46c2c67d46077d8f846b8aa75456))
+* **ui:** mount milestones routes + BoardTabs in BoardView (PR ui-milestones / Phase 5) ([57e23d3](https://github.com/Xoje-Tech/dev-tracker/commit/57e23d31cff7af9fbc2de5a70376bbb19c52911d))
+* **ui:** mount sprints routes + Sprints tab in BoardView (PR ui-sprints / Phase 5) ([8e24689](https://github.com/Xoje-Tech/dev-tracker/commit/8e246892fde238b1db896d62d407652c768883be))
+* **wiring:** mount milestones + sprints routers in createApp() (PR D) ([47ef2aa](https://github.com/Xoje-Tech/dev-tracker/commit/47ef2aa0aecde0710ab1979294f23852fe01dccd))
+
+
+### Bug Fixes
+
+* **cli:** default API base URL port to 6789 ([#70](https://github.com/Xoje-Tech/dev-tracker/issues/70)) ([5ce43c3](https://github.com/Xoje-Tech/dev-tracker/commit/5ce43c33d06d7ff6e69256b38704f6893470fd07))
+* **cli:** default API base URL port to 6789 to match production podman deployment ([#70](https://github.com/Xoje-Tech/dev-tracker/issues/70)) ([05f98e7](https://github.com/Xoje-Tech/dev-tracker/commit/05f98e772714908f7684c20ddade43adc046d769))
+* **mcp/cli:** expose field-specific details on validation failures ([#72](https://github.com/Xoje-Tech/dev-tracker/issues/72)) ([655d520](https://github.com/Xoje-Tech/dev-tracker/commit/655d5204308773284656f7251f5096ea7f15f0e3))
+* **mcp/cli:** expose field-specific details on validation failures ([#72](https://github.com/Xoje-Tech/dev-tracker/issues/72)) ([338a77d](https://github.com/Xoje-Tech/dev-tracker/commit/338a77d37f7e0b45f200c0ae536b6497ec497711))
+
 ## [1.3.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.2.1...dev-tracker-v1.3.0) (2026-07-12)
 
 
