@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useApi } from "@client/shared/infrastructure/composables/useApi";
+import { TAGS_ROUTES } from "@tags/domain/routes";
+import { TASKS_ROUTES } from "@tasks/domain/routes";
 import type { CreateTagInput, Tag } from "@client/tags/domain/types";
 
 /**
@@ -18,8 +20,8 @@ import type { CreateTagInput, Tag } from "@client/tags/domain/types";
  * assign/unassign into the task dialog.
  */
 export const useTagsStore = defineStore("tags", () => {
-  const api = useApi("/api/tags");
-  const taskApi = useApi("/api");
+  const api = useApi(TAGS_ROUTES.base);
+  const tagsApi = useApi(TAGS_ROUTES.base);
 
   const tags = ref<Tag[]>([]);
   const loading = ref(false);
@@ -44,11 +46,11 @@ export const useTagsStore = defineStore("tags", () => {
   }
 
   async function assignToTask(taskId: string, tagId: string): Promise<void> {
-    await taskApi.post(`/tasks/${taskId}/tags/${tagId}`);
+    await tagsApi.post(`/tasks/${taskId}/tags/${tagId}`);
   }
 
   async function unassignFromTask(taskId: string, tagId: string): Promise<void> {
-    await taskApi.del(`/tasks/${taskId}/tags/${tagId}`);
+    await tagsApi.del(`/tasks/${taskId}/tags/${tagId}`);
   }
 
   return {

@@ -5,6 +5,8 @@ import { registerProjectCommands } from "./commands/projects.js";
 import { registerBoardCommands } from "./commands/board.js";
 import { registerTaskCommands } from "./commands/tasks.js";
 import { registerTagCommands } from "./commands/tags.js";
+import { registerMilestoneCommands } from "./commands/milestones.js";
+import { registerSprintCommands } from "./commands/sprints.js";
 import { registerSystemCommands } from "./commands/system.js";
 import { registerSyncCommands } from "./commands/sync.js";
 import { registerIssueCommands } from "./commands/issue.js";
@@ -16,7 +18,7 @@ program
   .name("dt")
   .description("dev-tracker CLI — manage projects, boards, tasks and tags from the terminal")
   .version("1.2.1")
-  .option("-u, --url <url>", "API base URL", process.env.DEV_TRACKER_URL ?? "http://localhost:3000")
+  .option("-u, --url <url>", "API base URL", process.env.DEV_TRACKER_URL ?? "http://localhost:6789")
   .option("--json", "output machine-readable JSON instead of human format", false);
 
 registerAuthCommands(program);
@@ -24,6 +26,8 @@ registerProjectCommands(program);
 registerBoardCommands(program);
 registerTaskCommands(program);
 registerTagCommands(program);
+registerMilestoneCommands(program);
+registerSprintCommands(program);
 registerSystemCommands(program);
 registerSyncCommands(program);
 registerIssueCommands(program);

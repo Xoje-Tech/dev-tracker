@@ -107,7 +107,7 @@ async function runSync(
   program
     .name("dt")
     .option("--json", "machine-readable output", false)
-    .option("-u, --url <url>", "API base URL", "http://localhost:3000");
+    .option("-u, --url <url>", "API base URL", "http://localhost:6789");
   registerSyncCommands(program);
   if (opts.json) {
     process.argv = ["node", "dt", "--json", ...args];

@@ -76,6 +76,176 @@ export function setupServer() {
             required: ["taskId", "columnId"],
           },
         },
+        {
+          name: "update_task",
+          description: "Update task properties (title, description, priority, assigneeId)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              taskId: { type: "string" },
+              title: { type: "string" },
+              description: { type: "string" },
+              priority: { type: "string", enum: ["low", "medium", "high"] },
+              assigneeId: { type: "string" },
+            },
+            required: ["taskId"],
+          },
+        },
+        {
+          name: "delete_task",
+          description: "Delete a task by ID",
+          inputSchema: {
+            type: "object",
+            properties: {
+              taskId: { type: "string" },
+            },
+            required: ["taskId"],
+          },
+        },
+        // ─────────────── Milestone tools (6) ───────────────
+        {
+          name: "list_milestones",
+          description: "List milestones for a project",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              includeArchived: { type: "boolean" },
+            },
+            required: ["projectId"],
+          },
+        },
+        {
+          name: "get_milestone",
+          description: "Get a single milestone by id",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              milestoneId: { type: "string" },
+            },
+            required: ["projectId", "milestoneId"],
+          },
+        },
+        {
+          name: "create_milestone",
+          description: "Create a milestone in a project",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              title: { type: "string" },
+              description: { type: "string" },
+              dueDate: { type: "string", format: "date-time" },
+            },
+            required: ["projectId", "title"],
+          },
+        },
+        {
+          name: "update_milestone",
+          description: "Update milestone fields (title, description, dueDate, status)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              milestoneId: { type: "string" },
+              title: { type: "string" },
+              description: { type: "string", nullable: true },
+              dueDate: { type: "string", format: "date-time", nullable: true },
+              status: { type: "string", enum: ["open", "closed", "archived"] },
+            },
+            required: ["projectId", "milestoneId"],
+          },
+        },
+        {
+          name: "delete_milestone",
+          description: "Hard-delete a milestone by id",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              milestoneId: { type: "string" },
+            },
+            required: ["projectId", "milestoneId"],
+          },
+        },
+        {
+          name: "archive_milestone",
+          description: "Soft-archive a milestone (status=archived, idempotent)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              milestoneId: { type: "string" },
+            },
+            required: ["projectId", "milestoneId"],
+          },
+        },
+        // ─────────────── Sprint tools (5) ───────────────
+        {
+          name: "list_sprints",
+          description: "List sprints for a project",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+            },
+            required: ["projectId"],
+          },
+        },
+        {
+          name: "get_sprint",
+          description: "Get a single sprint by id",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              sprintId: { type: "string" },
+            },
+            required: ["projectId", "sprintId"],
+          },
+        },
+        {
+          name: "create_sprint",
+          description: "Create a sprint, optionally linked to a milestone",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              name: { type: "string" },
+              description: { type: "string" },
+              milestoneId: { type: "string" },
+            },
+            required: ["projectId", "name"],
+          },
+        },
+        {
+          name: "update_sprint",
+          description: "Update sprint fields (name, description, milestoneId — pass null to detach)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              sprintId: { type: "string" },
+              name: { type: "string" },
+              description: { type: "string", nullable: true },
+              milestoneId: { type: "string", nullable: true },
+            },
+            required: ["projectId", "sprintId"],
+          },
+        },
+        {
+          name: "delete_sprint",
+          description: "Hard-delete a sprint by id",
+          inputSchema: {
+            type: "object",
+            properties: {
+              projectId: { type: "string" },
+              sprintId: { type: "string" },
+            },
+            required: ["projectId", "sprintId"],
+          },
+        },
       ],
     };
   });

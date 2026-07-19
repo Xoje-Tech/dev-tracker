@@ -9,9 +9,20 @@ export default defineConfig({
     alias: {
       "@client/auth": resolve(process.cwd(), "src/client/modules/auth"),
       "@client/board": resolve(process.cwd(), "src/client/modules/board"),
+      "@client/milestones": resolve(process.cwd(), "src/client/modules/milestones"),
       "@client/projects": resolve(process.cwd(), "src/client/modules/projects"),
       "@client/shared": resolve(process.cwd(), "src/client/modules/shared"),
+      "@client/sprints": resolve(process.cwd(), "src/client/modules/sprints"),
       "@client/tags": resolve(process.cwd(), "src/client/modules/tags"),
+      // Backend ROUTES constants — imported by frontend stores.
+      // Mirrors tsconfig.json's @* aliases (excluded from backend tsc
+      // scope but needed by Vite for the client bundle).
+      "@auth": resolve(process.cwd(), "src/modules/auth"),
+      "@milestones": resolve(process.cwd(), "src/modules/milestones"),
+      "@projects": resolve(process.cwd(), "src/modules/projects"),
+      "@sprints": resolve(process.cwd(), "src/modules/sprints"),
+      "@tasks": resolve(process.cwd(), "src/modules/tasks"),
+      "@tags": resolve(process.cwd(), "src/modules/tags"),
     },
   },
   server: {

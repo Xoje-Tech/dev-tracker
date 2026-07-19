@@ -26,6 +26,8 @@
       "@boards/*": ["src/modules/boards/*"],
       "@tasks/*": ["src/modules/tasks/*"],
       "@tags/*": ["src/modules/tags/*"],
+      "@milestones/*": ["src/modules/milestones/*"],
+      "@sprints/*": ["src/modules/sprints/*"],
       "@shared/*": ["src/modules/shared/*"],
       "@config/*": ["src/config/*"]
     }

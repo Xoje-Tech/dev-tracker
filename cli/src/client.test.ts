@@ -83,4 +83,29 @@ describe("ApiClient — auth errors", () => {
       message: "Unauthorized (Try: dt auth rotate-key)",
     });
   });
+
+  it("appends field-specific details on validation failures (400)", async () => {
+    vi.spyOn(sessionMod, "loadSession").mockResolvedValue({
+      baseUrl: "http://example.test",
+    });
+    const { enqueue } = mockFetch();
+    enqueue([
+      {
+        status: 400,
+        body: {
+          error: "Validation failed",
+          details: {
+            title: ["Required"],
+            columnId: ["Invalid ID"],
+          },
+        },
+      },
+    ]);
+
+    const api = new ApiClient("http://example.test");
+    await expect(api.get("/api/tasks")).rejects.toMatchObject({
+      status: 400,
+      message: "Validation failed: title: Required, columnId: Invalid ID",
+    });
+  });
 });

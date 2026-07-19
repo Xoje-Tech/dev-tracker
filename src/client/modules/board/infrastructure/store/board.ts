@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useApi } from "@client/shared/infrastructure/composables/useApi";
+import { PROJECTS_ROUTES } from "@projects/domain/routes";
+import { TASKS_ROUTES } from "@tasks/domain/routes";
 import type {
   Board,
   BoardColumn,
@@ -25,8 +27,8 @@ import type {
  *   POST /api/tasks/:id/move                  — move task (column + index)
  */
 export const useBoardStore = defineStore("board", () => {
-  const boardApi = useApi("/api/projects");
-  const taskApi = useApi("/api");
+  const boardApi = useApi(PROJECTS_ROUTES.base);
+  const taskApi = useApi(TASKS_ROUTES.base);
 
   const board = ref<Board | null>(null);
   const loading = ref(false);
@@ -81,7 +83,7 @@ export const useBoardStore = defineStore("board", () => {
   }
 
   async function updateTask(id: string, input: UpdateTaskInput): Promise<BoardTask> {
-    const updated = await taskApi.patch<BoardTask>(`/tasks/${id}`, input);
+    const updated = await taskApi.patch<BoardTask>(`/${id}`, input);
     if (board.value) {
       for (const col of board.value.columns) {
         const idx = col.tasks.findIndex((t) => t.id === id);
@@ -95,7 +97,7 @@ export const useBoardStore = defineStore("board", () => {
   }
 
   async function deleteTask(id: string): Promise<void> {
-    await taskApi.del(`/tasks/${id}`);
+    await taskApi.del(`/${id}`);
     if (board.value) {
       for (const col of board.value.columns) {
         const idx = col.tasks.findIndex((t) => t.id === id);
@@ -112,7 +114,7 @@ export const useBoardStore = defineStore("board", () => {
     fromColumnId: string,
     input: MoveTaskInput,
   ): Promise<void> {
-    await taskApi.post(`/tasks/${taskId}/move`, input);
+    await taskApi.post(`/${taskId}/move`, input);
     if (!board.value) return;
 
     const fromCol = board.value.columns.find((c) => c.id === fromColumnId);

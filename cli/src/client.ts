@@ -26,12 +26,27 @@ const STATUS_HINTS: Record<number, { code: string; hint: string }> = {
 };
 
 function buildError(status: number, body: unknown): ApiError {
-  const baseMessage =
+  let baseMessage =
     typeof body === "object" && body !== null && "message" in body
       ? String((body as { message: unknown }).message)
       : typeof body === "object" && body !== null && "error" in body
         ? String((body as { error: unknown }).error)
         : `Request failed with status ${status}`;
+
+  if (
+    typeof body === "object" &&
+    body !== null &&
+    "error" in body &&
+    (body as any).error === "Validation failed" &&
+    (body as any).details
+  ) {
+    const details = (body as any).details;
+    const issues = Object.entries(details)
+      .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(", ") : String(msgs)}`)
+      .join(", ");
+    baseMessage = `Validation failed: ${issues}`;
+  }
+
   const err = new Error(baseMessage) as ApiError;
   err.status = status;
   err.body = body;

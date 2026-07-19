@@ -20,8 +20,10 @@
     "paths": {
       "@client/auth/*": ["src/client/modules/auth/*"],
       "@client/board/*": ["src/client/modules/board/*"],
+      "@client/milestones/*": ["src/client/modules/milestones/*"],
       "@client/projects/*": ["src/client/modules/projects/*"],
       "@client/shared/*": ["src/client/modules/shared/*"],
+      "@client/sprints/*": ["src/client/modules/sprints/*"],
       "@client/tags/*": ["src/client/modules/tags/*"]
     },
     "types": ["vite/client"]
