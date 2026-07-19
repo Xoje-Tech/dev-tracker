@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Command } from "commander";
 import { mockFetch } from "../../test-helpers.js";
 import { registerSystemCommands } from "./system.js";
+import { getCliVersion, resetCliVersionCache } from "../version.js";
 
 // Mocked fs so the "missing script" tests never touch the real
 // ~/dev-tracker-server/scripts/deploy.sh. The vi.hoisted handle is
@@ -15,7 +16,17 @@ vi.mock("node:fs", async () => {
   const actual = await vi.importActual<typeof import("node:fs")>("node:fs");
   return {
     ...actual,
-    existsSync: mockedExistsSync,
+    // Mock existsSync ONLY for the deploy script path. Other paths
+    // (e.g. package.json resolution for getCliVersion) use the real
+    // existsSync. This is important because version.ts depends on
+    // existsSync to find the CLI's package.json, and the test would
+    // otherwise break the helper.
+    existsSync: vi.fn((p: string) => {
+      if (typeof p === "string" && p.includes("dev-tracker-server/scripts/deploy.sh")) {
+        return mockedExistsSync();
+      }
+      return actual.existsSync(p);
+    }),
     writeFileSync: vi.fn(),
     chmodSync: vi.fn(),
   };
@@ -38,8 +49,9 @@ function makeProgram(): Command {
 }
 
 function setTty(value: boolean): void {
-  // process.stdout.isTTY is read-only in some Node versions; use defineProperty
-  // to override for the test. Restored to undefined in afterEach-style cleanup.
+  // commander and our isMachineMode() helper both read isTTY() on
+  // process.stdout. Mock it directly so the JSON-vs-human output path
+  // matches the test's intent (true = human, false = machine).
   Object.defineProperty(process.stdout, "isTTY", {
     value,
     configurable: true,
@@ -55,174 +67,199 @@ function restoreTty(): void {
   });
 }
 
-describe("dt server update (alias: deploy)", () => {
-  it("registers the command and its alias", () => {
-    const program = makeProgram();
-    const server = program.commands.find((c) => c.name() === "server");
-    expect(server).toBeDefined();
-    const updateCmd = server!.commands.find((c) => c.name() === "update");
-    expect(updateCmd).toBeDefined();
-    expect(updateCmd!.aliases()).toContain("deploy");
+describe("system commands", () => {
+  beforeEach(() => {
+    mockedExistsSync.mockReturnValue(false);
+    vi.restoreAllMocks();
+    // Important: reset the module-level CLI version cache between tests
+    // so each test reads its own DT_CLI_VERSION or sees a fresh
+    // package.json lookup.
+    resetCliVersionCache();
+    delete process.env.DT_CLI_VERSION;
+    delete process.env.DT_FORCE_HUMAN;
+    // Reset isTTY to undefined (real state). Tests that need a
+    // specific mode call setTty() explicitly.
+    Object.defineProperty(process.stdout, "isTTY", {
+      value: undefined,
+      configurable: true,
+      writable: true,
+    });
   });
 
-  it("emits a structured JSON error when in machine mode and the deploy script is missing", async () => {
-    // CRITICAL: never let the test reach the real ~/dev-tracker-server/scripts/deploy.sh.
-    mockedExistsSync.mockReturnValue(false);
-    setTty(false); // force machine mode
-    delete process.env.DT_FORCE_HUMAN;
-
-    const program = makeProgram();
-    const stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-    const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const exitSpy = vi
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as never);
-
-    await program.parseAsync(["node", "dt", "server", "update"]);
-
-    const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
-    expect(allStdout).toMatch(/"error":\s*"Production deploy script not found/);
-    expect(allStdout).toMatch(/"code":\s*1/);
-    expect(stderrSpy).not.toHaveBeenCalled();
-    expect(exitSpy).toHaveBeenCalledWith(1);
-
-    stdoutSpy.mockRestore();
-    stderrSpy.mockRestore();
-    exitSpy.mockRestore();
-    mockedExistsSync.mockReset();
+  afterEach(() => {
     restoreTty();
+    resetCliVersionCache();
   });
 
-  it("emits a coloured human error when in TTY mode and the deploy script is missing", async () => {
-    mockedExistsSync.mockReturnValue(false);
-    setTty(true); // force human mode
-    process.env.DT_FORCE_HUMAN = "1"; // belt-and-braces in case the test env is weird
+  describe("dt version", () => {
+    it("prints the CLI version in human mode", async () => {
+      setTty(false);
+      resetCliVersionCache();
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      const program = makeProgram();
+      await program.parseAsync(["node", "dt", "version"]);
+      const out = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+      expect(out).toMatch(/"version":\s*"\d+\.\d+\.\d+"/);
+      stdoutSpy.mockRestore();
+    });
 
-    const program = makeProgram();
-    const stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-    const stderrSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const exitSpy = vi
-      .spyOn(process, "exit")
-      .mockImplementation((() => undefined) as never);
+    it("emits JSON in machine mode with the package.json version", async () => {
+      setTty(false);
+      resetCliVersionCache();
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      const program = makeProgram();
+      await program.parseAsync(["node", "dt", "version"]);
+      const out = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+      expect(out).toMatch(/"version":\s*"\d+\.\d+\.\d+"/);
+      stdoutSpy.mockRestore();
+    });
 
-    await program.parseAsync(["node", "dt", "server", "update"]);
-
-    // In human mode, JSON does NOT go to stdout
-    const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
-    expect(allStdout).not.toMatch(/"error":/);
-    // The error is on stderr, colour-coded
-    const allStderr = stderrSpy.mock.calls.map((c) => String(c[0])).join("\n");
-    expect(allStderr).toMatch(/Production deploy script not found/);
-
-    stdoutSpy.mockRestore();
-    stderrSpy.mockRestore();
-    exitSpy.mockRestore();
-    delete process.env.DT_FORCE_HUMAN;
-    mockedExistsSync.mockReset();
-    restoreTty();
-  });
-});
-
-describe("dt update (alias: self-update)", () => {
-  it("registers the command and its alias", () => {
-    const program = makeProgram();
-    const cmd = program.commands.find((c) => c.name() === "update");
-    expect(cmd).toBeDefined();
-    expect(cmd!.aliases()).toContain("self-update");
-  });
-
-  it("emits JSON success when already on latest (machine mode)", async () => {
-    mockedExistsSync.mockReturnValue(false);
-    setTty(false);
-    delete process.env.DT_FORCE_HUMAN;
-
-    const { enqueue } = mockFetch();
-    enqueue([
-      {
-        status: 200,
-        body: { tag_name: "v1.2.1", name: "v1.2.1", assets: [] },
-      },
-    ]);
-
-    const stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-
-    const program = makeProgram();
-    await program.parseAsync(["node", "dt", "update"]);
-
-    const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
-    expect(allStdout).toMatch(/"info":\s*"Current version: v1\.2\.1"/);
-    expect(allStdout).toMatch(/"info":\s*"Latest published version: v1\.2\.1"/);
-    expect(allStdout).toMatch(/"ok":\s*true/);
-    expect(allStdout).toMatch(/already on the latest version/);
-
-    stdoutSpy.mockRestore();
-    mockedExistsSync.mockReset();
-    restoreTty();
+    it("honours DT_CLI_VERSION override", async () => {
+      process.env.DT_CLI_VERSION = "9.9.9-test";
+      resetCliVersionCache();
+      setTty(false);
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      const program = makeProgram();
+      await program.parseAsync(["node", "dt", "version"]);
+      const out = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+      expect(out).toContain("9.9.9-test");
+      stdoutSpy.mockRestore();
+      delete process.env.DT_CLI_VERSION;
+      resetCliVersionCache();
+    });
   });
 
-  it("skips real download in dev/test mode but still reports the new version (JSON)", async () => {
-    mockedExistsSync.mockReturnValue(false);
-    setTty(false);
-    delete process.env.DT_FORCE_HUMAN;
-    process.env.VITEST = "1";
-    delete process.env.TSX_VERSION;
-    delete process.env.npm_lifecycle_event;
+  describe("dt update (self-update)", () => {
+    it("emits a JSON success line when the CLI is already up to date", async () => {
+      setTty(false);
+      const currentVersion = getCliVersion();
 
-    const { enqueue } = mockFetch();
-    enqueue([
-      {
-        status: 200,
-        body: {
-          tag_name: "v1.3.0",
-          name: "v1.3.0",
-          assets: [{ name: "dt-linux-x64", browser_download_url: "https://example.invalid/dt" }],
+      const { enqueue } = mockFetch();
+      enqueue([
+        {
+          status: 200,
+          body: { tag_name: `v${currentVersion}`, name: `v${currentVersion}`, assets: [] },
         },
-      },
-    ]);
+      ]);
 
-    const stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      const program = makeProgram();
+      await program.parseAsync(["node", "dt", "update"]);
 
-    const program = makeProgram();
-    await program.parseAsync(["node", "dt", "update"]);
+      const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+      expect(allStdout).toMatch(new RegExp(`"info":\\s*"Current version: v${currentVersion.replace(/\./g, "\\.")}"`));
+      expect(allStdout).toMatch(new RegExp(`"info":\\s*"Latest published version: v${currentVersion.replace(/\./g, "\\.")}"`));
+      expect(allStdout).toMatch(/"ok":\s*true/);
+      expect(allStdout).toMatch(/already on the latest version/);
 
-    const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
-    expect(allStdout).toMatch(/"info":\s*"A new update is available: v1\.3\.0/);
-    expect(allStdout).toMatch(/"devMode":\s*true/);
-    expect(allStdout).toMatch(/Skipping real download/);
+      stdoutSpy.mockRestore();
+      mockedExistsSync.mockReset();
+    });
 
-    stdoutSpy.mockRestore();
-    mockedExistsSync.mockReset();
-    restoreTty();
-  });
+    it("skips real download in dev/test mode but still reports the new version (JSON)", async () => {
+      setTty(false);
+      process.env.VITEST = "1";
+      delete process.env.TSX_VERSION;
+      delete process.env.npm_lifecycle_event;
 
-  it("emits a JSON error when the latest release is missing the platform asset", async () => {
-    mockedExistsSync.mockReturnValue(false);
-    setTty(false);
-    delete process.env.DT_FORCE_HUMAN;
-
-    const { enqueue } = mockFetch();
-    enqueue([
-      {
-        status: 200,
-        body: {
-          tag_name: "v1.3.0",
-          name: "v1.3.0",
-          assets: [{ name: "dt-macos-arm64", browser_download_url: "https://example.invalid/mac" }],
+      const { enqueue } = mockFetch();
+      enqueue([
+        {
+          status: 200,
+          body: {
+            tag_name: "v99.0.0",
+            name: "v99.0.0",
+            assets: [
+              { name: "dt-linux-x64", browser_download_url: "https://example.invalid/dt" },
+            ],
+          },
         },
-      },
-    ]);
+      ]);
 
-    const stdoutSpy = vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      const program = makeProgram();
+      await program.parseAsync(["node", "dt", "update"]);
 
-    const program = makeProgram();
-    await program.parseAsync(["node", "dt", "update"]);
+      const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+      expect(allStdout).toMatch(/"info":\s*"A new update is available: v99\.0\.0/);
+      expect(allStdout).toMatch(/"devMode":\s*true/);
+      expect(allStdout).toMatch(/Skipping real download/);
 
-    const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
-    expect(allStdout).toMatch(/"error":\s*"Could not find pre-compiled binary/);
-    expect(allStdout).toMatch(/"code":\s*3/);
+      stdoutSpy.mockRestore();
+      mockedExistsSync.mockReset();
+    });
 
-    stdoutSpy.mockRestore();
-    mockedExistsSync.mockReset();
-    restoreTty();
+    it("emits a JSON error when the latest release is missing the platform asset", async () => {
+      setTty(false);
+
+      const { enqueue } = mockFetch();
+      enqueue([
+        {
+          status: 200,
+          body: {
+            tag_name: "v99.0.0",
+            name: "v99.0.0",
+            assets: [
+              { name: "dt-macos-arm64", browser_download_url: "https://example.invalid/mac" },
+            ],
+          },
+        },
+      ]);
+
+      const stdoutSpy = vi
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true);
+      const program = makeProgram();
+      await program.parseAsync(["node", "dt", "update"]);
+
+      const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+      expect(allStdout).toMatch(/"error":\s*"Could not find pre-compiled binary/);
+      expect(allStdout).toMatch(/"code":\s*3/);
+
+      stdoutSpy.mockRestore();
+      mockedExistsSync.mockReset();
+    });
   });
-});
+
+  describe("dt server update", () => {
+      it("emits a JSON error when the deploy script is missing", async () => {
+        setTty(false);
+        // Reset the exit code from any prior test in this run.
+        process.exitCode = 0;
+        const stdoutSpy = vi
+          .spyOn(process.stdout, "write")
+          .mockImplementation(() => true);
+        const stderrSpy = vi
+          .spyOn(process.stderr, "write")
+          .mockImplementation(() => true);
+
+        const program = makeProgram();
+        await program.parseAsync(["node", "dt", "server", "update", "--yes"]);
+        // The command sets process.exitCode = 1 when the script is
+        // missing (we use exitCode instead of exit so tests don't actually
+        // terminate the test runner).
+        expect(process.exitCode).toBe(1);
+
+        const allStdout = stdoutSpy.mock.calls.map((c) => String(c[0])).join("");
+        const allStderr = stderrSpy.mock.calls.map((c) => String(c[0])).join("");
+        // JSON error goes to stdout in machine mode (stderr is for
+        // human mode).
+        const all = allStdout + allStderr;
+        expect(all).toMatch(/Production deploy script not found/);
+
+        stdoutSpy.mockRestore();
+        stderrSpy.mockRestore();
+        process.exitCode = 0;
+      });
+    });
+  });

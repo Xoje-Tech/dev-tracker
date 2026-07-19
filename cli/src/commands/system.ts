@@ -4,10 +4,11 @@ import { existsSync, writeFileSync, chmodSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { isMachineMode } from "../output.js";
+import { getCliVersion } from "../version.js";
 
-const CURRENT_VERSION = "1.2.1";
 const REPO_OWNER = "Xoje-Tech";
 const REPO_NAME = "dev-tracker";
+const GHCR_IMAGE = `ghcr.io/${REPO_OWNER.toLowerCase()}/dev-tracker-server`;
 
 /** Emit a JSON error to stdout if in machine mode, else a coloured line to stderr. */
 function emitError(program: Command, message: string, code: number, extra?: Record<string, unknown>): void {
@@ -39,7 +40,7 @@ function emitSuccess(program: Command, message: string, extra?: Record<string, u
 }
 
 // Helper to parse semver string (e.g. "1.2.1" or "dev-tracker-v1.3.0") into numbers
-function parseVersion(vStr: string): { major: number; minor: number; patch: number } {
+export function parseVersion(vStr: string): { major: number; minor: number; patch: number } {
   const match = vStr.match(/v?(\d+\.\d+\.\d+)/);
   const cleaned = match ? match[1] : "0.0.0";
   const parts = cleaned.split(".").map(Number);
@@ -50,7 +51,7 @@ function parseVersion(vStr: string): { major: number; minor: number; patch: numb
   };
 }
 
-function isNewer(current: string, latest: string): boolean {
+export function isNewer(current: string, latest: string): boolean {
   const curr = parseVersion(current);
   const lat = parseVersion(latest);
   if (lat.major > curr.major) return true;
@@ -59,28 +60,164 @@ function isNewer(current: string, latest: string): boolean {
   return false;
 }
 
+/**
+ * Query the GHCR registry for the `latest` tag of the server image and
+ * return the digest (SHA256) so we can determine the version behind it.
+ *
+ * GHCR exposes OCI image manifests via a public anonymous API. We use
+ * the token endpoint + manifest list endpoint to get the actual digest.
+ */
+async function fetchLatestServerDigest(): Promise<string | null> {
+  try {
+    const tokenRes = await fetch(
+      `https://ghcr.io/token?service=ghcr.io&scope=repository:${REPO_OWNER.toLowerCase()}/${REPO_NAME}/dev-tracker-server:pull`,
+    );
+    if (!tokenRes.ok) return null;
+    const tokenJson = (await tokenRes.json()) as { token?: string };
+    if (!tokenJson.token) return null;
+
+    const manifestRes = await fetch(
+      `https://ghcr.io/v2/${REPO_OWNER.toLowerCase()}/${REPO_NAME}/dev-tracker-server/manifests/latest`,
+      {
+        headers: {
+          Accept: "application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.v2+json,application/vnd.oci.image.manifest.v1+json",
+          Authorization: `Bearer ${tokenJson.token}`,
+        },
+      },
+    );
+    if (!manifestRes.ok) return null;
+    // OCI digest header is the canonical image identifier.
+    return manifestRes.headers.get("docker-content-digest");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Compare the running container's digest to the GHCR :latest digest.
+ * Used by `dt server status` to detect drift between running and
+ * available updates.
+ */
+async function isContainerOutdated(containerName: string): Promise<{
+  outdated: boolean;
+  runningDigest: string | null;
+  latestDigest: string | null;
+}> {
+  try {
+    const { execSync } = await import("node:child_process");
+    const inspect = execSync(
+      `podman inspect --format '{{.ImageDigest}}' ${containerName}`,
+      { encoding: "utf-8", stdio: ["ignore", "pipe", "ignore"] },
+    ).trim();
+    const runningDigest = inspect || null;
+    const latestDigest = await fetchLatestServerDigest();
+    return {
+      outdated: Boolean(runningDigest && latestDigest && runningDigest !== latestDigest),
+      runningDigest,
+      latestDigest,
+    };
+  } catch {
+    return { outdated: false, runningDigest: null, latestDigest: null };
+  }
+}
+
 export function registerSystemCommands(program: Command): void {
-  // 1. Command to update the Podman server
+  // 0. Top-level `dt version` — show the running CLI version. Reads from
+  //    cli/package.json via getCliVersion(); falls back to "unknown".
+  program
+    .command("version")
+    .description("Print the dt CLI version and exit")
+    .action(() => {
+      const version = getCliVersion();
+      if (isMachineMode(program)) {
+        process.stdout.write(JSON.stringify({ version }) + "\n");
+      } else {
+        console.log(`dt v${version}`);
+      }
+    });
+
+  // 1. Server management subcommand.
   const server = program
     .command("server")
     .description("Manage the dev-tracker production server");
 
+  // 1a. dt server status — show current vs available.
+  server
+    .command("status")
+    .description("Show the local server's status vs the latest GHCR image")
+    .action(async () => {
+      const currentVersion = getCliVersion();
+      emitInfo(program, `dt CLI version: v${currentVersion}`);
+      emitInfo(program, `Checking ${GHCR_IMAGE}:latest ...`);
+      const status = await isContainerOutdated(
+        "dev-tracker-server_dev-tracker-server_1",
+      );
+      if (status.latestDigest === null) {
+        emitError(
+          program,
+          "Could not fetch latest image digest from GHCR (offline or rate-limited). Try `podman pull` manually.",
+          1,
+          { status: "unknown" },
+        );
+        process.exit(1);
+        return;
+      }
+      if (status.outdated) {
+        emitInfo(
+          program,
+          `Update available! Running ${status.runningDigest?.slice(0, 12)}... → latest ${status.latestDigest.slice(0, 12)}...`,
+        );
+        emitInfo(program, `Run 'dt server update' to apply.`);
+      } else {
+        emitSuccess(program, `Server is up to date with :latest.`);
+      }
+    });
+
+  // 1b. dt server update — pulls latest image, restarts container, verifies health.
   server
     .command("update")
     .alias("deploy")
     .description("Update the local Podman server to the latest GHCR image")
-    .action(async () => {
+    .option("--yes", "skip confirmation prompt (for CI)")
+    .action(async (opts: { yes?: boolean }) => {
+      const currentVersion = getCliVersion();
+
+      // Confirm with the user before running the deploy script. Skip
+      // when --yes or when in JSON mode (CI/agent invocation).
+      if (!opts.yes && !isMachineMode(program)) {
+        emitInfo(
+          program,
+          `About to update the local dev-tracker server to the latest GHCR image (ghcr.io/...:latest).`,
+        );
+        emitInfo(program, `Current dt CLI version: v${currentVersion}`);
+        emitInfo(program, `This will restart the running container.`);
+        emitInfo(
+          program,
+          `Continue? [y/N] (use --yes to skip this prompt)`,
+        );
+        const answer = (await new Promise<string>((resolve) => {
+          process.stdin.once("data", (chunk) => resolve(chunk.toString().trim()));
+          process.stdin.once("end", () => resolve(""));
+          // Resume stdin in case it's paused (node-tty behaviour).
+          if (process.stdin.isPaused()) process.stdin.resume();
+        })).toLowerCase();
+        if (answer !== "y" && answer !== "yes") {
+          emitInfo(program, `Aborted.`);
+          return;
+        }
+      }
+
       const deployScript = join(homedir(), "dev-tracker-server", "scripts", "deploy.sh");
       if (!existsSync(deployScript)) {
         emitError(program, `Production deploy script not found at ${deployScript}`, 1);
-        if (isMachineMode(program)) {
-          // JSON mode consumer has the error in stdout; exit cleanly
-          // without dumping the "Please make sure..." hint twice.
-        } else {
+        if (!isMachineMode(program)) {
           console.error("Please make sure dev-tracker-server is installed at ~/dev-tracker-server");
         }
-        process.exit(1);
-        return; // unreachable; makes TS happy
+        // Use process.exitCode instead of process.exit so the process
+        // doesn't actually exit during tests (and so async/await
+        // control flow returns cleanly to the test runner).
+        process.exitCode = 1;
+        return;
       }
 
       emitInfo(program, `=== [dt] Executing deployment pipeline: ${deployScript} ===`);
@@ -94,19 +231,20 @@ export function registerSystemCommands(program: Command): void {
           emitSuccess(program, "=== [dt] Server updated and verified successfully! ===");
         } else {
           emitError(program, `Deployment failed with exit code ${code}`, code ?? 1);
-          process.exit(code ?? 1);
+          process.exitCode = code ?? 1;
         }
       });
     });
 
-  // 2. Command to update the CLI binary itself
+  // 2. Command to update the CLI binary itself.
   program
     .command("update")
     .alias("self-update")
     .description("Check for updates and update the dt CLI binary")
     .action(async () => {
       const machine = isMachineMode(program);
-      emitInfo(program, `Current version: v${CURRENT_VERSION}`);
+      const currentVersion = getCliVersion();
+      emitInfo(program, `Current version: v${currentVersion}`);
       if (!machine) console.log("Checking for updates in GitHub Releases...");
 
       try {
@@ -133,7 +271,7 @@ export function registerSystemCommands(program: Command): void {
         const latestTag = release.tag_name;
         emitInfo(program, `Latest published version: ${latestTag}`);
 
-        if (!isNewer(CURRENT_VERSION, latestTag)) {
+        if (!isNewer(currentVersion, latestTag)) {
           emitSuccess(program, "You are already on the latest version of the dt CLI! ✨");
           return;
         }
