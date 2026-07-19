@@ -26,10 +26,12 @@ const project = computed(() =>
   projectsStore.projects.find((p) => p.id === projectId.value) ?? null,
 );
 
-// BoardTabs — only Board and Milestones for now; Sprints added in a later SDD.
+// BoardTabs — Board, Milestones, and Sprints. The Sprints tab is the
+// 3rd entry, added in PR ui-sprints (ui-milestones SDD had 2 tabs).
 const boardTabs = computed(() => [
   { label: "Board", to: `/projects/${projectId.value}/board` },
   { label: "Milestones", to: `/projects/${projectId.value}/milestones` },
+  { label: "Sprints", to: `/projects/${projectId.value}/sprints` },
 ]);
 
 type DialogState =
