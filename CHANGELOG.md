@@ -5,6 +5,15 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.4.0...dev-tracker-v1.5.0) (2026-07-19)
+
+
+### Features
+
+* **cli:** add getCliVersion() helper that reads cli/package.json at runtime ([d3fca95](https://github.com/Xoje-Tech/dev-tracker/commit/d3fca950796d5ff1e3e98b10cb2938a717981610))
+* **cli:** expose dt version, dt server status, and --yes flag for dt server update ([188e8d9](https://github.com/Xoje-Tech/dev-tracker/commit/188e8d92fed75ceb12922430131cc9bbfb7b9b5a))
+* **cli:** expose dt version, dt server status, and --yes flag for dt server update ([970da7f](https://github.com/Xoje-Tech/dev-tracker/commit/970da7f71a3292df67e63cddddc3a0bd38f6c91b))
+
 ## [1.4.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.3.0...dev-tracker-v1.4.0) (2026-07-19)
 
 
