@@ -5,6 +5,14 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.6.0...dev-tracker-v1.6.1) (2026-07-20)
+
+
+### Bug Fixes
+
+* **ci:** explicit tag_name in softprops/action-gh-release for workflow_dispatch ([f1e32f7](https://github.com/Xoje-Tech/dev-tracker/commit/f1e32f727b945a49df9c1f2d2f89d0e11d00db72))
+* **ci:** explicit tag_name in softprops/action-gh-release for workflow_dispatch ([96d6a5d](https://github.com/Xoje-Tech/dev-tracker/commit/96d6a5dfead60b92fcf28c1b91370ad2453be9a7))
+
 ## [1.6.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.5.0...dev-tracker-v1.6.0) (2026-07-20)
 
 
