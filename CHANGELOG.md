@@ -5,6 +5,15 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.5.0...dev-tracker-v1.6.0) (2026-07-20)
+
+
+### Features
+
+* **cli:** add dt doctor comprehensive health-check command ([11be0c9](https://github.com/Xoje-Tech/dev-tracker/commit/11be0c98d59abfa65f984fbdafb39ab66200b166))
+* **cli:** inject DT_CLI_VERSION into production binaries via scripts/package.sh ([15ffce2](https://github.com/Xoje-Tech/dev-tracker/commit/15ffce22c4640aa99afc81b45372014a08d5e3c7))
+* **ops:** dt doctor + DT_CLI_VERSION injection + workflow_dispatch (resolves [#90](https://github.com/Xoje-Tech/dev-tracker/issues/90), [#91](https://github.com/Xoje-Tech/dev-tracker/issues/91), [#92](https://github.com/Xoje-Tech/dev-tracker/issues/92)) ([18641de](https://github.com/Xoje-Tech/dev-tracker/commit/18641de8f271f5f8b9657ef30ac347840a4f5023))
+
 ## [1.5.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.4.0...dev-tracker-v1.5.0) (2026-07-19)
 
 
