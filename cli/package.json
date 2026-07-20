@@ -1,6 +1,6 @@
 {
   "name": "dev-tracker-cli",
-  "version": "1.5.0",
+  "version": "1.6.1",
   "private": true,
   "type": "commonjs",
   "description": "Command-line interface for dev-tracker — wraps the REST API so agents and humans can drive the app from the terminal.",
