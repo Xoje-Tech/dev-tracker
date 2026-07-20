@@ -58,6 +58,11 @@ jobs:
       - name: Upload binaries to Release
         uses: softprops/action-gh-release@v2
         with:
+          # workflow_dispatch doesn't set github.ref to a tag; the
+          # gh-release action needs an explicit tag_name to upload
+          # assets against. Fall back to github.ref_name for tag-
+          # triggered runs (which provide refs/tags/dev-tracker-vX.Y.Z).
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           files: |
             cli/binaries/dt-linux-x64
             cli/binaries/dt-macos-x64
