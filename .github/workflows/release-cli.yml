@@ -1,10 +1,24 @@
 name: Release CLI Binaries
 
+# Triggers:
+#   1. push: tags: dev-tracker-v* / v* — automatic when someone pushes a
+#      release tag via regular `git push`.
+#   2. workflow_dispatch: tag=<ref> — manual override for the
+#      release-please edge case where its internal tag push doesn't
+#      match the push: tags: filter. Use:
+#        gh workflow run release-cli -f tag=dev-tracker-v1.5.0
+#      See issue #92.
 on:
   push:
     tags:
       - 'dev-tracker-v*'
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build CLI binaries from (e.g. dev-tracker-v1.5.0)'
+        required: true
+        type: string
 
 jobs:
   build-and-release:
@@ -16,6 +30,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # workflow_dispatch passes the tag via inputs; regular tag
+          # pushes have it on github.ref. Unify on the input or ref.
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

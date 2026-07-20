@@ -21,7 +21,7 @@
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run",
-    "package": "pnpm run build && pkg ."
+    "package": "pnpm run build && bash scripts/package.sh"
   },
   "dependencies": {
     "commander": "^14.0.2"
