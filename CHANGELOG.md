@@ -5,6 +5,14 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.6.1...dev-tracker-v1.7.0) (2026-07-20)
+
+
+### Features
+
+* **cli:** add dt update-all command to update both CLI binary and production server in one go ([c0471f4](https://github.com/Xoje-Tech/dev-tracker/commit/c0471f4c6c3d1918c542775413a717053bd38a48))
+* **cli:** add dt update-all command to update both CLI binary and server ([0c33549](https://github.com/Xoje-Tech/dev-tracker/commit/0c33549c5bbf099a69aef6f603a2032c21169d1f))
+
 ## [1.6.1](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.6.0...dev-tracker-v1.6.1) (2026-07-20)
 
 
