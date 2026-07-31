@@ -1,9 +1,8 @@
 /**
- * Board routes — paths relative to the base mount `/api/projects`.
+ * Board routes — paths relative to the base mount `/api/boards`.
  *
- * Boards are nested under projects (one board per project), so the
- * base mount is `/api/projects` and the item paths include the
- * `:projectId` segment.
+ * Boards are keyed by project id (one board per project), so the item
+ * paths use `:projectId` as the resource identifier under `/api/boards`.
  */
 export const BOARD_ROUTES = {
   base: '/api/boards',

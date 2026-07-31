@@ -238,6 +238,20 @@ describe("executeTool", () => {
     expect(result.content[0].text).toContain('[{"id":"1"}]');
   });
 
+  it("executes get_project_board via GET /boards/:projectId/board", async () => {
+    const mockClient = new McpClient("url", "key");
+    vi.mocked(mockClient.get).mockResolvedValueOnce({ id: "board-1", columns: [] });
+
+    const result = await executeTool(mockClient, "get_project_board", {
+      projectId: "p1",
+    });
+
+    // Backend route is /api/boards/:projectId/board (see BOARD_ROUTES) —
+    // regression guard for #105/#102 (MCP called /projects/:id/board → 404).
+    expect(mockClient.get).toHaveBeenCalledWith("/boards/p1/board");
+    expect(result.content[0].text).toContain('"id":"board-1"');
+  });
+
   it("executes create_task via POST /tasks", async () => {
     const mockClient = new McpClient("url", "key");
     vi.mocked(mockClient.post).mockResolvedValueOnce({ id: "123" });

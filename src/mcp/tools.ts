@@ -119,14 +119,15 @@ export const schemas = {
  *     minus projectId/sprintId" would drop the null and silently leave the
  *     sprint attached. We rebuild the body explicitly to keep `null`.
  */
-export async function executeTool(client: McpClient, name: string, args: any) {
+export async function executeTool(client: McpClient, name: string, args: Record<string, unknown>) {
   let result;
   switch (name) {
     case "list_projects":
       result = await client.get("/projects");
       break;
     case "get_project_board":
-      result = await client.get(`/projects/${args.projectId}/board`);
+      // Backend route is /api/boards/:projectId/board (see BOARD_ROUTES).
+      result = await client.get(`/boards/${args.projectId}/board`);
       break;
     case "create_project":
       result = await client.post("/projects", args);
@@ -156,9 +157,7 @@ export async function executeTool(client: McpClient, name: string, args: any) {
     // ─────────────── Milestone tools (6) ───────────────
 
     case "list_milestones": {
-      const qs = args.includeArchived
-        ? "?includeArchived=true"
-        : "";
+      const qs = args.includeArchived === true ? "?includeArchived=true" : "";
       result = await client.get(
         `/projects/${args.projectId}/milestones${qs}`,
       );

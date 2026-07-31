@@ -252,12 +252,12 @@ export function setupServer() {
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     try {
-      return await executeTool(client, request.params.name, request.params.arguments);
-    } catch (error: any) {
+      return await executeTool(client, request.params.name, request.params.arguments ?? {});
+    } catch (error: unknown) {
       if (error instanceof ZodError) {
         return formatZodError(error);
       }
-      return formatMcpError(error.message);
+      return formatMcpError(error instanceof Error ? error.message : String(error));
     }
   });
 
