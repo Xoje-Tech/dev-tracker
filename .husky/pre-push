@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# .husky/pre-push — Gate de validación: typecheck + recibo RDD
+# Migrado desde .git/hooks/pre-push (generado por init.sh) a hooks
+# versionados de Husky. init.sh ya no genera hooks locales.
+
+# No validar si es un push de borrado de rama
+while read local_ref local_sha remote_ref remote_sha
+do
+  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    exit 0
+  fi
+done
+
+echo "🏗️  [typecheck] Verificando tipos antes del push..."
+if ! pnpm typecheck; then
+  echo "❌ [typecheck] Errores de tipos. Corrige antes de pushear."
+  exit 1
+fi
+
+if command -v gentle-ai >/dev/null 2>&1; then
+  echo "🔍 [RDD] Validando recibo pre-push..."
+  if ! gentle-ai review validate --gate pre-push --cwd .; then
+    echo "❌ [RDD] Error de validación: El código ha cambiado o el recibo RDD no está aprobado."
+    echo "   Por favor, ejecute el flujo de revisión (start -> finalize) antes de subir."
+    exit 1
+  fi
+  echo "✅ [RDD] Recibo de revisión aprobado. Procediendo con el push..."
+fi
+exit 0
