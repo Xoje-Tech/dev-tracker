@@ -108,42 +108,21 @@ if ! command -v gentle-ai >/dev/null 2>&1; then
 else
   rdd_ok "gentle-ai disponible -> $(gentle-ai --version 2>&1 | head -n 1)"
 
-  # Configurar hook de pre-push si es un repositorio git
+  # Verificar hooks Husky versionados (gate RDD migrado desde .git/hooks/pre-push)
   if [ -d ".git" ]; then
-    HOOK_FILE=".git/hooks/pre-push"
-    
-    # Comprobar si el hook ya está configurado
-    if [ ! -f "$HOOK_FILE" ] || ! grep -q "gentle-ai review validate" "$HOOK_FILE" 2>/dev/null; then
-      rdd_warn "Hook pre-push de RDD no detectado o incompleto. Configurando automáticamente..."
-      
-      # Crear el hook de forma autocurativa
-      cat << 'EOF' > "$HOOK_FILE"
-#!/usr/bin/env bash
-# .git/hooks/pre-push (Autogenerado por init.sh para RDD)
-
-# No validar si es un push de borrado de rama
-while read local_ref local_sha remote_ref remote_sha
-do
-  if [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
-    exit 0
-  fi
-done
-
-if command -v gentle-ai >/dev/null 2>&1; then
-  echo "🔍 [RDD] Validando recibo pre-push..."
-  if ! gentle-ai review validate --gate pre-push --cwd .; then
-    echo "❌ [RDD] Error de validación: El código ha cambiado o el recibo RDD no está aprobado."
-    echo "   Por favor, ejecute el flujo de revisión (start -> finalize) antes de subir."
-    exit 1
-  fi
-  echo "✅ [RDD] Recibo de revisión aprobado. Procediendo con el push..."
-fi
-exit 0
-EOF
-      chmod +x "$HOOK_FILE"
-      rdd_ok "Hook pre-push de RDD creado y hecho ejecutable en $HOOK_FILE"
+    if [ -f ".husky/pre-push" ]; then
+      # Asegurar que husky haya instalado sus hooks internos (v9 via core.hooksPath)
+      if [ ! -d ".husky/_" ] && command -v pnpm >/dev/null 2>&1; then
+        rdd_warn "Hooks .husky presentes pero no instalados. Ejecutando pnpm exec husky..."
+        pnpm exec husky
+      fi
+      if grep -q "gentle-ai review validate" ".husky/pre-push" 2>/dev/null; then
+        rdd_ok "Hooks Husky versionados (.husky/) con gate RDD activo"
+      else
+        rdd_warn ".husky/pre-push no contiene el gate RDD. Revisa la migración."
+      fi
     else
-      rdd_ok "Hook pre-push de RDD activo y configurado"
+      rdd_warn "Hooks Husky no detectados. Ejecuta: pnpm install (prepare instala .husky/)"
     fi
   else
     rdd_warn "No se detectó el directorio .git. Saltando configuración de hooks."

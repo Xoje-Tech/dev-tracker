@@ -1,9 +1,8 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { useApi } from "@client/shared/infrastructure/composables/useApi";
-import { TAGS_ROUTES } from "@tags/domain/routes";
-import { TASKS_ROUTES } from "@tasks/domain/routes";
-import type { CreateTagInput, Tag } from "@client/tags/domain/types";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { useApi } from '@client/shared/infrastructure/composables/useApi';
+import { TAGS_ROUTES } from '@tags/domain/routes';
+import type { CreateTagInput, Tag } from '@client/tags/domain/types';
 
 /**
  * Tags module — Pinia store.
@@ -19,7 +18,7 @@ import type { CreateTagInput, Tag } from "@client/tags/domain/types";
  * way to read them). When the backend DTO is extended, wire the
  * assign/unassign into the task dialog.
  */
-export const useTagsStore = defineStore("tags", () => {
+export const useTagsStore = defineStore('tags', () => {
   const api = useApi(TAGS_ROUTES.base);
   const tagsApi = useApi(TAGS_ROUTES.base);
 
@@ -31,16 +30,16 @@ export const useTagsStore = defineStore("tags", () => {
     loading.value = true;
     error.value = null;
     try {
-      tags.value = await api.get<Tag[]>("/");
+      tags.value = await api.get<Tag[]>('/');
     } catch (e) {
-      error.value = e instanceof Error ? e.message : "Could not load tags";
+      error.value = e instanceof Error ? e.message : 'Could not load tags';
     } finally {
       loading.value = false;
     }
   }
 
   async function create(input: CreateTagInput): Promise<Tag> {
-    const tag = await api.post<Tag>("/", input);
+    const tag = await api.post<Tag>('/', input);
     tags.value = [...tags.value, tag];
     return tag;
   }
@@ -49,7 +48,10 @@ export const useTagsStore = defineStore("tags", () => {
     await tagsApi.post(`/tasks/${taskId}/tags/${tagId}`);
   }
 
-  async function unassignFromTask(taskId: string, tagId: string): Promise<void> {
+  async function unassignFromTask(
+    taskId: string,
+    tagId: string,
+  ): Promise<void> {
     await tagsApi.del(`/tasks/${taskId}/tags/${tagId}`);
   }
 
