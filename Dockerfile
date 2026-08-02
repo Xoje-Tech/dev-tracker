@@ -28,7 +28,7 @@ RUN pnpm exec prisma generate
 # Compila backend y frontend
 RUN pnpm run build
 # Elimina devDependencies para la imagen final
-RUN CI=true pnpm prune --prod
+RUN CI=true pnpm prune --prod --ignore-scripts
 
 # =============================================================================
 # Runner Stage — production minimal image
