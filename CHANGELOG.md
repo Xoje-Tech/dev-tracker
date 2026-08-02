@@ -5,6 +5,25 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.7.0...dev-tracker-v1.8.0) (2026-08-02)
+
+
+### Features
+
+* **agents:** add in-repo skills standard for dev-tracker ([2750876](https://github.com/Xoje-Tech/dev-tracker/commit/27508767aab761dcf34b69779eeccb446f1b9922))
+* **agents:** add in-repo skills standard for dev-tracker ([bff6f3d](https://github.com/Xoje-Tech/dev-tracker/commit/bff6f3d87e952c2aa18f27a34ff6bd8eac545b84))
+* **agents:** integrate automated OpenWiki AGENTS.md drift validator and OKF ([5817e3b](https://github.com/Xoje-Tech/dev-tracker/commit/5817e3ba4c7ee17e572093104e6aae07e995969f))
+* **agents:** integrate automated OpenWiki AGENTS.md drift validator and OKF ([11bca62](https://github.com/Xoje-Tech/dev-tracker/commit/11bca627eb3c21bb148b5709eabf6a0cad834714))
+
+
+### Bug Fixes
+
+* **boards:** restore BOARD_ROUTES prefix-on-mount convention and mergeParams ([125d1fb](https://github.com/Xoje-Tech/dev-tracker/commit/125d1fb3936e95bf65f831c70dd4d47164684ca9))
+* **boards:** synchronize MCP routes and restore BOARD_ROUTES ([155569f](https://github.com/Xoje-Tech/dev-tracker/commit/155569f0d8441146a5b49d869e9caaae7c60b1ef))
+* **boards:** synchronize MCP routes with backend /api/boards path and ensure mergeParams ([deafb87](https://github.com/Xoje-Tech/dev-tracker/commit/deafb87ab8602d5aebfe14de26d4db3f72074e29))
+* **lint:** resolve 20 pre-existing eslint errors exposed by new gate ([b7d5d87](https://github.com/Xoje-Tech/dev-tracker/commit/b7d5d87f489402ade019dbecec6d51a9d3cd93b7))
+* **mcp:** get_project_board calls /boards/:id/board (was /projects/:id/board -&gt; 404) ([835eb28](https://github.com/Xoje-Tech/dev-tracker/commit/835eb28842f774b01c7cae078bebec86fd5f1176))
+
 ## [1.7.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.6.1...dev-tracker-v1.7.0) (2026-07-20)
 
 
