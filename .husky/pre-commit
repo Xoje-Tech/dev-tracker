@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# .husky/pre-commit — Gate rápido de calidad sobre archivos staged
+pnpm exec lint-staged

@@ -17,3 +17,6 @@ cli/binaries/
 
 # Dev Tracker CLI sync cache (gh mirror)
 .dev-tracker/sync/
+
+# Husky internal hooks (per-machine, not versioned)
+.husky/_
