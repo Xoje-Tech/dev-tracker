@@ -5,6 +5,14 @@ All notable changes to dev-tracker are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.1](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.8.0...dev-tracker-v1.8.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **docker:** ignore scripts during prune ([2b167f8](https://github.com/Xoje-Tech/dev-tracker/commit/2b167f80a7a99ae83f2d4039e2446baa6c2f7772))
+* **docker:** ignore scripts during prune to avoid husky error ([b266996](https://github.com/Xoje-Tech/dev-tracker/commit/b266996409d58db5b99e41a820e0deea0ec8cfda))
+
 ## [1.8.0](https://github.com/Xoje-Tech/dev-tracker/compare/dev-tracker-v1.7.0...dev-tracker-v1.8.0) (2026-08-02)
 
 
