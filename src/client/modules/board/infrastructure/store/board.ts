@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { useApi } from "@client/shared/infrastructure/composables/useApi";
-import { PROJECTS_ROUTES } from "@projects/domain/routes";
-import { TASKS_ROUTES } from "@tasks/domain/routes";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { useApi } from '@client/shared/infrastructure/composables/useApi';
+import { PROJECTS_ROUTES } from '@projects/domain/routes';
+import { TASKS_ROUTES } from '@tasks/domain/routes';
 import type {
   Board,
   BoardColumn,
@@ -10,7 +10,7 @@ import type {
   CreateTaskInput,
   MoveTaskInput,
   UpdateTaskInput,
-} from "@client/board/domain/types";
+} from '@client/board/domain/types';
 
 /**
  * Board module — Pinia store.
@@ -26,7 +26,7 @@ import type {
  *   DELETE /api/tasks/:id                     — delete task
  *   POST /api/tasks/:id/move                  — move task (column + index)
  */
-export const useBoardStore = defineStore("board", () => {
+export const useBoardStore = defineStore('board', () => {
   const boardApi = useApi(PROJECTS_ROUTES.base);
   const taskApi = useApi(TASKS_ROUTES.base);
 
@@ -59,7 +59,7 @@ export const useBoardStore = defineStore("board", () => {
       board.value = fetched;
       return fetched;
     } catch (e) {
-      error.value = e instanceof Error ? e.message : "Could not load board";
+      error.value = e instanceof Error ? e.message : 'Could not load board';
       return null;
     } finally {
       loading.value = false;
@@ -67,11 +67,11 @@ export const useBoardStore = defineStore("board", () => {
   }
 
   async function createTask(input: CreateTaskInput): Promise<BoardTask> {
-    const created = await taskApi.post<BoardTask>("/", {
+    const created = await taskApi.post<BoardTask>('/', {
       columnId: input.columnId,
       title: input.title,
       description: input.description,
-      priority: input.priority ?? "medium",
+      priority: input.priority ?? 'medium',
       order: 0,
       assigneeId: input.assigneeId,
     });
@@ -82,13 +82,20 @@ export const useBoardStore = defineStore("board", () => {
     return created;
   }
 
-  async function updateTask(id: string, input: UpdateTaskInput): Promise<BoardTask> {
+  async function updateTask(
+    id: string,
+    input: UpdateTaskInput,
+  ): Promise<BoardTask> {
     const updated = await taskApi.patch<BoardTask>(`/${id}`, input);
     if (board.value) {
       for (const col of board.value.columns) {
         const idx = col.tasks.findIndex((t) => t.id === id);
         if (idx >= 0) {
-          col.tasks = [...col.tasks.slice(0, idx), updated, ...col.tasks.slice(idx + 1)];
+          col.tasks = [
+            ...col.tasks.slice(0, idx),
+            updated,
+            ...col.tasks.slice(idx + 1),
+          ];
           break;
         }
       }
@@ -118,13 +125,15 @@ export const useBoardStore = defineStore("board", () => {
     if (!board.value) return;
 
     const fromCol = board.value.columns.find((c) => c.id === fromColumnId);
-    const toCol = board.value.columns.find((c) => c.id === input.targetColumnId);
+    const toCol = board.value.columns.find(
+      (c) => c.id === input.targetColumnId,
+    );
     if (!fromCol || !toCol) return;
 
     const idx = fromCol.tasks.findIndex((t) => t.id === taskId);
     if (idx < 0) return;
     const [moved] = fromCol.tasks.splice(idx, 1);
-    moved && toCol.tasks.splice(input.newIndex, 0, moved);
+    if (moved) toCol.tasks.splice(input.newIndex, 0, moved);
   }
 
   return {

@@ -24,6 +24,16 @@ export default [
     },
   },
   {
+    rules: {
+      // Express middleware/error handlers legitimately declare unused params
+      // (`_next` etc.) — Express identifies error handlers by arity 4.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  {
     ignores: ['dist/**', 'node_modules/**', 'client/dist/**'],
   },
 ];
