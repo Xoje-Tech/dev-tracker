@@ -12,10 +12,19 @@ export class McpClient {
     });
 
     if (!response.ok) {
-      const errorBody: any = await response.json().catch(() => ({}));
-      let msg = errorBody.error || response.statusText || "HTTP Error";
-      if (errorBody.error === "Validation failed" && errorBody.details) {
-        const issues = Object.entries(errorBody.details)
+      const errorBody = (await response.json().catch(() => ({}))) as {
+        error?: unknown;
+        details?: unknown;
+      };
+      const rawError = errorBody.error;
+      let msg =
+        typeof rawError === "string" && rawError.length > 0
+          ? rawError
+          : response.statusText || "HTTP Error";
+      if (errorBody.error === "Validation failed" && errorBody.details != null) {
+        const issues = Object.entries(
+          errorBody.details as Record<string, unknown>,
+        )
           .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(", ") : String(msgs)}`)
           .join("\n");
         msg = `Validation failed:\n${issues}`;
@@ -30,21 +39,21 @@ export class McpClient {
     return this.request(path);
   }
 
-  async post(path: string, body: any) {
+  async post(path: string, body: unknown) {
     return this.request(path, {
       method: "POST",
       body: JSON.stringify(body),
     });
   }
 
-  async put(path: string, body?: any) {
+  async put(path: string, body?: unknown) {
     return this.request(path, {
       method: "PUT",
       body: body ? JSON.stringify(body) : undefined,
     });
   }
 
-  async patch(path: string, body: any) {
+  async patch(path: string, body: unknown) {
     return this.request(path, {
       method: "PATCH",
       body: JSON.stringify(body),
