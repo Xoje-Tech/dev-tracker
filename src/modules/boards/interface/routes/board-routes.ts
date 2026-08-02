@@ -6,9 +6,10 @@ import { BOARD_ROUTES } from '@boards/domain/routes.js';
 
 export function createBoardRoutes(
   controller: BoardController,
-  authStrategy: AuthStrategy
+  authStrategy: AuthStrategy,
 ): Router {
-  const router = Router();
+  // Use mergeParams: true to inherit :projectId from the parent mount in src/app.ts
+  const router = Router({ mergeParams: true });
   const auth = createAuthMiddleware(authStrategy);
 
   router.get(BOARD_ROUTES.get, auth, controller.get);
